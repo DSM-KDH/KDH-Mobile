@@ -13,6 +13,7 @@ dependencies:
   flutter_svg: ^2.0.0
   go_router: ^14.0.0
   material_symbols_icons: ^4.2.0
+  watch_connectivity: ^0.2.8
 
 dev_dependencies:
   flutter_test:

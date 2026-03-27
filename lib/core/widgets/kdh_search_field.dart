@@ -35,6 +35,7 @@ class _KdhSearchFieldState extends State<KdhSearchField> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
+    _hasText = _controller.text.isNotEmpty;
     _controller.addListener(_onTextChanged);
     _focusNode = FocusNode()..addListener(_onFocusChanged);
   }

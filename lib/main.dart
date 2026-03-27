@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kdh_mobile/constants/color.dart';
+import 'package:kdh_mobile/core/router/app_router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,23 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const MyHomePage(),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: KdhColor.background,
+        fontFamily: 'Pretendard',
+      ),
+      routerConfig: appRouter,
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }

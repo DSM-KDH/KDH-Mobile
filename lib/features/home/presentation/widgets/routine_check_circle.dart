@@ -33,20 +33,26 @@ class RoutineCheckCircle extends StatelessWidget {
       iconColor = KdhColor.gray100;
     }
 
-    return GestureDetector(
-      onTap: isToday ? onToggle : null,
-      child: Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: bgColor,
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          Symbols.check_rounded,
-          color: iconColor,
-          size: 18,
-          fill: 1,
+    return Semantics(
+      button: true,
+      enabled: isToday,
+      child: GestureDetector(
+        onTap: isToday ? onToggle : null,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+          child: Center(
+            child: Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+              child: Icon(
+                Symbols.check_rounded,
+                color: iconColor,
+                size: 18,
+                fill: 1,
+              ),
+            ),
+          ),
         ),
       ),
     );

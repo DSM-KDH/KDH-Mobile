@@ -20,8 +20,8 @@ class KdhBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+    return SafeArea(
+      minimum: const EdgeInsets.fromLTRB(24, 0, 24, 20),
       child: Container(
         height: 64,
         decoration: BoxDecoration(
@@ -34,6 +34,7 @@ class KdhBottomNavBar extends StatelessWidget {
             _tabs.length,
             (i) => _TabIcon(
               icon: _tabs[i].icon,
+              label: _tabs[i].label,
               isSelected: i == currentIndex,
               onTap: () => onTap(i),
             ),
@@ -47,22 +48,26 @@ class KdhBottomNavBar extends StatelessWidget {
 class _TabIcon extends StatelessWidget {
   const _TabIcon({
     required this.icon,
+    required this.label,
     required this.isSelected,
     required this.onTap,
   });
 
   final IconData icon;
+  final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Icon(
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: IconButton(
+        tooltip: label,
+        onPressed: onTap,
+        icon: Icon(
           icon,
           color: isSelected ? KdhColor.background : KdhColor.red50,
           size: 24,

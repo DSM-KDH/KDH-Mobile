@@ -28,8 +28,10 @@ class MonthlyCalendar extends StatelessWidget {
 
   bool _isToday(DateTime date) => _isSameDay(date, DateTime.now());
 
-  bool _hasRoutine(DateTime date) =>
-      datesWithRoutines.contains('${date.year}-${date.month}-${date.day}');
+  String _dateKey(DateTime date) =>
+      '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
+  bool _hasRoutine(DateTime date) => datesWithRoutines.contains(_dateKey(date));
 
   @override
   Widget build(BuildContext context) {

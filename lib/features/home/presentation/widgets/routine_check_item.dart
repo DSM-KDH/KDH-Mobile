@@ -45,24 +45,39 @@ class RoutineCheckItem extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   routine.subtitle,
-                  style: KdhTextStyle.caption1.copyWith(color: KdhColor.gray400),
+                  style: KdhTextStyle.caption1.copyWith(
+                    color: KdhColor.gray400,
+                  ),
                 ),
               ],
             ),
           ),
           if (routine.needsTimer) ...[
             const SizedBox(width: 12),
-            GestureDetector(
-              onTap: onActionTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  color: KdhColor.red100,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Text(
-                  '수행하기',
-                  style: KdhTextStyle.caption1.copyWith(color: KdhColor.red400),
+            Semantics(
+              button: true,
+              child: GestureDetector(
+                onTap: onActionTap,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: KdhColor.red100,
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '수행하기',
+                        style: KdhTextStyle.caption1.copyWith(
+                          color: KdhColor.red400,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

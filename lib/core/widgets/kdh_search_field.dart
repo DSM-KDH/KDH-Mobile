@@ -39,6 +39,17 @@ class _KdhSearchFieldState extends State<KdhSearchField> {
     _focusNode = FocusNode()..addListener(_onFocusChanged);
   }
 
+  @override
+  void didUpdateWidget(covariant KdhSearchField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller?.removeListener(_onTextChanged);
+      _controller = oldWidget.controller ?? TextEditingController();
+      _controller.addListener(_onTextChanged);
+      _hasText = _controller.text.isNotEmpty;
+    }
+  }
+
   void _onTextChanged() {
     final hasText = _controller.text.isNotEmpty;
     if (hasText != _hasText) setState(() => _hasText = hasText);
@@ -50,6 +61,8 @@ class _KdhSearchFieldState extends State<KdhSearchField> {
 
   @override
   void dispose() {
+    _controller.removeListener(_onTextChanged);
+    _focusNode.removeListener(_onTextChanged);
     if (widget.controller == null) _controller.dispose();
     _focusNode.dispose();
     super.dispose();

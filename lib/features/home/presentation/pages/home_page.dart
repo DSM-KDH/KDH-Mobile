@@ -103,7 +103,9 @@ class _HomePageState extends State<HomePage> {
         return r.copyWith(
           status: r.status == RoutineStatus.done
               ? RoutineStatus.todo
-              : RoutineStatus.done,
+              : r.status == RoutineStatus.todo
+              ? RoutineStatus.done
+              : RoutineStatus.skipped,
         );
       }).toList();
     });

@@ -74,7 +74,8 @@ class _HomePageState extends State<HomePage> {
     ],
   };
 
-  static String _key(DateTime d) => '${d.year}-${d.month}-${d.day}';
+  static String _key(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   List<Routine> get _currentRoutines => _routineData[_key(_selectedDate)] ?? [];
 

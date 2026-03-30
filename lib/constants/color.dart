@@ -4,6 +4,18 @@ abstract final class KdhColor {
   /// etc
   static const Color background = Color(0xFFFFFCFC);
 
+  /// gradients
+  static const LinearGradient aiRoutineGradient = LinearGradient(
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    stops: [0.0, 0.5, 1.0],
+    colors: [
+      Color(0xFFFFF7F6),
+      Color(0xFFFFCAC9),
+      Color(0xFFFFA2A2),
+    ],
+  );
+
   /// red
   static const Color red50 = Color(0xFFFFEDEC);
   static const Color red100 = Color(0xFFFFD2CF);

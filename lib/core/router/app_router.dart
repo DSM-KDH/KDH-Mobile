@@ -4,9 +4,15 @@ import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_bottom_nav_bar.dart';
 import 'package:kdh_mobile/features/auth/presentation/pages/onboarding_page.dart';
-import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_prompt_page.dart';
 import 'package:kdh_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:kdh_mobile/features/profile/presentation/pages/profile_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_prompt_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_result_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/fifth_step_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/first_step_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/fourth_step_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/second_step_page.dart';
+import 'package:kdh_mobile/features/routine/presentation/pages/third_step_page.dart';
 import 'package:kdh_mobile/features/timer/presentation/pages/timer_page.dart';
 
 final appRouter = GoRouter(
@@ -19,6 +25,30 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouterPath.aiRoutinePrompt,
       builder: (context, state) => const AiRoutinePromptPage(),
+    ),
+    GoRoute(
+      path: RouterPath.aiRoutineStep1,
+      builder: (context, state) => const FirstStepPage(),
+    ),
+    GoRoute(
+      path: RouterPath.aiRoutineStep2,
+      builder: (context, state) => const SecondStepPage(),
+    ),
+    GoRoute(
+      path: RouterPath.aiRoutineStep3,
+      builder: (context, state) => const ThirdStepPage(),
+    ),
+    GoRoute(
+      path: RouterPath.aiRoutineStep4,
+      builder: (context, state) => const FourthStepPage(),
+    ),
+    GoRoute(
+      path: RouterPath.aiRoutineStep5,
+      builder: (context, state) => const FifthStepPage(),
+    ),
+    GoRoute(
+      path: RouterPath.aiRoutineResult,
+      builder: (context, state) => const AiRoutineResultPage(),
     ),
     ShellRoute(
       builder: (context, state, child) =>

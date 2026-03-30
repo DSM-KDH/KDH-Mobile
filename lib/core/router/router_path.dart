@@ -3,4 +3,5 @@ abstract final class RouterPath {
   static const String home = '/home';
   static const String timer = '/timer';
   static const String profile = '/profile';
+  static const String aiRoutinePrompt = '/ai-routine-prompt';
 }

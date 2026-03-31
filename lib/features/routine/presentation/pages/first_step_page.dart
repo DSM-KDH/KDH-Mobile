@@ -89,7 +89,9 @@ class _FirstStepPageState extends State<FirstStepPage> {
       }),
       selectedColor: KdhColor.red200,
       backgroundColor: KdhColor.background,
-      side: selected ? BorderSide.none : BorderSide(color: KdhColor.red500, width: 2),
+      side: selected
+          ? BorderSide.none
+          : BorderSide(color: KdhColor.red500, width: 2),
       shape: const StadiumBorder(),
     );
   }
@@ -306,7 +308,21 @@ class _FirstStepPageState extends State<FirstStepPage> {
               child: KdhButton(
                 label: '다음',
                 onPressed: _canProceed
-                    ? () => context.push(RouterPath.aiRoutineStep2)
+                    ? () {
+                        final step1Payload = <String, dynamic>{
+                          'goal': _selectedGoal,
+                          'targetWeight': _selectedGoal == 0
+                              ? double.parse(_weightController.text.trim())
+                              : null,
+                          'selectedMuscles': _selectedGoal == 2
+                              ? _selectedMuscles.toList(growable: false)
+                              : const <String>[],
+                        };
+                        context.push(
+                          RouterPath.aiRoutineStep2,
+                          extra: step1Payload,
+                        );
+                      }
                     : null,
               ),
             ),

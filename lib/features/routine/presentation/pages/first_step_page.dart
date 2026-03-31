@@ -7,6 +7,7 @@ import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kdh_mobile/core/widgets/kdh_select_card.dart';
+import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/body_diagram.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
@@ -309,19 +310,17 @@ class _FirstStepPageState extends State<FirstStepPage> {
                 label: '다음',
                 onPressed: _canProceed
                     ? () {
-                        final step1Payload = <String, dynamic>{
-                          'goal': _selectedGoal,
-                          'targetWeight': _selectedGoal == 0
-                              ? double.parse(_weightController.text.trim())
+                        final data = AiRoutineWizardData(
+                          goal: _selectedGoal,
+                          targetWeight: _selectedGoal == 0
+                              ? double.tryParse(_weightController.text.trim())
                               : null,
-                          'selectedMuscles': _selectedGoal == 2
-                              ? _selectedMuscles.toList(growable: false)
-                              : const <String>[],
-                        };
-                        context.push(
-                          RouterPath.aiRoutineStep2,
-                          extra: step1Payload,
+                          selectedMuscles: _selectedGoal == 2
+                              ? Set.from(_selectedMuscles)
+                              : const {},
                         );
+                        AiRoutineWizardHolder.save(data);
+                        context.push(RouterPath.aiRoutineStep2, extra: data);
                       }
                     : null,
               ),

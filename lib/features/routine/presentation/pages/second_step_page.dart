@@ -4,12 +4,15 @@ import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
+import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 const _gap34 = SizedBox(height: 34);
 
 class SecondStepPage extends StatefulWidget {
-  const SecondStepPage({super.key});
+  const SecondStepPage({super.key, required this.wizardData});
+
+  final AiRoutineWizardData wizardData;
 
   @override
   State<SecondStepPage> createState() => _SecondStepPageState();
@@ -86,7 +89,6 @@ class _SecondStepPageState extends State<SecondStepPage> {
                         ),
                       );
                     }),
-
                     _gap34,
                     Text(
                       '러닝 페이스란?\n1km를 달리는데 걸리는 시간(분/km)',
@@ -99,13 +101,18 @@ class _SecondStepPageState extends State<SecondStepPage> {
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: KdhButton(
                 label: '다음',
                 onPressed: _selected != null
-                    ? () => context.push(RouterPath.aiRoutineStep3)
+                    ? () {
+                        final data = widget.wizardData.copyWith(
+                          performanceLevel: _selected,
+                        );
+                        AiRoutineWizardHolder.save(data);
+                        context.push(RouterPath.aiRoutineStep3, extra: data);
+                      }
                     : null,
               ),
             ),

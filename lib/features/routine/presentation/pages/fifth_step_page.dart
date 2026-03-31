@@ -6,13 +6,16 @@ import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:kdh_mobile/core/widgets/kdh_select_card.dart';
+import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 const _gap12 = SizedBox(height: 12);
 const _gap24 = SizedBox(height: 24);
 
 class FifthStepPage extends StatefulWidget {
-  const FifthStepPage({super.key});
+  const FifthStepPage({super.key, required this.wizardData});
+
+  final AiRoutineWizardData wizardData;
 
   @override
   State<FifthStepPage> createState() => _FifthStepPageState();
@@ -160,8 +163,14 @@ class _FifthStepPageState extends State<FifthStepPage> {
               child: KdhButton(
                 label: '완료',
                 onPressed: _canProceed
-                    ? () => context.push(
-                        RouterPath.aiRoutineResult)
+                    ? () {
+                        final data = widget.wizardData.copyWith(
+                          places: Set.from(_selectedPlaces),
+                          equipment: Set.from(_selectedEquipment),
+                        );
+                        AiRoutineWizardHolder.save(data);
+                        context.push(RouterPath.aiRoutineResult, extra: data);
+                      }
                     : null,
               ),
             ),

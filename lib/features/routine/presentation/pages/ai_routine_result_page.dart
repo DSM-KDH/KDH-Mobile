@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_failure_view.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_loading_view.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_success_view.dart';
@@ -8,7 +9,9 @@ enum _ResultState { loading, success, failure }
 const _kDefaultFailureMessage = 'AI로 맞춤 루틴 생성을\n실패했습니다';
 
 class AiRoutineResultPage extends StatefulWidget {
-  const AiRoutineResultPage({super.key});
+  const AiRoutineResultPage({super.key, required this.wizardData});
+
+  final AiRoutineWizardData wizardData;
 
   @override
   State<AiRoutineResultPage> createState() => _AiRoutineResultPageState();
@@ -26,10 +29,10 @@ class _AiRoutineResultPageState extends State<AiRoutineResultPage> {
 
   Future<void> _startGeneration() async {
     try {
-      // TODO: 실제 API 호출로 교체
+      // TODO: 실제 API 호출로 교체 (widget.wizardData 사용)
       await Future.delayed(const Duration(seconds: 2));
       if (mounted) setState(() => _state = _ResultState.success);
-    } catch (e, st) {
+    } catch (e) {
       if (mounted) {
         setState(() {
           _failureMessage = _kDefaultFailureMessage;

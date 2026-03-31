@@ -6,10 +6,13 @@ import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kdh_mobile/core/widgets/kdh_select_card.dart';
+import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 class FourthStepPage extends StatefulWidget {
-  const FourthStepPage({super.key});
+  const FourthStepPage({super.key, required this.wizardData});
+
+  final AiRoutineWizardData wizardData;
 
   @override
   State<FourthStepPage> createState() => _FourthStepPageState();
@@ -110,7 +113,13 @@ class _FourthStepPageState extends State<FourthStepPage> {
               child: KdhButton(
                 label: '다음',
                 onPressed: _selected.isNotEmpty
-                    ? () => context.push(RouterPath.aiRoutineStep5)
+                    ? () {
+                        final data = widget.wizardData.copyWith(
+                          exerciseTypes: Set.from(_selected),
+                        );
+                        AiRoutineWizardHolder.save(data);
+                        context.push(RouterPath.aiRoutineStep5, extra: data);
+                      }
                     : null,
               ),
             ),

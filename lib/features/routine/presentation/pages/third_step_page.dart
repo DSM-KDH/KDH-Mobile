@@ -4,13 +4,16 @@ import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
+import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 const _gap8 = SizedBox(height: 8);
 const _gap20 = SizedBox(height: 20);
 
 class ThirdStepPage extends StatefulWidget {
-  const ThirdStepPage({super.key});
+  const ThirdStepPage({super.key, required this.wizardData});
+
+  final AiRoutineWizardData wizardData;
 
   @override
   State<ThirdStepPage> createState() => _ThirdStepPageState();
@@ -235,7 +238,13 @@ class _ThirdStepPageState extends State<ThirdStepPage> {
                           );
                           return;
                         }
-                        context.push(RouterPath.aiRoutineStep4);
+                        final data = widget.wizardData.copyWith(
+                          weeks: weeks,
+                          hours: hours,
+                          selectedDays: Set.from(_selectedDays),
+                        );
+                        AiRoutineWizardHolder.save(data);
+                        context.push(RouterPath.aiRoutineStep4, extra: data);
                       }
                     : null,
               ),

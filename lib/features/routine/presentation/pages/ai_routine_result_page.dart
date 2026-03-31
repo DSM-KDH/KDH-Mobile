@@ -29,14 +29,13 @@ class _AiRoutineResultPageState extends State<AiRoutineResultPage> {
       // TODO: 실제 API 호출로 교체
       await Future.delayed(const Duration(seconds: 2));
       if (mounted) setState(() => _state = _ResultState.success);
-    } catch (e) {
+    } catch (e, st) {
       if (mounted) {
         setState(() {
-          _failureMessage = e.toString().isNotEmpty
-              ? e.toString()
-              : _kDefaultFailureMessage;
+          _failureMessage = _kDefaultFailureMessage;
           _state = _ResultState.failure;
         });
+        // TODO: logger.error('AI routine generation failed', e, st);
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
@@ -34,7 +35,8 @@ class _FirstStepPageState extends State<FirstStepPage> {
   bool get _canProceed {
     switch (_selectedGoal) {
       case 0:
-        return _weightController.text.trim().isNotEmpty;
+        final weight = double.tryParse(_weightController.text.trim());
+        return weight != null && weight > 0;
       case 1:
         return true;
       case 2:
@@ -223,6 +225,11 @@ class _FirstStepPageState extends State<FirstStepPage> {
                                     const TextInputType.numberWithOptions(
                                       decimal: true,
                                     ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d*\.?\d{0,1}$'),
+                                  ),
+                                ],
                                 onChanged: (_) => setState(() {}),
                                 style: KdhTextStyle.body7.copyWith(
                                   color: KdhColor.gray800,

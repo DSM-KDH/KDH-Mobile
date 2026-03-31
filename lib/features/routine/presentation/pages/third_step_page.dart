@@ -53,14 +53,12 @@ class _ThirdStepPageState extends State<ThirdStepPage> {
   }
 
   SnackBar _buildLimitSnackBar(String message) => SnackBar(
-        content: Text(message, style: KdhTextStyle.body7),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(milliseconds: 1000),
-        backgroundColor: KdhColor.red50,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100),
-        ),
-      );
+    content: Text(message, style: KdhTextStyle.body7),
+    behavior: SnackBarBehavior.floating,
+    duration: const Duration(milliseconds: 1000),
+    backgroundColor: KdhColor.red50,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+  );
 
   Widget _buildNumberField({
     required TextEditingController controller,
@@ -206,10 +204,25 @@ class _ThirdStepPageState extends State<ThirdStepPage> {
                 label: '다음',
                 onPressed: _canProceed
                     ? () {
-                        final weeks =
-                            int.tryParse(_weeksController.text.trim()) ?? 0;
-                        final hours =
-                            double.tryParse(_hoursController.text.trim()) ?? 0;
+                        final weeks = int.tryParse(
+                          _weeksController.text.trim(),
+                        );
+                        final hours = double.tryParse(
+                          _hoursController.text.trim(),
+                        );
+
+                        if (weeks == null || weeks <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            _buildLimitSnackBar('루틴 유지 기간을 올바르게 입력해주세요'),
+                          );
+                          return;
+                        }
+                        if (hours == null || hours <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            _buildLimitSnackBar('운동 시간을 올바르게 입력해주세요'),
+                          );
+                          return;
+                        }
                         if (weeks > 24) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             _buildLimitSnackBar('루틴 유지 기간은 최대 24주까지 가능해요'),

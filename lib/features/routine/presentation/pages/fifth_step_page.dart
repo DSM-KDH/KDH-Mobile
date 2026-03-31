@@ -160,7 +160,7 @@ class _FifthStepPageState extends State<FifthStepPage> {
               child: KdhButton(
                 label: '완료',
                 onPressed: _canProceed
-                    ? () => context.pushReplacement(
+                    ? () => context.push(
                         RouterPath.aiRoutineResult)
                     : null,
               ),

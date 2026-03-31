@@ -5,6 +5,8 @@ import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_succ
 
 enum _ResultState { loading, success, failure }
 
+const _kDefaultFailureMessage = 'AI로 맞춤 루틴 생성을\n실패했습니다';
+
 class AiRoutineResultPage extends StatefulWidget {
   const AiRoutineResultPage({super.key});
 
@@ -14,6 +16,7 @@ class AiRoutineResultPage extends StatefulWidget {
 
 class _AiRoutineResultPageState extends State<AiRoutineResultPage> {
   _ResultState _state = _ResultState.loading;
+  String _failureMessage = _kDefaultFailureMessage;
 
   @override
   void initState() {
@@ -22,10 +25,19 @@ class _AiRoutineResultPageState extends State<AiRoutineResultPage> {
   }
 
   Future<void> _startGeneration() async {
-    // TODO: 실제 API 호출로 교체
-    await Future.delayed(const Duration(seconds: 2));
-    if (mounted) {
-      setState(() => _state = _ResultState.success);
+    try {
+      // TODO: 실제 API 호출로 교체
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) setState(() => _state = _ResultState.success);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _failureMessage = e.toString().isNotEmpty
+              ? e.toString()
+              : _kDefaultFailureMessage;
+          _state = _ResultState.failure;
+        });
+      }
     }
   }
 
@@ -34,7 +46,7 @@ class _AiRoutineResultPageState extends State<AiRoutineResultPage> {
     return switch (_state) {
       _ResultState.loading => const AiRoutineLoadingView(),
       _ResultState.success => const AiRoutineSuccessView(),
-      _ResultState.failure => const AiRoutineFailureView(),
+      _ResultState.failure => AiRoutineFailureView(message: _failureMessage),
     };
   }
 }

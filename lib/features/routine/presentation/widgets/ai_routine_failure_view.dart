@@ -5,7 +5,9 @@ import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AiRoutineFailureView extends StatelessWidget {
-  const AiRoutineFailureView({super.key});
+  const AiRoutineFailureView({super.key, required this.message});
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -31,26 +33,26 @@ class AiRoutineFailureView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
-                        Symbols.arrow_back_ios,
+                        Symbols.arrow_back,
                         size: 16,
-                        color: KdhColor.gray600,
+                        color: KdhColor.gray500,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         '뒤로 돌아가기',
-                        style: KdhTextStyle.body6.copyWith(
-                          color: KdhColor.gray600,
+                        style: KdhTextStyle.body3.copyWith(
+                          color: KdhColor.gray500,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 16),
               Text(
-                'AI로 맞춤 루틴 생성을\n실패했습니다',
+                message,
                 textAlign: TextAlign.center,
-                style: KdhTextStyle.body3.copyWith(color: KdhColor.gray800),
+                style: KdhTextStyle.heading3.copyWith(color: KdhColor.gray500),
               ),
             ],
           ),

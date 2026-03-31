@@ -72,31 +72,25 @@ class _FirstStepPageState extends State<FirstStepPage> {
 
   Widget _buildMuscleChip(String label) {
     final selected = _selectedMuscles.contains(label);
-    return GestureDetector(
-      onTap: () => setState(() {
+    return ChoiceChip(
+      label: Text(
+        label,
+        style: KdhTextStyle.caption1.copyWith(
+          color: selected ? KdhColor.background : KdhColor.gray800,
+        ),
+      ),
+      selected: selected,
+      onSelected: (_) => setState(() {
         if (selected) {
           _selectedMuscles.remove(label);
         } else {
           _selectedMuscles.add(label);
         }
       }),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: selected ? KdhColor.red200 : KdhColor.background,
-          borderRadius: BorderRadius.circular(25),
-          border: selected
-              ? null
-              : Border.all(color: KdhColor.red50, width: 1.5),
-        ),
-        child: Text(
-          label,
-          style: KdhTextStyle.caption1.copyWith(
-            color: selected ? KdhColor.background : KdhColor.gray800,
-          ),
-        ),
-      ),
+      selectedColor: KdhColor.red200,
+      backgroundColor: KdhColor.background,
+      side: selected ? BorderSide.none : BorderSide(color: KdhColor.red500, width: 2),
+      shape: const StadiumBorder(),
     );
   }
 

@@ -55,14 +55,14 @@ class MonthlyCalendar extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   child: Icon(
                     Symbols.chevron_left,
-                    color: KdhColor.gray600,
+                    color: KdhColor.gray800,
                     size: 20,
                   ),
                 ),
               ),
               Text(
                 '${displayedMonth.year}년 ${displayedMonth.month}월',
-                style: KdhTextStyle.body6.copyWith(color: KdhColor.gray700),
+                style: KdhTextStyle.body6.copyWith(color: KdhColor.gray800),
               ),
               GestureDetector(
                 onTap: onNextMonth,
@@ -70,7 +70,7 @@ class MonthlyCalendar extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   child: Icon(
                     Symbols.chevron_right,
-                    color: KdhColor.gray600,
+                    color: KdhColor.gray800,
                     size: 20,
                   ),
                 ),
@@ -86,7 +86,7 @@ class MonthlyCalendar extends StatelessWidget {
                       child: Text(
                         d,
                         style: KdhTextStyle.caption4.copyWith(
-                          color: KdhColor.gray400,
+                          color: KdhColor.gray800,
                         ),
                       ),
                     ),
@@ -125,26 +125,18 @@ class MonthlyCalendar extends StatelessWidget {
                           Container(
                             width: 28,
                             height: 28,
-                            decoration: BoxDecoration(
-                              color: today
-                                  ? KdhColor.red200
-                                  : KdhColor.background,
-                              shape: BoxShape.circle,
-                              border: selected && !today
-                                  ? Border.all(
-                                      color: KdhColor.red200,
-                                      width: 1.5,
-                                    )
-                                  : null,
-                            ),
+                            decoration: today
+                                ? const BoxDecoration(
+                                    color: KdhColor.red200,
+                                    shape: BoxShape.circle,
+                                  )
+                                : null,
                             child: Center(
                               child: Text(
                                 '$dayNumber',
                                 style: KdhTextStyle.caption4.copyWith(
                                   color: today
                                       ? KdhColor.background
-                                      : selected
-                                      ? KdhColor.red400
                                       : KdhColor.gray800,
                                 ),
                               ),

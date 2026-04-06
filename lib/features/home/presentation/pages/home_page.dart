@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                 Text(
                                   '달력 더보기',
                                   style: KdhTextStyle.caption1.copyWith(
-                                    color: KdhColor.red200,
+                                    color: KdhColor.gray800,
                                   ),
                                 ),
                                 const SizedBox(width: 4),
@@ -214,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                                   duration: const Duration(milliseconds: 200),
                                   child: const Icon(
                                     Symbols.keyboard_arrow_down_rounded,
-                                    color: KdhColor.red200,
+                                    color: KdhColor.gray800,
                                     size: 18,
                                   ),
                                 ),

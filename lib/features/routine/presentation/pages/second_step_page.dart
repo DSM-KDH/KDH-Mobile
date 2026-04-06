@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
-import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
+import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 const _gap34 = SizedBox(height: 34);
 
-class SecondStepPage extends StatefulWidget {
-  const SecondStepPage({super.key, required this.wizardData});
-
-  final AiRoutineWizardData wizardData;
+class SecondStepPage extends ConsumerStatefulWidget {
+  const SecondStepPage({super.key});
 
   @override
-  State<SecondStepPage> createState() => _SecondStepPageState();
+  ConsumerState<SecondStepPage> createState() => _SecondStepPageState();
 }
 
-class _SecondStepPageState extends State<SecondStepPage> {
+class _SecondStepPageState extends ConsumerState<SecondStepPage> {
   int? _selected;
 
   static const _items = [
@@ -107,11 +106,10 @@ class _SecondStepPageState extends State<SecondStepPage> {
                 label: '다음',
                 onPressed: _selected != null
                     ? () {
-                        final data = widget.wizardData.copyWith(
-                          performanceLevel: _selected,
-                        );
-                        AiRoutineWizardHolder.save(data);
-                        context.push(RouterPath.aiRoutineStep3, extra: data);
+                        ref
+                            .read(aiRoutineWizardProvider.notifier)
+                            .setPerformanceLevel(_selected!);
+                        context.push(RouterPath.aiRoutineStep3);
                       }
                     : null,
               ),

@@ -6,7 +6,6 @@ import 'package:kdh_mobile/core/widgets/kdh_bottom_nav_bar.dart';
 import 'package:kdh_mobile/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:kdh_mobile/features/home/presentation/pages/home_page.dart';
 import 'package:kdh_mobile/features/profile/presentation/pages/profile_page.dart';
-import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_prompt_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_result_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/fifth_step_page.dart';
@@ -33,38 +32,23 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: RouterPath.aiRoutineStep2,
-      builder: (context, state) => SecondStepPage(
-        wizardData: state.extra as AiRoutineWizardData?
-            ?? AiRoutineWizardHolder.current,
-      ),
+      builder: (context, state) => const SecondStepPage(),
     ),
     GoRoute(
       path: RouterPath.aiRoutineStep3,
-      builder: (context, state) => ThirdStepPage(
-        wizardData: state.extra as AiRoutineWizardData?
-            ?? AiRoutineWizardHolder.current,
-      ),
+      builder: (context, state) => const ThirdStepPage(),
     ),
     GoRoute(
       path: RouterPath.aiRoutineStep4,
-      builder: (context, state) => FourthStepPage(
-        wizardData: state.extra as AiRoutineWizardData?
-            ?? AiRoutineWizardHolder.current,
-      ),
+      builder: (context, state) => const FourthStepPage(),
     ),
     GoRoute(
       path: RouterPath.aiRoutineStep5,
-      builder: (context, state) => FifthStepPage(
-        wizardData: state.extra as AiRoutineWizardData?
-            ?? AiRoutineWizardHolder.current,
-      ),
+      builder: (context, state) => const FifthStepPage(),
     ),
     GoRoute(
       path: RouterPath.aiRoutineResult,
-      builder: (context, state) => AiRoutineResultPage(
-        wizardData: state.extra as AiRoutineWizardData?
-            ?? AiRoutineWizardHolder.current,
-      ),
+      builder: (context, state) => const AiRoutineResultPage(),
     ),
     ShellRoute(
       builder: (context, state, child) =>

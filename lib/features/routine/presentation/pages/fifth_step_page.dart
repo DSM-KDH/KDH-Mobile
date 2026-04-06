@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
@@ -6,22 +7,20 @@ import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:kdh_mobile/core/widgets/kdh_select_card.dart';
-import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
+import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 const _gap12 = SizedBox(height: 12);
 const _gap24 = SizedBox(height: 24);
 
-class FifthStepPage extends StatefulWidget {
-  const FifthStepPage({super.key, required this.wizardData});
-
-  final AiRoutineWizardData wizardData;
+class FifthStepPage extends ConsumerStatefulWidget {
+  const FifthStepPage({super.key});
 
   @override
-  State<FifthStepPage> createState() => _FifthStepPageState();
+  ConsumerState<FifthStepPage> createState() => _FifthStepPageState();
 }
 
-class _FifthStepPageState extends State<FifthStepPage> {
+class _FifthStepPageState extends ConsumerState<FifthStepPage> {
   final Set<int> _selectedPlaces = {};
   final Set<String> _selectedEquipment = {};
 
@@ -52,8 +51,7 @@ class _FifthStepPageState extends State<FifthStepPage> {
       }),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: selected ? KdhColor.red200 : KdhColor.background,
           borderRadius: BorderRadius.circular(50),
@@ -149,8 +147,7 @@ class _FifthStepPageState extends State<FifthStepPage> {
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children:
-                          _equipment.map(_buildEquipmentChip).toList(),
+                      children: _equipment.map(_buildEquipmentChip).toList(),
                     ),
                     _gap24,
                   ],
@@ -164,12 +161,13 @@ class _FifthStepPageState extends State<FifthStepPage> {
                 label: '완료',
                 onPressed: _canProceed
                     ? () {
-                        final data = widget.wizardData.copyWith(
-                          places: Set.from(_selectedPlaces),
-                          equipment: Set.from(_selectedEquipment),
-                        );
-                        AiRoutineWizardHolder.save(data);
-                        context.push(RouterPath.aiRoutineResult, extra: data);
+                        ref
+                            .read(aiRoutineWizardProvider.notifier)
+                            .setPlacesAndEquipment(
+                              places: Set.from(_selectedPlaces),
+                              equipment: Set.from(_selectedEquipment),
+                            );
+                        context.push(RouterPath.aiRoutineResult);
                       }
                     : null,
               ),

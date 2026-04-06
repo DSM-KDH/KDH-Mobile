@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kdh_mobile/core/widgets/kdh_select_card.dart';
-import 'package:kdh_mobile/features/routine/data/models/ai_routine_wizard_data.dart';
+import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/body_diagram.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
 const _gap16 = SizedBox(height: 16);
 
-class FirstStepPage extends StatefulWidget {
+class FirstStepPage extends ConsumerStatefulWidget {
   const FirstStepPage({super.key});
 
   @override
-  State<FirstStepPage> createState() => _FirstStepPageState();
+  ConsumerState<FirstStepPage> createState() => _FirstStepPageState();
 }
 
-class _FirstStepPageState extends State<FirstStepPage> {
+class _FirstStepPageState extends ConsumerState<FirstStepPage> {
   int? _selectedGoal;
 
   final _weightController = TextEditingController();
@@ -310,8 +311,8 @@ class _FirstStepPageState extends State<FirstStepPage> {
                 label: '다음',
                 onPressed: _canProceed
                     ? () {
-                        final data = AiRoutineWizardData(
-                          goal: _selectedGoal,
+                        ref.read(aiRoutineWizardProvider.notifier).setGoal(
+                          goal: _selectedGoal!,
                           targetWeight: _selectedGoal == 0
                               ? double.tryParse(_weightController.text.trim())
                               : null,
@@ -319,8 +320,7 @@ class _FirstStepPageState extends State<FirstStepPage> {
                               ? Set.from(_selectedMuscles)
                               : const {},
                         );
-                        AiRoutineWizardHolder.save(data);
-                        context.push(RouterPath.aiRoutineStep2, extra: data);
+                        context.push(RouterPath.aiRoutineStep2);
                       }
                     : null,
               ),

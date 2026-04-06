@@ -18,12 +18,30 @@ class RoutineCheckItem extends StatelessWidget {
   final VoidCallback onToggle;
   final VoidCallback onActionTap;
 
+  void _showImageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: KdhColor.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: ClipRRect(
+            child: Image.asset(routine.imagePath!, fit: BoxFit.cover),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: KdhColor.red50,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(26),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
@@ -35,47 +53,45 @@ class RoutineCheckItem extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  routine.title,
-                  style: KdhTextStyle.body6.copyWith(color: KdhColor.gray800),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  routine.subtitle,
-                  style: KdhTextStyle.caption1.copyWith(
-                    color: KdhColor.gray400,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: routine.imagePath != null
+                  ? () => _showImageDialog(context)
+                  : null,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    routine.title,
+                    style: KdhTextStyle.body6.copyWith(color: KdhColor.gray800),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 2),
+                  Text(
+                    routine.subtitle,
+                    style: KdhTextStyle.caption1.copyWith(
+                      color: KdhColor.gray400,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           if (routine.needsTimer) ...[
             const SizedBox(width: 12),
-            Semantics(
-              button: true,
-              child: GestureDetector(
-                onTap: onActionTap,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 48),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: KdhColor.red100,
-                      borderRadius: BorderRadius.circular(60),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '수행하기',
-                        style: KdhTextStyle.caption1.copyWith(
-                          color: KdhColor.red400,
-                        ),
-                      ),
+            GestureDetector(
+              onTap: onActionTap,
+              child: Container(
+                height: 29,
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: KdhColor.red100,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Center(
+                  child: Text(
+                    '수행하기',
+                    style: KdhTextStyle.caption1.copyWith(
+                      color: KdhColor.red400,
                     ),
                   ),
                 ),

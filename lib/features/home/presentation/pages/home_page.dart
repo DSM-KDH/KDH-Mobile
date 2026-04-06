@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
         title: '인터벌 러닝',
         subtitle: '2시간 · 원하는 형식으로',
         status: RoutineStatus.done,
+        imagePath: 'assets/images/sample.png',
       ),
       const Routine(
         id: '2',

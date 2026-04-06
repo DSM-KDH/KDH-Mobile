@@ -1,15 +1,3 @@
-class AiRoutineWizardHolder {
-  AiRoutineWizardHolder._();
-
-  static AiRoutineWizardData _current = const AiRoutineWizardData();
-
-  static AiRoutineWizardData get current => _current;
-
-  static void save(AiRoutineWizardData data) => _current = data;
-
-  static void reset() => _current = const AiRoutineWizardData();
-}
-
 class AiRoutineWizardData {
   const AiRoutineWizardData({
     this.goal,

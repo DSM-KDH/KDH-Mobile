@@ -15,9 +15,9 @@ struct ContentView: View {
             Image("logo")
                 .resizable()
                 .scaledToFit()
-                .padding(.horizontal, 28)
+                .padding(.horizontal, 24)
             Text("AI가 만드는 나만의 루틴")
-                .font(.kdf(.body1))
+                .font(.kdf(.body3))
                 .foregroundStyle(.gray100)
 
             Spacer()

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 73;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -88,18 +88,28 @@
 		FFC045A323C8F4496F12B0DF /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		8801900D2F7CEBF50047FA8E /* KDHWatchApp Watch App */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8887A29F2F8CAAF200F31F1E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Sources/Main/TodayRoutineView.swift,
 			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = "KDHWatchApp Watch App";
-			sourceTree = "<group>";
+			target = 880190082F7CEBF50047FA8E /* KDHWatchApp Watch App */;
 		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		8887A2A02F8CAAF200F31F1E /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 880190072F7CEBF50047FA8E /* Resources */;
+			membershipExceptions = (
+				Sources/Main/TodayRoutineView.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8801900D2F7CEBF50047FA8E /* KDHWatchApp Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8887A29F2F8CAAF200F31F1E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 8887A2A02F8CAAF200F31F1E /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "KDHWatchApp Watch App"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -319,7 +329,6 @@
 				};
 			};
 			buildConfigurationList = 97C146E91CF9000F007C117D /* Build configuration list for PBXProject "Runner" */;
-			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -327,6 +336,7 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			preferredProjectObjectVersion = 50;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -752,6 +762,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KDHWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = KDHWatchApp;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -798,6 +809,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KDHWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = KDHWatchApp;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -841,6 +853,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KDHWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = KDHWatchApp;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;

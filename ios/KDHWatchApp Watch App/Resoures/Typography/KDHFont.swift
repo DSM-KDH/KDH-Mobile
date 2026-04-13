@@ -12,7 +12,7 @@ public enum KDHFontStyle {
         case .body3, .body4: return 18
         case .body5, .body6, .body7, .body8: return 16
         case .caption1, .caption2: return 14
-        case .caption3, .caption4, .caption5: return 12
+        case .caption3, .caption4, .caption5: return 10
         }
     }
 

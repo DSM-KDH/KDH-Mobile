@@ -7,21 +7,21 @@
 import SwiftUI
 
 struct RoutineListCell: View {
-    @State var isChecked: Bool = false
+    let exerciseName: String
+    let countText: String
+    let isChecked: Bool
+    let onImageTap: () -> Void
 
     var body: some View {
         HStack(spacing: 14) {
             Image(isChecked ? "checkBoxOn" : "checkBoxOff")
-                .onTapGesture {
-                    isChecked = isChecked ? false : true
-                }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("인터벌 러닝")
+                Text(exerciseName)
                     .font(.kdf(.caption1))
                     .foregroundStyle(Color.gray800)
 
-                Text("2시간 · 3-1-2")
+                Text(countText)
                     .font(.kdf(.caption5))
                     .foregroundStyle(Color.gray400)
             }
@@ -30,7 +30,9 @@ struct RoutineListCell: View {
 
             Image(systemName: "arrow.forward")
                 .foregroundStyle(Color.red400)
-            
+                .onTapGesture {
+                    onImageTap()
+                }
         }
         .padding(12)
         .background(Color.red50)
@@ -39,5 +41,10 @@ struct RoutineListCell: View {
 }
 
 #Preview {
-    RoutineListCell()
+    RoutineListCell(
+        exerciseName: "인터벌 러닝",
+        countText: "2시간 · 3-1-2",
+        isChecked: false,
+        onImageTap: {}
+    )
 }

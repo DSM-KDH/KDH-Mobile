@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TodayRoutineView: View {
-    private let routines: [RoutineItem] = [
+    @State private var routines: [RoutineItem] = [
         .init(exerciseName: "인터벌 러닝", countText: "2시간 · 3-1-2", isChecked: false),
         .init(exerciseName: "스쿼트", countText: "20회 × 3세트", isChecked: true),
         .init(exerciseName: "플랭크", countText: "1분 × 3세트", isChecked: false)
@@ -25,7 +25,10 @@ struct TodayRoutineView: View {
                             exerciseName: routine.exerciseName,
                             countText: routine.countText,
                             isChecked: routine.isChecked,
-                            onImageTap: {
+                            checkButtonTap: {
+                                toggleRoutineCheck(id: routine.id)
+                            },
+                            arrowButtonTap: {
                                 // TODO: 루틴 상세 화면 이동 또는 액션 연결
                             }
                         )
@@ -38,13 +41,18 @@ struct TodayRoutineView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.background)
     }
+
+    private func toggleRoutineCheck(id: UUID) {
+        guard let index = routines.firstIndex(where: { $0.id == id }) else { return }
+        routines[index].isChecked.toggle()
+    }
 }
 
 private struct RoutineItem: Identifiable {
     let id = UUID()
     let exerciseName: String
     let countText: String
-    let isChecked: Bool
+    var isChecked: Bool
 }
 
 #Preview {

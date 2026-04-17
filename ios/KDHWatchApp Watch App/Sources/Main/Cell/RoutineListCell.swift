@@ -10,11 +10,19 @@ struct RoutineListCell: View {
     let exerciseName: String
     let countText: String
     let isChecked: Bool
-    let onImageTap: () -> Void
+    let checkButtonTap: () -> Void
+    let arrowButtonTap: () -> Void
 
     var body: some View {
         HStack(spacing: 14) {
-            Image(isChecked ? "checkBoxOn" : "checkBoxOff")
+            Button(action: checkButtonTap) {
+                Image(isChecked ? "checkBoxOn" : "checkBoxOff")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 28, height: 28)
+                    .clipped()
+            }
+            .buttonStyle(.plain)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(exerciseName)
@@ -31,7 +39,7 @@ struct RoutineListCell: View {
             Image(systemName: "arrow.forward")
                 .foregroundStyle(Color.red400)
                 .onTapGesture {
-                    onImageTap()
+                    arrowButtonTap()
                 }
         }
         .padding(12)
@@ -45,6 +53,7 @@ struct RoutineListCell: View {
         exerciseName: "인터벌 러닝",
         countText: "2시간 · 3-1-2",
         isChecked: false,
-        onImageTap: {}
+        checkButtonTap: {},
+        arrowButtonTap: {}
     )
 }

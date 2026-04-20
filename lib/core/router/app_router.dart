@@ -5,7 +5,8 @@ import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_bottom_nav_bar.dart';
 import 'package:kdh_mobile/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:kdh_mobile/features/home/presentation/pages/home_page.dart';
-import 'package:kdh_mobile/features/profile/presentation/pages/profile_page.dart';
+import 'package:kdh_mobile/features/mypage/presentation/pages/my_page.dart';
+import 'package:kdh_mobile/features/mypage/presentation/pages/user_settings_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_prompt_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/ai_routine_result_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/fifth_step_page.dart';
@@ -50,6 +51,10 @@ final appRouter = GoRouter(
       path: RouterPath.aiRoutineResult,
       builder: (context, state) => const AiRoutineResultPage(),
     ),
+    GoRoute(
+      path: RouterPath.userSettings,
+      builder: (context, state) => const UserSettingsPage(),
+    ),
     ShellRoute(
       builder: (context, state, child) =>
           _AppShell(location: state.matchedLocation, child: child),
@@ -64,7 +69,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           path: RouterPath.profile,
-          builder: (context, state) => const ProfilePage(),
+          builder: (context, state) => const MyPage(),
         ),
       ],
     ),

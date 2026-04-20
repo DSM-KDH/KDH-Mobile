@@ -36,12 +36,10 @@ class _UserSettingsPageState extends ConsumerState<UserSettingsPage> {
     super.initState();
 
     final profile = ref.read(userProfileProvider);
-    if (profile.height != null) {
-      _heightController.text = '${profile.height}';
-    }
-    if (profile.weight != null) {
-      _weightController.text = '${profile.weight}';
-    }
+    String fmt(double v) =>
+        v == v.truncateToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(1);
+    if (profile.height != null) _heightController.text = fmt(profile.height!);
+    if (profile.weight != null) _weightController.text = fmt(profile.weight!);
     _selectedGender = profile.gender;
 
     _heightFocus.addListener(
@@ -101,7 +99,7 @@ class _UserSettingsPageState extends ConsumerState<UserSettingsPage> {
                 decimal: true,
               ),
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,1}$')),
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d?$')),
               ],
               onChanged: (_) => setState(() {}),
               style: KdhTextStyle.body7.copyWith(color: KdhColor.gray800),

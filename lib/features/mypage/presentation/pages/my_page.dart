@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kdh_mobile/constants/color.dart';
+import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/router/router_path.dart';
+import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
+import 'package:kdh_mobile/features/mypage/presentation/providers/weight_history_provider.dart';
+import 'package:kdh_mobile/features/mypage/presentation/widgets/weight_chart.dart';
+import 'package:material_symbols_icons/symbols.dart';
+
+class MyPage extends ConsumerWidget {
+  const MyPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(userProfileProvider);
+    final weightHistory = ref.watch(weightHistoryProvider);
+
+    final distinctMonths = weightHistory
+        .map((e) => '${e.date.year}-${e.date.month}')
+        .toSet()
+        .length;
+    final showChart = distinctMonths >= 3;
+
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('마이페이지', style: KdhTextStyle.body3),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: const BoxDecoration(
+                    color: KdhColor.red200,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Symbols.person,
+                    color: KdhColor.gray50,
+                    size: 50,
+                    fill: 1,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(profile.name, style: KdhTextStyle.body5),
+                      const SizedBox(height: 2),
+                      Text(
+                        profile.subtitle,
+                        style: KdhTextStyle.caption2.copyWith(
+                          color: KdhColor.gray400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => context.push(RouterPath.userSettings),
+                  child: const Icon(
+                    Symbols.settings,
+                    color: KdhColor.gray400,
+                    size: 22,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            GestureDetector(
+              onTap: () => context.push(RouterPath.aiRoutinePrompt),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: KdhColor.red50,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text('AI 루틴 생성하러 가기', style: KdhTextStyle.body6),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward,
+                      color: KdhColor.gray800,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 28),
+
+            Text('몸무게 변화', style: KdhTextStyle.body5),
+            const SizedBox(height: 16),
+
+            if (showChart)
+              WeightChart(entries: weightHistory)
+            else
+              Expanded(
+                child: Center(
+                  child: Text(
+                    '아직 데이터가 쌓이지 않았어요',
+                    style: KdhTextStyle.body6.copyWith(color: KdhColor.gray400),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

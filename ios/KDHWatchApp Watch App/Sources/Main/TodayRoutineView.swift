@@ -11,7 +11,7 @@ struct TodayRoutineView: View {
         VStack {
             HStack {
                 Text("오늘의 루틴은?")
-                    .font(.kdf(.body4))
+                    .font(.kdf(.body3))
                     .foregroundStyle(.gray800)
                     .padding(.leading, 16)
 

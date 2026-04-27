@@ -12,6 +12,19 @@
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		8801900A2F7CEBF50047FA8E /* KDHWatchApp Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88519F942F8CBE75007A6B51 /* RoutineListCell.swift */; };
+		8898E4B42F9AFD8600C1A07D /* TimerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */; };
+		88A31B6F2FF9D145004E1A11 /* WatchTabbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */; };
+		88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098232F8CB3FE00317162 /* KDHFont.swift */; };
+		88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098262F8CB3FE00317162 /* ContentView.swift */; };
+		88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */; };
+		88B098312F8CB3FE00317162 /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 88B0981E2F8CB3FE00317162 /* Pretendard-Light.otf */; };
+		88B098322F8CB3FE00317162 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 88B0981F2F8CB3FE00317162 /* Pretendard-Medium.otf */; };
+		88B098332F8CB3FE00317162 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 88B098202F8CB3FE00317162 /* Pretendard-Regular.otf */; };
+		88B098342F8CB3FE00317162 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 88B098212F8CB3FE00317162 /* Pretendard-SemiBold.otf */; };
+		88B098352F8CB3FE00317162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88B098252F8CB3FE00317162 /* Assets.xcassets */; };
+		88B098362F8CB3FE00317162 /* TodayRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098292F8CB3FE00317162 /* TodayRoutineView.swift */; };
+		88E87E312F91BEAD0026CEF1 /* MyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E87E302F91BEA90026CEF1 /* MyView.swift */; };
 		89E46A6CED6BA47152DA7196 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B70C5D440976FCE63EE849D /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -76,6 +89,19 @@
 		7D0943B0DF82C5C721F69219 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		880190042F7CEBF50047FA8E /* KDHWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDHWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KDHWatchApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		88519F942F8CBE75007A6B51 /* RoutineListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineListCell.swift; sourceTree = "<group>"; };
+		8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSelectView.swift; sourceTree = "<group>"; };
+		88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTabbarView.swift; sourceTree = "<group>"; };
+		88B0981E2F8CB3FE00317162 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.otf"; sourceTree = "<group>"; };
+		88B0981F2F8CB3FE00317162 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		88B098202F8CB3FE00317162 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		88B098212F8CB3FE00317162 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
+		88B098232F8CB3FE00317162 /* KDHFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KDHFont.swift; sourceTree = "<group>"; };
+		88B098252F8CB3FE00317162 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		88B098262F8CB3FE00317162 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KDHWatchAppApp.swift; sourceTree = "<group>"; };
+		88B098292F8CB3FE00317162 /* TodayRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayRoutineView.swift; sourceTree = "<group>"; };
+		88E87E302F91BEA90026CEF1 /* MyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView.swift; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +115,7 @@
 		FFC045A323C8F4496F12B0DF /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+<<<<<<< HEAD
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		8887A29F2F8CAAF200F31F1E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -106,6 +133,8 @@
 		8801900D2F7CEBF50047FA8E /* KDHWatchApp Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8887A29F2F8CAAF200F31F1E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "KDHWatchApp Watch App"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
+=======
+>>>>>>> feature/main_today_routine
 /* Begin PBXFrameworksBuildPhase section */
 		880190062F7CEBF50047FA8E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -152,7 +181,6 @@
 				E50AE376D73EF59BA6DB7DE4 /* Pods-RunnerTests.release.xcconfig */,
 				BDC71759E4F702EDAF3FF3D6 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -162,6 +190,98 @@
 				331C807B294A618700263BE5 /* RunnerTests.swift */,
 			);
 			path = RunnerTests;
+			sourceTree = "<group>";
+		};
+		88519F922F8CBABC007A6B51 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				88B098262F8CB3FE00317162 /* ContentView.swift */,
+				88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */,
+				88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		88519F932F8CBE6F007A6B51 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				88519F942F8CBE75007A6B51 /* RoutineListCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		8898E4B22F9AFD6D00C1A07D /* Timer */ = {
+			isa = PBXGroup;
+			children = (
+				8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */,
+			);
+			path = Timer;
+			sourceTree = "<group>";
+		};
+		88B098222F8CB3FE00317162 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				88B0981E2F8CB3FE00317162 /* Pretendard-Light.otf */,
+				88B0981F2F8CB3FE00317162 /* Pretendard-Medium.otf */,
+				88B098202F8CB3FE00317162 /* Pretendard-Regular.otf */,
+				88B098212F8CB3FE00317162 /* Pretendard-SemiBold.otf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
+		88B098242F8CB3FE00317162 /* Typography */ = {
+			isa = PBXGroup;
+			children = (
+				88B098232F8CB3FE00317162 /* KDHFont.swift */,
+			);
+			path = Typography;
+			sourceTree = "<group>";
+		};
+		88B098282F8CB3FE00317162 /* Resoures */ = {
+			isa = PBXGroup;
+			children = (
+				88B098222F8CB3FE00317162 /* Font */,
+				88B098242F8CB3FE00317162 /* Typography */,
+				88B098252F8CB3FE00317162 /* Assets.xcassets */,
+			);
+			path = Resoures;
+			sourceTree = "<group>";
+		};
+		88B0982A2F8CB3FE00317162 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				88519F932F8CBE6F007A6B51 /* Cell */,
+				88B098292F8CB3FE00317162 /* TodayRoutineView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		88B0982B2F8CB3FE00317162 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				88519F922F8CBABC007A6B51 /* Application */,
+				88E87E2F2F91BE830026CEF1 /* My */,
+				8898E4B22F9AFD6D00C1A07D /* Timer */,
+				88B0982A2F8CB3FE00317162 /* Main */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		88B0982C2F8CB3FE00317162 /* KDHWatchApp Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				88B098282F8CB3FE00317162 /* Resoures */,
+				88B0982B2F8CB3FE00317162 /* Sources */,
+			);
+			path = "KDHWatchApp Watch App";
+			sourceTree = "<group>";
+		};
+		88E87E2F2F91BE830026CEF1 /* My */ = {
+			isa = PBXGroup;
+			children = (
+				88E87E302F91BEA90026CEF1 /* MyView.swift */,
+			);
+			path = My;
 			sourceTree = "<group>";
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -181,7 +301,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
-				8801900D2F7CEBF50047FA8E /* KDHWatchApp Watch App */,
+				88B0982C2F8CB3FE00317162 /* KDHWatchApp Watch App */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				1DF5DC804408496C37C74F0E /* Pods */,
@@ -266,9 +386,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				8801900D2F7CEBF50047FA8E /* KDHWatchApp Watch App */,
-			);
 			name = "KDHWatchApp Watch App";
 			productName = "KDHWatchApp Watch App";
 			productReference = 880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */;
@@ -324,6 +441,7 @@
 				};
 			};
 			buildConfigurationList = 97C146E91CF9000F007C117D /* Build configuration list for PBXProject "Runner" */;
+			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -331,7 +449,6 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
-			preferredProjectObjectVersion = 50;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -363,6 +480,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88B098312F8CB3FE00317162 /* Pretendard-Light.otf in Resources */,
+				88B098322F8CB3FE00317162 /* Pretendard-Medium.otf in Resources */,
+				88B098332F8CB3FE00317162 /* Pretendard-Regular.otf in Resources */,
+				88B098342F8CB3FE00317162 /* Pretendard-SemiBold.otf in Resources */,
+				88B098352F8CB3FE00317162 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,9 +563,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -487,6 +613,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88E87E312F91BEAD0026CEF1 /* MyView.swift in Sources */,
+				88A31B6F2FF9D145004E1A11 /* WatchTabbarView.swift in Sources */,
+				88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */,
+				88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */,
+				88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */,
+				8898E4B42F9AFD8600C1A07D /* TimerSelectView.swift in Sources */,
+				88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */,
+				88B098362F8CB3FE00317162 /* TodayRoutineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

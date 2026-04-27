@@ -115,26 +115,6 @@
 		FFC045A323C8F4496F12B0DF /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-<<<<<<< HEAD
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8887A29F2F8CAAF200F31F1E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Sources/Main/TodayRoutineView.swift,
-			);
-			target = 880190082F7CEBF50047FA8E /* KDHWatchApp Watch App */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		8801900D2F7CEBF50047FA8E /* KDHWatchApp Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8887A29F2F8CAAF200F31F1E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "KDHWatchApp Watch App"; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
-=======
->>>>>>> feature/main_today_routine
 /* Begin PBXFrameworksBuildPhase section */
 		880190062F7CEBF50047FA8E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;

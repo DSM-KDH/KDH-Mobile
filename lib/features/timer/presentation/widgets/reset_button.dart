@@ -26,11 +26,14 @@ class ResetButton extends StatelessWidget {
           color: backgroundColor,
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          Symbols.replay_rounded,
-          color: iconColor,
-          size: 26,
-          fill: 0,
+        child: Transform.flip(
+          flipX: true,
+          child: Icon(
+            Symbols.replay_rounded,
+            color: iconColor,
+            size: 26,
+            fill: 0,
+          ),
         ),
       ),
     );

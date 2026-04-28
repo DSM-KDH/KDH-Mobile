@@ -8,7 +8,20 @@ class CustomTimerConfig {
   final List<int> intervals;
   final int totalSeconds;
 
-  const CustomTimerConfig({required this.intervals, required this.totalSeconds});
+   CustomTimerConfig({
+    required List<int> intervals,
+    required this.totalSeconds,
+  }) : intervals = List.unmodifiable(intervals) {
+    if (this.intervals.isEmpty) {
+      throw ArgumentError('인터벌이 비어 있으면 안됩니다.');
+    }
+    if (this.intervals.any((v) => v <= 0)) {
+      throw ArgumentError('모든 인터벌은 0보다 커야 합니다.');
+    }
+    if (totalSeconds <= 0) {
+      throw ArgumentError('총 시간은 0보다 커야 합니다.');
+    }
+  }
 
   @override
   bool operator ==(Object other) {

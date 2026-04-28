@@ -171,11 +171,12 @@ class _ArcProgressPainter extends CustomPainter {
         ..strokeWidth = 5,
     );
 
-    if (progress > 0.01) {
+    final safeProgress = progress.clamp(0.0, 1.0).toDouble();
+    if (safeProgress > 0.01) {
       canvas.drawArc(
         rect,
         -math.pi / 2,
-        2 * math.pi * progress,
+        2 * math.pi * safeProgress,
         false,
         Paint()
           ..color = KdhColor.red400

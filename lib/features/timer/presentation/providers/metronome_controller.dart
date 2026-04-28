@@ -8,7 +8,10 @@ class MetronomeConfig {
   final int bpm;
   final int totalSeconds;
 
-  const MetronomeConfig({required this.bpm, required this.totalSeconds});
+   MetronomeConfig({required this.bpm, required this.totalSeconds}) {
+    if (bpm <= 0) throw ArgumentError('BPM은 0보다 커야 합니다.');
+    if (totalSeconds <= 0) throw ArgumentError('최종 시간은 0보다 커야 합니다.');
+  }
 
   @override
   bool operator ==(Object other) =>

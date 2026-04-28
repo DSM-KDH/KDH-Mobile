@@ -14,7 +14,15 @@ import 'package:kdh_mobile/features/routine/presentation/pages/first_step_page.d
 import 'package:kdh_mobile/features/routine/presentation/pages/fourth_step_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/second_step_page.dart';
 import 'package:kdh_mobile/features/routine/presentation/pages/third_step_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/pages/custom_timer_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/pages/custom_timer_setup_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/pages/interval_timer_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/pages/interval_timer_setup_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/pages/metronome_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/pages/metronome_setup_page.dart';
 import 'package:kdh_mobile/features/timer/presentation/pages/timer_page.dart';
+import 'package:kdh_mobile/features/timer/presentation/providers/custom_timer_controller.dart';
+import 'package:kdh_mobile/features/timer/presentation/providers/metronome_controller.dart';
 
 final appRouter = GoRouter(
   initialLocation: RouterPath.onboarding,
@@ -54,6 +62,39 @@ final appRouter = GoRouter(
     GoRoute(
       path: RouterPath.userSettings,
       builder: (context, state) => const UserSettingsPage(),
+    ),
+    GoRoute(
+      path: RouterPath.intervalTimerSetup,
+      builder: (context, state) => const IntervalTimerSetupPage(),
+    ),
+    GoRoute(
+      path: RouterPath.intervalTimer,
+      builder: (context, state) {
+        final totalSeconds = state.extra as int;
+        return IntervalTimerPage(totalSeconds: totalSeconds);
+      },
+    ),
+    GoRoute(
+      path: RouterPath.customTimerSetup,
+      builder: (context, state) => const CustomTimerSetupPage(),
+    ),
+    GoRoute(
+      path: RouterPath.customTimer,
+      builder: (context, state) {
+        final config = state.extra as CustomTimerConfig;
+        return CustomTimerPage(config: config);
+      },
+    ),
+    GoRoute(
+      path: RouterPath.metronomeSetup,
+      builder: (context, state) => const MetronomeSetupPage(),
+    ),
+    GoRoute(
+      path: RouterPath.metronome,
+      builder: (context, state) {
+        final config = state.extra as MetronomeConfig;
+        return MetronomePage(config: config);
+      },
     ),
     ShellRoute(
       builder: (context, state, child) =>

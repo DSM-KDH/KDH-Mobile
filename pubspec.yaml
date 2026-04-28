@@ -17,6 +17,8 @@ dependencies:
   watch_connectivity: ^0.2.4
   flutter_riverpod: ^2.6.1
   fl_chart: ^0.69.0
+  audioplayers: ^6.6.0
+  dio: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -45,6 +47,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/icons/
+    - assets/sounds/
 
 flutter_launcher_icons:
   android: true

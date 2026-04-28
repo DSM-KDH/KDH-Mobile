@@ -9,6 +9,7 @@ class StepProgressHeader extends StatelessWidget {
   final int totalSteps;
   final VoidCallback? onBack;
   final String? title;
+  final bool showStepIndicator;
 
   const StepProgressHeader({
     super.key,
@@ -16,6 +17,7 @@ class StepProgressHeader extends StatelessWidget {
     required this.totalSteps,
     this.onBack,
     this.title,
+    this.showStepIndicator = true,
   });
 
   @override
@@ -49,37 +51,39 @@ class StepProgressHeader extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 20),
-        Row(
-          children: List.generate(totalSteps * 2 - 1, (index) {
-            if (index.isOdd) {
-              final lineActive = (index ~/ 2) < currentStep - 1;
-              return Expanded(
-                child: Container(
-                  height: 4,
-                  color: lineActive ? KdhColor.red200 : KdhColor.red50,
+        if (showStepIndicator) ...[
+          const SizedBox(height: 20),
+          Row(
+            children: List.generate(totalSteps * 2 - 1, (index) {
+              if (index.isOdd) {
+                final lineActive = (index ~/ 2) < currentStep - 1;
+                return Expanded(
+                  child: Container(
+                    height: 4,
+                    color: lineActive ? KdhColor.red200 : KdhColor.red50,
+                  ),
+                );
+              }
+              final stepNum = index ~/ 2 + 1;
+              final isActive = stepNum <= currentStep;
+              return Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isActive ? KdhColor.red200 : KdhColor.red50,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '$stepNum',
+                  style: KdhTextStyle.body2.copyWith(
+                    color: isActive ? KdhColor.background : KdhColor.gray800,
+                  ),
                 ),
               );
-            }
-            final stepNum = index ~/ 2 + 1;
-            final isActive = stepNum <= currentStep;
-            return Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isActive ? KdhColor.red200 : KdhColor.red50,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '$stepNum',
-                style: KdhTextStyle.body2.copyWith(
-                  color: isActive ? KdhColor.background : KdhColor.gray800,
-                ),
-              ),
-            );
-          }),
-        ),
+            }),
+          ),
+        ],
       ],
     );
   }

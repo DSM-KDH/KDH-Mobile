@@ -1,25 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/network/dio_client.dart';
+import 'package:kdh_mobile/features/mypage/data/repositories/user_profile_repository.dart';
+import 'package:kdh_mobile/features/mypage/data/repositories/user_profile_repository_impl.dart';
 import 'package:kdh_mobile/features/mypage/domain/entities/weight_entry.dart';
 
-final weightHistoryProvider =
-    NotifierProvider<WeightHistoryNotifier, List<WeightEntry>>(
-      WeightHistoryNotifier.new,
-    );
+final _weightRepoProvider = Provider<UserProfileRepository>(
+  (ref) => UserProfileRepositoryImpl(ref.watch(dioProvider)),
+);
 
-class WeightHistoryNotifier extends Notifier<List<WeightEntry>> {
-  @override
-  List<WeightEntry> build() => [
-    WeightEntry(date: DateTime(2026, 1, 5), weight: 67),
-    WeightEntry(date: DateTime(2026, 1, 20), weight: 66),
-    WeightEntry(date: DateTime(2026, 2, 8), weight: 65.5),
-    WeightEntry(date: DateTime(2026, 2, 22), weight: 65),
-    WeightEntry(date: DateTime(2026, 3, 10), weight: 63.5),
-    WeightEntry(date: DateTime(2026, 3, 25), weight: 63),
-    WeightEntry(date: DateTime(2026, 4, 5), weight: 61.5),
-    WeightEntry(date: DateTime(2026, 4, 18), weight: 61),
-  ];
+class WeightHistoryNotifier extends StateNotifier<List<WeightEntry>> {
+  WeightHistoryNotifier(this._repository) : super([]);
 
-  void addEntry(WeightEntry entry) {
-    state = [...state, entry];
+  final UserProfileRepository _repository;
+
+  Future<void> loadHistory() async {
+    try {
+      final history = await _repository.fetchProfileHistory();
+      state = history.map((m) => m.toWeightEntry()).toList()
+        ..sort((a, b) => a.date.compareTo(b.date));
+    } catch (_) {}
   }
 }
+
+final weightHistoryProvider =
+    StateNotifierProvider<WeightHistoryNotifier, List<WeightEntry>>(
+      (ref) => WeightHistoryNotifier(ref.watch(_weightRepoProvider)),
+    );

@@ -17,4 +17,5 @@ abstract final class RouterPath {
   static const String aiRoutineStep5 = '/ai-routine-step-5';
   static const String aiRoutineResult = '/ai-routine-result';
   static const String userSettings = '/user-settings';
+  static const String oauthWebView = '/auth/oauth';
 }

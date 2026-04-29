@@ -19,6 +19,7 @@ dependencies:
   fl_chart: ^0.69.0
   audioplayers: ^6.6.0
   dio: ^5.0.0
+  webview_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:

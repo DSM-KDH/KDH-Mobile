@@ -3,7 +3,8 @@ import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/features/home/domain/entities/routine.dart';
 import 'package:kdh_mobile/features/home/presentation/widgets/empty_routine_view.dart';
-import 'package:kdh_mobile/features/home/presentation/widgets/monthly_calendar.dart';
+import 'package:kdh_mobile/features/home/presentation/widgets/monthly_calendar.dart'
+    show MonthlyCalendar, DayCompletionStatus;
 import 'package:kdh_mobile/features/home/presentation/widgets/routine_check_item.dart';
 import 'package:kdh_mobile/features/home/presentation/widgets/weekly_calendar.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -81,6 +82,24 @@ class _HomePageState extends State<HomePage> {
   List<Routine> get _currentRoutines => _routineData[_key(_selectedDate)] ?? [];
 
   Set<String> get _datesWithRoutines => _routineData.keys.toSet();
+
+  Map<String, DayCompletionStatus> get _dateCompletionMap {
+    final map = <String, DayCompletionStatus>{};
+    for (final entry in _routineData.entries) {
+      final routines = entry.value;
+      if (routines.isEmpty) continue;
+      final doneCount =
+          routines.where((r) => r.status == RoutineStatus.done).length;
+      if (doneCount == routines.length) {
+        map[entry.key] = DayCompletionStatus.allDone;
+      } else if (doneCount == 0) {
+        map[entry.key] = DayCompletionStatus.noneDone;
+      } else {
+        map[entry.key] = DayCompletionStatus.partial;
+      }
+    }
+    return map;
+  }
 
   bool get _isSelectedDateToday {
     final now = DateTime.now();
@@ -187,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                           MonthlyCalendar(
                             displayedMonth: _displayedMonth,
                             selectedDate: _selectedDate,
-                            datesWithRoutines: _datesWithRoutines,
+                            dateCompletionMap: _dateCompletionMap,
                             onDateSelected: _onDateSelected,
                             onPrevMonth: _onPrevMonth,
                             onNextMonth: _onNextMonth,
@@ -205,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                                 Text(
                                   '달력 더보기',
                                   style: KdhTextStyle.caption1.copyWith(
-                                    color: KdhColor.gray800,
+                                    color: KdhColor.red200,
                                   ),
                                 ),
                                 const SizedBox(width: 4),
@@ -214,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                                   duration: const Duration(milliseconds: 200),
                                   child: const Icon(
                                     Symbols.keyboard_arrow_down_rounded,
-                                    color: KdhColor.gray800,
+                                    color: KdhColor.red200,
                                     size: 18,
                                   ),
                                 ),

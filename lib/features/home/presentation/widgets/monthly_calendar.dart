@@ -1,14 +1,17 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:material_symbols_icons/symbols.dart';
+
+enum DayCompletionStatus { allDone, partial, noneDone }
 
 class MonthlyCalendar extends StatelessWidget {
   const MonthlyCalendar({
     super.key,
     required this.displayedMonth,
     required this.selectedDate,
-    required this.datesWithRoutines,
+    required this.dateCompletionMap,
     required this.onDateSelected,
     required this.onPrevMonth,
     required this.onNextMonth,
@@ -16,7 +19,8 @@ class MonthlyCalendar extends StatelessWidget {
 
   final DateTime displayedMonth;
   final DateTime selectedDate;
-  final Set<String> datesWithRoutines;
+
+  final Map<String, DayCompletionStatus> dateCompletionMap;
   final ValueChanged<DateTime> onDateSelected;
   final VoidCallback onPrevMonth;
   final VoidCallback onNextMonth;
@@ -31,7 +35,11 @@ class MonthlyCalendar extends StatelessWidget {
   String _dateKey(DateTime date) =>
       '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
-  bool _hasRoutine(DateTime date) => datesWithRoutines.contains(_dateKey(date));
+  bool _hasRoutine(DateTime date) =>
+      dateCompletionMap.containsKey(_dateKey(date));
+
+  DayCompletionStatus? _getStatus(DateTime date) =>
+      dateCompletionMap[_dateKey(date)];
 
   @override
   Widget build(BuildContext context) {
@@ -111,8 +119,8 @@ class MonthlyCalendar extends StatelessWidget {
                   dayNumber,
                 );
                 final today = _isToday(date);
-                final selected = _isSameDay(date, selectedDate);
                 final hasR = _hasRoutine(date);
+                final status = _getStatus(date);
 
                 return Expanded(
                   child: GestureDetector(
@@ -122,25 +130,38 @@ class MonthlyCalendar extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 28,
-                            height: 28,
-                            decoration: today
-                                ? const BoxDecoration(
-                                    color: KdhColor.red200,
-                                    shape: BoxShape.circle,
-                                  )
-                                : null,
-                            child: Center(
-                              child: Text(
-                                '$dayNumber',
-                                style: KdhTextStyle.caption4.copyWith(
-                                  color: today
-                                      ? KdhColor.background
-                                      : KdhColor.gray800,
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: 28,
+                                height: 28,
+                                decoration: today
+                                    ? const BoxDecoration(
+                                        color: KdhColor.red200,
+                                        shape: BoxShape.circle,
+                                      )
+                                    : null,
+                                child: Center(
+                                  child: Text(
+                                    '$dayNumber',
+                                    style: KdhTextStyle.caption4.copyWith(
+                                      color: today
+                                          ? KdhColor.background
+                                          : KdhColor.gray800,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              if (status != null)
+                                SizedBox(
+                                  width: 28,
+                                  height: 28,
+                                  child: CustomPaint(
+                                    painter: _DaySymbolPainter(status: status),
+                                  ),
+                                ),
+                            ],
                           ),
                           const SizedBox(height: 2),
                           Container(
@@ -164,4 +185,54 @@ class MonthlyCalendar extends StatelessWidget {
       ),
     );
   }
+}
+
+class _DaySymbolPainter extends CustomPainter {
+  final DayCompletionStatus status;
+
+  const _DaySymbolPainter({required this.status});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.8
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final r = size.width * 0.38;
+
+    switch (status) {
+      case DayCompletionStatus.allDone:
+        canvas.drawCircle(Offset(cx, cy), r, paint);
+
+      case DayCompletionStatus.noneDone:
+        final half = r * 0.72;
+        canvas.drawLine(
+          Offset(cx - half, cy - half),
+          Offset(cx + half, cy + half),
+          paint,
+        );
+        canvas.drawLine(
+          Offset(cx + half, cy - half),
+          Offset(cx - half, cy + half),
+          paint,
+        );
+
+      case DayCompletionStatus.partial:
+        final path = Path()
+          ..moveTo(cx, cy - r)
+          ..lineTo(cx + r * math.sin(math.pi / 3 * 2), cy + r * 0.5)
+          ..lineTo(cx - r * math.sin(math.pi / 3 * 2), cy + r * 0.5)
+          ..close();
+        canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DaySymbolPainter oldDelegate) =>
+      oldDelegate.status != status;
 }

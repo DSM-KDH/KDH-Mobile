@@ -5,5 +5,5 @@ class SignInWithGoogleUseCase {
 
   const SignInWithGoogleUseCase(this._repository);
 
-  Future<void> call() => _repository.signInWithGoogle();
+  String call() => _repository.getGoogleAuthUrl();
 }

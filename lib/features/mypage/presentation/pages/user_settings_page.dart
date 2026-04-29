@@ -35,7 +35,7 @@ class _UserSettingsPageState extends ConsumerState<UserSettingsPage> {
   void initState() {
     super.initState();
 
-    final profile = ref.read(userProfileProvider);
+    final profile = ref.read(userProfileProvider).profile;
     String fmt(double v) =>
         v == v.truncateToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(1);
     if (profile.height != null) _heightController.text = fmt(profile.height!);
@@ -62,10 +62,10 @@ class _UserSettingsPageState extends ConsumerState<UserSettingsPage> {
   void _onComplete() {
     ref
         .read(userProfileProvider.notifier)
-        .update(
-          height: double.tryParse(_heightController.text.trim()),
-          weight: double.tryParse(_weightController.text.trim()),
-          gender: _selectedGender,
+        .saveProfile(
+          height: double.parse(_heightController.text.trim()),
+          weight: double.parse(_weightController.text.trim()),
+          gender: _selectedGender!,
         );
     context.pop();
   }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
+import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
 import 'package:kdh_mobile/features/mypage/presentation/providers/weight_history_provider.dart';
 import 'package:kdh_mobile/features/mypage/presentation/widgets/weight_chart.dart';
@@ -14,7 +15,10 @@ class MyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(userProfileProvider);
+    final displayName = ref.watch(authProvider).displayName;
+    final userEmail = ref.watch(authProvider).userEmail;
+    final profileState = ref.watch(userProfileProvider);
+    final profile = profileState.profile;
     final weightHistory = ref.watch(weightHistoryProvider);
 
     final distinctMonths = weightHistory
@@ -53,10 +57,10 @@ class MyPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(profile.name, style: KdhTextStyle.body5),
+                      Text(displayName, style: KdhTextStyle.body5),
                       const SizedBox(height: 2),
                       Text(
-                        profile.subtitle,
+                        userEmail ?? profile.subtitle,
                         style: KdhTextStyle.caption2.copyWith(
                           color: KdhColor.gray400,
                         ),

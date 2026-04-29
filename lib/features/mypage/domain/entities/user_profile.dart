@@ -1,9 +1,8 @@
 enum Gender { male, female }
 
 class UserProfile {
-  const UserProfile({this.name = '하원', this.height, this.weight, this.gender});
+  const UserProfile({this.height, this.weight, this.gender});
 
-  final String name;
   final double? height;
   final double? weight;
   final Gender? gender;
@@ -20,13 +19,11 @@ class UserProfile {
   }
 
   UserProfile copyWith({
-    String? name,
     double? height,
     double? weight,
     Gender? gender,
   }) {
     return UserProfile(
-      name: name ?? this.name,
       height: height ?? this.height,
       weight: weight ?? this.weight,
       gender: gender ?? this.gender,

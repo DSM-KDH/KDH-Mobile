@@ -2,9 +2,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/features/home/domain/entities/day_completion_status.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
-enum DayCompletionStatus { allDone, partial, noneDone }
+export 'package:kdh_mobile/features/home/domain/entities/day_completion_status.dart';
 
 class MonthlyCalendar extends StatelessWidget {
   const MonthlyCalendar({

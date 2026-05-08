@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ class _OAuthWebViewPageState extends ConsumerState<OAuthWebViewPage> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {
+            dev.log('[WebView] pageStarted: $url', name: 'OAuth');
             if (_tryHandleUrl(url)) return;
             setState(() {
               _isLoading = true;
@@ -58,6 +60,7 @@ class _OAuthWebViewPageState extends ConsumerState<OAuthWebViewPage> {
             });
           },
           onPageFinished: (url) async {
+            dev.log('[WebView] pageFinished: $url', name: 'OAuth');
             if (_tryHandleUrl(url)) return;
             if (url.startsWith(_httpSuccessPath) ||
                 url.contains('/oauth2/success')) {
@@ -66,8 +69,18 @@ class _OAuthWebViewPageState extends ConsumerState<OAuthWebViewPage> {
             }
             setState(() => _isLoading = false);
           },
-          onWebResourceError: (_) =>
-              setState(() => _errorMessage = '페이지를 불러오지 못했습니다.'),
+          onWebResourceError: (error) {
+            dev.log(
+              '[WebView] error: ${error.errorCode} ${error.errorType} '
+              '${error.description}\n  url: ${error.url}',
+              name: 'OAuth',
+              level: 900,
+            );
+            if (error.isForMainFrame ?? true) {
+              setState(() => _errorMessage =
+                  '페이지를 불러오지 못했습니다.\n[${error.errorCode}] ${error.description}');
+            }
+          },
           onNavigationRequest: (request) {
             final uri = Uri.tryParse(request.url);
             if (uri == null) return NavigationDecision.navigate;

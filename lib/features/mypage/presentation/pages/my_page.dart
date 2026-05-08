@@ -15,10 +15,14 @@ class MyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final displayName = ref.watch(authProvider).displayName;
+    final authDisplayName = ref.watch(authProvider).displayName;
     final userEmail = ref.watch(authProvider).userEmail;
     final profileState = ref.watch(userProfileProvider);
     final profile = profileState.profile;
+    final displayName =
+        (profile.name != null && profile.name!.isNotEmpty)
+            ? profile.name!
+            : authDisplayName;
     final weightHistory = ref.watch(weightHistoryProvider);
 
     final distinctMonths = weightHistory
@@ -60,7 +64,9 @@ class MyPage extends ConsumerWidget {
                       Text(displayName, style: KdhTextStyle.body5),
                       const SizedBox(height: 2),
                       Text(
-                        userEmail ?? profile.subtitle,
+                        (userEmail != null && userEmail.contains('@'))
+                            ? userEmail
+                            : profile.subtitle,
                         style: KdhTextStyle.caption2.copyWith(
                           color: KdhColor.gray400,
                         ),

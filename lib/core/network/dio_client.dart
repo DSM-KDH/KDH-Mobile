@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/config/app_env.dart';
@@ -14,12 +16,11 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   )
     ..interceptors.add(_AuthInterceptor())
-    ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    ..interceptors.add(_DevLogInterceptor());
 
   return dio;
 });
 
-/// Authorization 헤더 자동 주입 + 에러 → 도메인 예외 변환
 class _AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -61,6 +62,45 @@ class _AuthInterceptor extends Interceptor {
   }
 }
 
-/// DioException에서 AppException을 꺼내는 헬퍼
 AppException extractAppException(DioException e) =>
     e.error is AppException ? e.error as AppException : AppException(e.message ?? '오류');
+
+class _DevLogInterceptor extends Interceptor {
+  static const _tag = 'HTTP';
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    final token = options.headers['Authorization'] as String?;
+    final tokenSuffix =
+        token != null ? '...${token.substring(token.length > 20 ? token.length - 10 : 0)}' : 'none';
+    dev.log(
+      '[REQ] ${options.method} ${options.uri}\n'
+      '  body: ${options.data}\n'
+      '  token: $tokenSuffix',
+      name: _tag,
+    );
+    handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    dev.log(
+      '[RES] ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.uri}\n'
+      '  body: ${response.data}',
+      name: _tag,
+    );
+    handler.next(response);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    dev.log(
+      '[ERR] ${err.response?.statusCode ?? err.type} ${err.requestOptions.method} ${err.requestOptions.uri}\n'
+      '  response: ${err.response?.data}\n'
+      '  message: ${err.message}',
+      name: _tag,
+      level: 900,
+    );
+    handler.next(err);
+  }
+}

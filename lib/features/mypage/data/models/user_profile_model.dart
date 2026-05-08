@@ -4,6 +4,7 @@ import 'package:kdh_mobile/features/mypage/domain/entities/weight_entry.dart';
 class UserProfileModel {
   const UserProfileModel({
     required this.id,
+    required this.name,
     required this.heightCm,
     required this.weightKg,
     required this.gender,
@@ -12,6 +13,7 @@ class UserProfileModel {
   });
 
   final int id;
+  final String name;
   final double heightCm;
   final double weightKg;
   final String gender;
@@ -21,6 +23,7 @@ class UserProfileModel {
   factory UserProfileModel.fromJson(Map<String, dynamic> json) =>
       UserProfileModel(
         id: json['id'] as int,
+        name: json['name'] as String? ?? '',
         heightCm: (json['heightCm'] as num).toDouble(),
         weightKg: (json['weightKg'] as num).toDouble(),
         gender: json['gender'] as String,
@@ -37,6 +40,7 @@ class UserProfileModel {
   };
 
   UserProfile toDomain() => UserProfile(
+    name: name,
     height: heightCm,
     weight: weightKg,
     gender: gender == 'MALE' ? Gender.male : Gender.female,

@@ -5,6 +5,7 @@
 //  Created by hawon on 4/1/26.
 //
 
+#if os(watchOS)
 import SwiftUI
 
 struct ContentView: View {
@@ -29,3 +30,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(watchOS)
 //
 //  TimerSelectView.swift
 //  Runner
@@ -25,3 +26,4 @@ struct TimerSelectView: View {
 #Preview {
     TimerSelectView()
 }
+#endif

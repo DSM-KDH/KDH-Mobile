@@ -1,3 +1,4 @@
+#if os(watchOS)
 //
 //  RoutineListCell.swift
 //  Runner
@@ -57,3 +58,4 @@ struct RoutineListCell: View {
         arrowButtonTap: {}
     )
 }
+#endif

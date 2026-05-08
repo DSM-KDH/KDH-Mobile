@@ -1,6 +1,8 @@
+#if os(watchOS)
 import SwiftUI
 
 struct WatchTabbarView: View {
+    @EnvironmentObject private var connectivityManager: WatchConnectivityManager
     @State private var selectedTab: WatchTab = .todayRoutine
 
     var body: some View {
@@ -15,6 +17,14 @@ struct WatchTabbarView: View {
                 .tag(WatchTab.my)
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
+        .onChange(of: selectedTab) { _, newValue in
+            guard connectivityManager.isReachable else {
+                if newValue != .todayRoutine {
+                    selectedTab = .todayRoutine
+                }
+                return
+            }
+        }
     }
 }
 
@@ -27,3 +37,4 @@ private enum WatchTab: Int {
 #Preview {
     WatchTabbarView()
 }
+#endif

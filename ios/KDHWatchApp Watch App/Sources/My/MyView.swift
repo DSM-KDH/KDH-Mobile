@@ -1,3 +1,4 @@
+#if os(watchOS)
 //
 //  MyView.swift
 //  Runner
@@ -43,3 +44,4 @@ private struct My: Identifiable {
 #Preview {
     MyView()
 }
+#endif

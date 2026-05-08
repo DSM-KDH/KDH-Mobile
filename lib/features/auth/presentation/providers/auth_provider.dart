@@ -5,7 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
 import 'package:kdh_mobile/core/network/token_storage.dart';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import 'package:kdh_mobile/core/services/watch_service.dart';
+=======
+import 'package:kdh_mobile/core/watch/watch_token_sync_service.dart';
+>>>>>>> Stashed changes
 =======
 import 'package:kdh_mobile/core/watch/watch_token_sync_service.dart';
 >>>>>>> Stashed changes
@@ -57,14 +61,20 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._repository)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     : super(AuthState(isAuthenticated: TokenStorage.hasToken));
 =======
+=======
+>>>>>>> Stashed changes
       : super(AuthState(isAuthenticated: TokenStorage.hasToken)) {
     final existingToken = TokenStorage.accessToken;
     if (existingToken != null && existingToken.isNotEmpty) {
       unawaited(WatchTokenSyncService.syncAccessToken(existingToken));
     }
   }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
   final AuthRepository _repository;

@@ -1,9 +1,14 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
 import 'package:kdh_mobile/core/network/token_storage.dart';
+<<<<<<< Updated upstream
 import 'package:kdh_mobile/core/services/watch_service.dart';
+=======
+import 'package:kdh_mobile/core/watch/watch_token_sync_service.dart';
+>>>>>>> Stashed changes
 import 'package:kdh_mobile/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:kdh_mobile/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:kdh_mobile/features/auth/domain/repositories/auth_repository.dart';
@@ -51,7 +56,16 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._repository)
+<<<<<<< Updated upstream
     : super(AuthState(isAuthenticated: TokenStorage.hasToken));
+=======
+      : super(AuthState(isAuthenticated: TokenStorage.hasToken)) {
+    final existingToken = TokenStorage.accessToken;
+    if (existingToken != null && existingToken.isNotEmpty) {
+      unawaited(WatchTokenSyncService.syncAccessToken(existingToken));
+    }
+  }
+>>>>>>> Stashed changes
 
   final AuthRepository _repository;
 
@@ -59,6 +73,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void handleLoginSuccess(String accessToken, String refreshToken) {
     _repository.handleLoginSuccess(accessToken, refreshToken);
+    unawaited(WatchTokenSyncService.syncAccessToken(accessToken));
     final email = _extractEmailFromJwt(accessToken);
     state = state.copyWith(
       isAuthenticated: true,

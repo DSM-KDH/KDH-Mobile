@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/services/background_timer_service.dart';
+import 'package:kdh_mobile/core/services/timer_notification_service.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/timer_sound_service.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 const List<int> kIntervalDurations = [180, 60, 120];
 
@@ -70,7 +74,7 @@ class IntervalTimerState {
 }
 
 class IntervalTimerNotifier extends StateNotifier<IntervalTimerState> {
-  IntervalTimerNotifier(int totalSeconds)
+  IntervalTimerNotifier(this._ref, int totalSeconds)
     : super(
         IntervalTimerState(
           status: TimerStatus.ready,
@@ -80,19 +84,93 @@ class IntervalTimerNotifier extends StateNotifier<IntervalTimerState> {
           intervalElapsedSeconds: 0,
           currentSet: 1,
         ),
-      );
+      ) {
+    _subscribeToService();
+  }
 
-  Timer? _timer;
+  final Ref _ref;
+  KeepAliveLink? _keepAlive;
+  StreamSubscription? _tickSub;
+  StreamSubscription? _finishedSub;
 
-  void start() {
+  Future<void> _subscribeToService() async {
+    final svc = FlutterBackgroundService();
+
+    _tickSub = svc.on(kEvtTick).listen((data) {
+      if (data == null || data['type'] != kTypeInterval) return;
+      _applyTick(data);
+    });
+
+    _finishedSub = svc.on(kEvtFinished).listen((data) {
+      if (data == null || data['type'] != kTypeInterval) return;
+      _handleFinished();
+    });
+
+    // 앱 재시작 후 서비스가 이미 돌고 있으면 현재 상태 요청
+    if (await svc.isRunning()) {
+      svc.invoke(kCmdGetState, {});
+    }
+  }
+
+  void _applyTick(Map<String, dynamic> data) {
+    // 네비게이션 후 새 인스턴스가 생겼는데 서비스는 아직 running 중인 경우
+    if (state.status != TimerStatus.running) {
+      _keepAlive ??= _ref.keepAlive();
+      state = state.copyWith(status: TimerStatus.running);
+    }
+
+    final prevIdx = state.currentIntervalIndex;
+    final newIdx = (data['intervalIndex'] as num?)?.toInt() ?? prevIdx;
+
+    state = state.copyWith(
+      totalRemainingSeconds: (data['remaining'] as num).toInt(),
+      currentIntervalIndex: newIdx,
+      intervalElapsedSeconds:
+          (data['intervalElapsed'] as num?)?.toInt() ?? state.intervalElapsedSeconds,
+      currentSet: (data['currentSet'] as num?)?.toInt() ?? state.currentSet,
+    );
+
+    if (newIdx != prevIdx) TimerSoundService.playIntervalStart();
+  }
+
+  void _handleFinished() {
+    if (state.status != TimerStatus.running) return;
+    _keepAlive?.close();
+    _keepAlive = null;
+    WakelockPlus.disable();
+    TimerNotificationService.cancelAll();
+    state = state.copyWith(
+      totalRemainingSeconds: 0,
+      status: TimerStatus.finished,
+    );
+    TimerSoundService.playFinish();
+  }
+
+  Future<void> start() async {
     if (state.status == TimerStatus.running) return;
+
+    _keepAlive ??= _ref.keepAlive();
     state = state.copyWith(status: TimerStatus.running);
     TimerSoundService.playIntervalStart();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    WakelockPlus.enable();
+
+    final svc = FlutterBackgroundService();
+    await svc.startService();
+    svc.invoke(kCmdStart, {
+      'type': kTypeInterval,
+      'totalSeconds': state.totalSeconds,
+      'intervals': kIntervalDurations,
+    });
+
+    _scheduleNotifications(DateTime.now());
   }
 
   void reset() {
-    _timer?.cancel();
+    FlutterBackgroundService().invoke(kCmdReset, {});
+    _keepAlive?.close();
+    _keepAlive = null;
+    WakelockPlus.disable();
+    TimerNotificationService.cancelAll();
     state = IntervalTimerState(
       status: TimerStatus.ready,
       totalRemainingSeconds: state.totalSeconds,
@@ -103,52 +181,36 @@ class IntervalTimerNotifier extends StateNotifier<IntervalTimerState> {
     );
   }
 
-  void _tick() {
-    final newTotalRemaining = state.totalRemainingSeconds - 1;
-
-    if (newTotalRemaining <= 0) {
-      _timer?.cancel();
-      state = state.copyWith(
-        totalRemainingSeconds: 0,
-        intervalElapsedSeconds: 0,
-        status: TimerStatus.finished,
-      );
-      TimerSoundService.playFinish();
-      return;
+  void _scheduleNotifications(DateTime virtualStart) {
+    final boundaries = <int>[];
+    int elapsed = 0;
+    int idx = 0;
+    while (true) {
+      elapsed += kIntervalDurations[idx];
+      if (elapsed >= state.totalSeconds) break;
+      boundaries.add(elapsed);
+      idx = (idx + 1) % kIntervalDurations.length;
     }
-
-    final newIntervalElapsed = state.intervalElapsedSeconds + 1;
-    final intervalDuration = kIntervalDurations[state.currentIntervalIndex];
-
-    int newIntervalIndex = state.currentIntervalIndex;
-    int newIntervalElapsedSecs = newIntervalElapsed;
-    int newSet = state.currentSet;
-
-    if (newIntervalElapsed >= intervalDuration) {
-      newIntervalIndex = (state.currentIntervalIndex + 1) % 3;
-      newIntervalElapsedSecs = 0;
-      if (newIntervalIndex == 0) {
-        newSet++;
-      }
-      TimerSoundService.playIntervalStart();
-    }
-
-    state = state.copyWith(
-      totalRemainingSeconds: newTotalRemaining,
-      intervalElapsedSeconds: newIntervalElapsedSecs,
-      currentIntervalIndex: newIntervalIndex,
-      currentSet: newSet,
+    TimerNotificationService.schedule(
+      virtualStart: virtualStart,
+      intervalBoundaries: boundaries,
+      totalSeconds: state.totalSeconds,
     );
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _tickSub?.cancel();
+    _finishedSub?.cancel();
+    if (state.status != TimerStatus.running) {
+      FlutterBackgroundService().invoke(kCmdReset, {});
+    }
+    WakelockPlus.disable();
     super.dispose();
   }
 }
 
 final intervalTimerProvider = StateNotifierProvider.autoDispose
     .family<IntervalTimerNotifier, IntervalTimerState, int>(
-      (ref, totalSeconds) => IntervalTimerNotifier(totalSeconds),
+      (ref, totalSeconds) => IntervalTimerNotifier(ref, totalSeconds),
     );

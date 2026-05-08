@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/services/background_timer_service.dart';
+import 'package:kdh_mobile/core/services/timer_notification_service.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/timer_sound_service.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum CustomTimerStatus { ready, running, finished }
 
@@ -8,19 +12,13 @@ class CustomTimerConfig {
   final List<int> intervals;
   final int totalSeconds;
 
-   CustomTimerConfig({
+  CustomTimerConfig({
     required List<int> intervals,
     required this.totalSeconds,
   }) : intervals = List.unmodifiable(intervals) {
-    if (this.intervals.isEmpty) {
-      throw ArgumentError('인터벌이 비어 있으면 안됩니다.');
-    }
-    if (this.intervals.any((v) => v <= 0)) {
-      throw ArgumentError('모든 인터벌은 0보다 커야 합니다.');
-    }
-    if (totalSeconds <= 0) {
-      throw ArgumentError('총 시간은 0보다 커야 합니다.');
-    }
+    if (this.intervals.isEmpty) throw ArgumentError('인터벌이 비어 있으면 안됩니다.');
+    if (this.intervals.any((v) => v <= 0)) throw ArgumentError('모든 인터벌은 0보다 커야 합니다.');
+    if (totalSeconds <= 0) throw ArgumentError('총 시간은 0보다 커야 합니다.');
   }
 
   @override
@@ -71,8 +69,7 @@ class CustomTimerState {
     totalRemainingSeconds: totalRemainingSeconds ?? this.totalRemainingSeconds,
     totalSeconds: totalSeconds ?? this.totalSeconds,
     currentIntervalIndex: currentIntervalIndex ?? this.currentIntervalIndex,
-    intervalElapsedSeconds:
-        intervalElapsedSeconds ?? this.intervalElapsedSeconds,
+    intervalElapsedSeconds: intervalElapsedSeconds ?? this.intervalElapsedSeconds,
     currentSet: currentSet ?? this.currentSet,
     intervals: intervals ?? this.intervals,
   );
@@ -82,9 +79,7 @@ class CustomTimerState {
     final h = total ~/ 3600;
     final m = (total % 3600) ~/ 60;
     final s = total % 60;
-    if (h > 0) {
-      return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-    }
+    if (h > 0) return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
@@ -99,9 +94,7 @@ class CustomTimerState {
     final h = elapsed ~/ 3600;
     final m = (elapsed % 3600) ~/ 60;
     final s = elapsed % 60;
-    if (h > 0) {
-      return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-    }
+    if (h > 0) return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
@@ -113,7 +106,7 @@ class CustomTimerState {
 }
 
 class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
-  CustomTimerNotifier(this._config)
+  CustomTimerNotifier(this._ref, this._config)
     : super(
         CustomTimerState(
           status: CustomTimerStatus.ready,
@@ -124,20 +117,90 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
           currentSet: 1,
           intervals: _config.intervals,
         ),
-      );
+      ) {
+    _subscribeToService();
+  }
 
+  final Ref _ref;
   final CustomTimerConfig _config;
-  Timer? _timer;
+  KeepAliveLink? _keepAlive;
+  StreamSubscription? _tickSub;
+  StreamSubscription? _finishedSub;
 
-  void start() {
+  Future<void> _subscribeToService() async {
+    final svc = FlutterBackgroundService();
+
+    _tickSub = svc.on(kEvtTick).listen((data) {
+      if (data == null || data['type'] != kTypeCustom) return;
+      _applyTick(data);
+    });
+
+    _finishedSub = svc.on(kEvtFinished).listen((data) {
+      if (data == null || data['type'] != kTypeCustom) return;
+      _handleFinished();
+    });
+
+    if (await svc.isRunning()) svc.invoke(kCmdGetState, {});
+  }
+
+  void _applyTick(Map<String, dynamic> data) {
+    if (state.status != CustomTimerStatus.running) {
+      _keepAlive ??= _ref.keepAlive();
+      state = state.copyWith(status: CustomTimerStatus.running);
+    }
+
+    final prevIdx = state.currentIntervalIndex;
+    final newIdx = (data['intervalIndex'] as num?)?.toInt() ?? prevIdx;
+
+    state = state.copyWith(
+      totalRemainingSeconds: (data['remaining'] as num).toInt(),
+      currentIntervalIndex: newIdx,
+      intervalElapsedSeconds:
+          (data['intervalElapsed'] as num?)?.toInt() ?? state.intervalElapsedSeconds,
+      currentSet: (data['currentSet'] as num?)?.toInt() ?? state.currentSet,
+    );
+
+    if (newIdx != prevIdx) TimerSoundService.playIntervalStart();
+  }
+
+  void _handleFinished() {
+    if (state.status != CustomTimerStatus.running) return;
+    _keepAlive?.close();
+    _keepAlive = null;
+    WakelockPlus.disable();
+    TimerNotificationService.cancelAll();
+    state = state.copyWith(
+      totalRemainingSeconds: 0,
+      status: CustomTimerStatus.finished,
+    );
+    TimerSoundService.playFinish();
+  }
+
+  Future<void> start() async {
     if (state.status == CustomTimerStatus.running) return;
+
+    _keepAlive ??= _ref.keepAlive();
     state = state.copyWith(status: CustomTimerStatus.running);
     TimerSoundService.playIntervalStart();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    WakelockPlus.enable();
+
+    final svc = FlutterBackgroundService();
+    await svc.startService();
+    svc.invoke(kCmdStart, {
+      'type': kTypeCustom,
+      'totalSeconds': state.totalSeconds,
+      'intervals': _config.intervals,
+    });
+
+    _scheduleNotifications(DateTime.now());
   }
 
   void reset() {
-    _timer?.cancel();
+    FlutterBackgroundService().invoke(kCmdReset, {});
+    _keepAlive?.close();
+    _keepAlive = null;
+    WakelockPlus.disable();
+    TimerNotificationService.cancelAll();
     state = CustomTimerState(
       status: CustomTimerStatus.ready,
       totalRemainingSeconds: _config.totalSeconds,
@@ -149,51 +212,37 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
     );
   }
 
-  void _tick() {
-    final newTotalRemaining = state.totalRemainingSeconds - 1;
-
-    if (newTotalRemaining <= 0) {
-      _timer?.cancel();
-      state = state.copyWith(
-        totalRemainingSeconds: 0,
-        intervalElapsedSeconds: 0,
-        status: CustomTimerStatus.finished,
-      );
-      TimerSoundService.playFinish();
-      return;
+  void _scheduleNotifications(DateTime virtualStart) {
+    final intervals = _config.intervals;
+    final boundaries = <int>[];
+    int elapsed = 0;
+    int idx = 0;
+    while (true) {
+      elapsed += intervals[idx];
+      if (elapsed >= state.totalSeconds) break;
+      boundaries.add(elapsed);
+      idx = (idx + 1) % intervals.length;
     }
-
-    final newIntervalElapsed = state.intervalElapsedSeconds + 1;
-    final intervalDuration = state.intervals[state.currentIntervalIndex];
-
-    int newIntervalIndex = state.currentIntervalIndex;
-    int newIntervalElapsedSecs = newIntervalElapsed;
-    int newSet = state.currentSet;
-
-    if (newIntervalElapsed >= intervalDuration) {
-      newIntervalIndex =
-          (state.currentIntervalIndex + 1) % state.intervals.length;
-      newIntervalElapsedSecs = 0;
-      if (newIntervalIndex == 0) newSet++;
-      TimerSoundService.playIntervalStart();
-    }
-
-    state = state.copyWith(
-      totalRemainingSeconds: newTotalRemaining,
-      intervalElapsedSeconds: newIntervalElapsedSecs,
-      currentIntervalIndex: newIntervalIndex,
-      currentSet: newSet,
+    TimerNotificationService.schedule(
+      virtualStart: virtualStart,
+      intervalBoundaries: boundaries,
+      totalSeconds: state.totalSeconds,
     );
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _tickSub?.cancel();
+    _finishedSub?.cancel();
+    if (state.status != CustomTimerStatus.running) {
+      FlutterBackgroundService().invoke(kCmdReset, {});
+    }
+    WakelockPlus.disable();
     super.dispose();
   }
 }
 
 final customTimerProvider = StateNotifierProvider.autoDispose
     .family<CustomTimerNotifier, CustomTimerState, CustomTimerConfig>(
-      (ref, config) => CustomTimerNotifier(config),
+      (ref, config) => CustomTimerNotifier(ref, config),
     );

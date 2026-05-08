@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/services/background_timer_service.dart';
+import 'package:kdh_mobile/core/services/timer_notification_service.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/timer_sound_service.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum MetronomeStatus { ready, running, finished }
 
@@ -8,7 +12,7 @@ class MetronomeConfig {
   final int bpm;
   final int totalSeconds;
 
-   MetronomeConfig({required this.bpm, required this.totalSeconds}) {
+  MetronomeConfig({required this.bpm, required this.totalSeconds}) {
     if (bpm <= 0) throw ArgumentError('BPM은 0보다 커야 합니다.');
     if (totalSeconds <= 0) throw ArgumentError('최종 시간은 0보다 커야 합니다.');
   }
@@ -16,9 +20,7 @@ class MetronomeConfig {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is MetronomeConfig &&
-          bpm == other.bpm &&
-          totalSeconds == other.totalSeconds;
+      other is MetronomeConfig && bpm == other.bpm && totalSeconds == other.totalSeconds;
 
   @override
   int get hashCode => Object.hash(bpm, totalSeconds);
@@ -58,9 +60,7 @@ class MetronomeState {
     final h = totalSeconds ~/ 3600;
     final m = (totalSeconds % 3600) ~/ 60;
     final s = totalSeconds % 60;
-    if (h > 0) {
-      return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-    }
+    if (h > 0) return '$h:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
@@ -72,7 +72,7 @@ class MetronomeState {
 }
 
 class MetronomeNotifier extends StateNotifier<MetronomeState> {
-  MetronomeNotifier(this._config)
+  MetronomeNotifier(this._ref, this._config)
     : super(
         MetronomeState(
           status: MetronomeStatus.ready,
@@ -80,27 +80,93 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
           elapsedSeconds: 0,
           bpm: _config.bpm,
         ),
-      );
+      ) {
+    _subscribeToService();
+  }
 
+  final Ref _ref;
   final MetronomeConfig _config;
-  Timer? _timer;
-  Timer? _beatTimer;
+  KeepAliveLink? _keepAlive;
+  StreamSubscription? _tickSub;
+  StreamSubscription? _finishedSub;
+  // beat 이벤트: 백그라운드 서비스 isolate에서 박자 타이밍을 계산해 보내면
+  // 앱이 포그라운드일 때 UI isolate에서 소리를 재생한다.
+  StreamSubscription? _beatSub;
 
-  void start() {
+  Future<void> _subscribeToService() async {
+    final svc = FlutterBackgroundService();
+
+    _tickSub = svc.on(kEvtTick).listen((data) {
+      if (data == null || data['type'] != kTypeMetronome) return;
+      _applyTick(data);
+    });
+
+    _finishedSub = svc.on(kEvtFinished).listen((data) {
+      if (data == null || data['type'] != kTypeMetronome) return;
+      _handleFinished();
+    });
+
+    _beatSub = svc.on(kEvtBeat).listen((_) {
+      // 포그라운드에 있을 때만 실질적으로 오디오 재생됨
+      TimerSoundService.playMetronomeTick();
+    });
+
+    if (await svc.isRunning()) svc.invoke(kCmdGetState, {});
+  }
+
+  void _applyTick(Map<String, dynamic> data) {
+    if (state.status != MetronomeStatus.running) {
+      _keepAlive ??= _ref.keepAlive();
+      state = state.copyWith(status: MetronomeStatus.running);
+    }
+    state = state.copyWith(
+      elapsedSeconds: (data['elapsed'] as num).toInt(),
+    );
+  }
+
+  void _handleFinished() {
+    if (state.status != MetronomeStatus.running) return;
+    _keepAlive?.close();
+    _keepAlive = null;
+    WakelockPlus.disable();
+    TimerNotificationService.cancelAll();
+    state = state.copyWith(
+      elapsedSeconds: state.totalSeconds,
+      status: MetronomeStatus.finished,
+    );
+    TimerSoundService.playFinish();
+  }
+
+  Future<void> start() async {
     if (state.status == MetronomeStatus.running) return;
+
+    _keepAlive ??= _ref.keepAlive();
     state = state.copyWith(status: MetronomeStatus.running);
     TimerSoundService.playIntervalStart();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
-    final beatMs = (60000 / _config.bpm).round();
-    _beatTimer = Timer.periodic(
-      Duration(milliseconds: beatMs),
-      (_) => TimerSoundService.playMetronomeTick(),
+    WakelockPlus.enable();
+
+    final svc = FlutterBackgroundService();
+    await svc.startService();
+    svc.invoke(kCmdStart, {
+      'type': kTypeMetronome,
+      'totalSeconds': _config.totalSeconds,
+      'bpm': _config.bpm,
+    });
+
+    // 메트로놈은 완료 알림만
+    TimerNotificationService.schedule(
+      virtualStart: DateTime.now(),
+      intervalBoundaries: const [],
+      totalSeconds: _config.totalSeconds,
     );
   }
 
   void reset() {
-    _timer?.cancel();
-    _beatTimer?.cancel();
+    FlutterBackgroundService().invoke(kCmdReset, {});
+    _keepAlive?.close();
+    _keepAlive = null;
+    WakelockPlus.disable();
+    TimerNotificationService.cancelAll();
     state = MetronomeState(
       status: MetronomeStatus.ready,
       totalSeconds: _config.totalSeconds,
@@ -109,30 +175,20 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
     );
   }
 
-  void _tick() {
-    final newElapsed = state.elapsedSeconds + 1;
-    if (newElapsed >= state.totalSeconds) {
-      _timer?.cancel();
-      _beatTimer?.cancel();
-      state = state.copyWith(
-        elapsedSeconds: state.totalSeconds,
-        status: MetronomeStatus.finished,
-      );
-      TimerSoundService.playFinish();
-      return;
-    }
-    state = state.copyWith(elapsedSeconds: newElapsed);
-  }
-
   @override
   void dispose() {
-    _timer?.cancel();
-    _beatTimer?.cancel();
+    _tickSub?.cancel();
+    _finishedSub?.cancel();
+    _beatSub?.cancel();
+    if (state.status != MetronomeStatus.running) {
+      FlutterBackgroundService().invoke(kCmdReset, {});
+    }
+    WakelockPlus.disable();
     super.dispose();
   }
 }
 
 final metronomeProvider = StateNotifierProvider.autoDispose
     .family<MetronomeNotifier, MetronomeState, MetronomeConfig>(
-      (ref, config) => MetronomeNotifier(config),
+      (ref, config) => MetronomeNotifier(ref, config),
     );

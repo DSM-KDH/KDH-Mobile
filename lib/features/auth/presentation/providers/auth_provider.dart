@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
 import 'package:kdh_mobile/core/network/token_storage.dart';
+import 'package:kdh_mobile/core/services/watch_service.dart';
 import 'package:kdh_mobile/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:kdh_mobile/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:kdh_mobile/features/auth/domain/repositories/auth_repository.dart';
@@ -64,6 +65,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isLoading: false,
       userEmail: email,
     );
+    WatchService.sendAccessToken(accessToken);
   }
 
   Future<void> logout() async {
@@ -71,6 +73,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       await _repository.logout();
       state = const AuthState(isAuthenticated: false);
+      WatchService.clearToken();
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }

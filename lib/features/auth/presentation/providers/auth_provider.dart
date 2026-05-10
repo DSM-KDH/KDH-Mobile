@@ -53,22 +53,12 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._repository)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    : super(AuthState(isAuthenticated: TokenStorage.hasToken));
-=======
-=======
->>>>>>> Stashed changes
-      : super(AuthState(isAuthenticated: TokenStorage.hasToken)) {
+    : super(AuthState(isAuthenticated: TokenStorage.hasToken)) {
     final existingToken = TokenStorage.accessToken;
     if (existingToken != null && existingToken.isNotEmpty) {
       unawaited(WatchTokenSyncService.syncAccessToken(existingToken));
     }
   }
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
   final AuthRepository _repository;
 
@@ -77,20 +67,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
   void handleLoginSuccess(String accessToken, String refreshToken) {
     _repository.handleLoginSuccess(accessToken, refreshToken);
     unawaited(WatchTokenSyncService.syncAccessToken(accessToken));
+
     final email = _extractEmailFromJwt(accessToken);
+
     state = state.copyWith(
       isAuthenticated: true,
       isLoading: false,
       userEmail: email,
     );
+
     WatchService.sendAccessToken(accessToken);
   }
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true);
+
     try {
       await _repository.logout();
+
       state = const AuthState(isAuthenticated: false);
+
       WatchService.clearToken();
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -99,8 +95,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> withdrawal() async {
     state = state.copyWith(isLoading: true);
+
     try {
       await _repository.withdrawal();
+
       state = const AuthState(isAuthenticated: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -110,10 +108,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   static String? _extractEmailFromJwt(String token) {
     try {
       final parts = token.split('.');
+
       if (parts.length != 3) return null;
+
       final payload = base64.normalize(parts[1]);
       final decoded = utf8.decode(base64.decode(payload));
+
       final json = jsonDecode(decoded) as Map<String, dynamic>;
+
       return (json['email'] ?? json['name']) as String?;
     } catch (_) {
       return null;

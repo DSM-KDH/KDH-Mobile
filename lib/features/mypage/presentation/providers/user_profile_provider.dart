@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
+import 'package:kdh_mobile/core/network/token_storage.dart';
+import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/mypage/data/repositories/user_profile_repository.dart';
 import 'package:kdh_mobile/features/mypage/data/repositories/user_profile_repository_impl.dart';
 import 'package:kdh_mobile/features/mypage/domain/entities/user_profile.dart';
@@ -31,8 +33,17 @@ class UserProfileState {
 }
 
 class UserProfileNotifier extends StateNotifier<UserProfileState> {
-  UserProfileNotifier(this._repository) : super(const UserProfileState());
+  UserProfileNotifier(this._ref, this._repository)
+    : super(const UserProfileState()) {
+    if (TokenStorage.hasToken) loadProfile();
 
+    _ref.listen<AuthState>(authProvider, (prev, next) {
+      final justLoggedIn = !(prev?.isAuthenticated ?? false) && next.isAuthenticated;
+      if (justLoggedIn) loadProfile();
+    });
+  }
+
+  final Ref _ref;
   final UserProfileRepository _repository;
 
   Future<void> loadProfile() async {
@@ -66,5 +77,5 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
 
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, UserProfileState>(
-      (ref) => UserProfileNotifier(ref.watch(_userProfileRepositoryProvider)),
+      (ref) => UserProfileNotifier(ref, ref.watch(_userProfileRepositoryProvider)),
     );

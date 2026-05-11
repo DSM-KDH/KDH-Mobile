@@ -38,7 +38,13 @@ class MyPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('마이페이지', style: KdhTextStyle.body3),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('마이페이지', style: KdhTextStyle.body3),
+                Icon(Symbols.logout, size: 20, color: KdhColor.gray800,),
+              ],
+            ),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -128,6 +134,17 @@ class MyPage extends ConsumerWidget {
                   ),
                 ),
               ),
+
+            Align(
+              alignment: Alignment.center,
+              child: Text('회원탈퇴', style: KdhTextStyle.body6.copyWith(
+                  color: KdhColor.gray300,
+                  fontSize: 15,
+                  decoration: TextDecoration.underline,
+                  decorationColor: KdhColor.gray300),
+              ),
+            ),
+            const SizedBox(height: 35),
           ],
         ),
       ),

@@ -11,6 +11,7 @@
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		B1A100012FFB111100000001 /* KDHWatchApp Watch App.app in Embed Watch Content (Runner) */ = {isa = PBXBuildFile; fileRef = 880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8801900A2F7CEBF50047FA8E /* KDHWatchApp Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88519F942F8CBE75007A6B51 /* RoutineListCell.swift */; };
 		8898E4B42F9AFD8600C1A07D /* TimerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */; };
@@ -40,6 +41,13 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
+		B1A100012FFB111100000003 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 880190082F7CEBF50047FA8E;
+			remoteInfo = "KDHWatchApp Watch App";
+		};
 		8801900B2F7CEBF50047FA8E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -57,6 +65,17 @@
 			dstSubfolderSpec = 16;
 			files = (
 				8801900A2F7CEBF50047FA8E /* KDHWatchApp Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1A100012FFB111100000002 /* Embed Watch Content (Runner) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				B1A100012FFB111100000001 /* KDHWatchApp Watch App.app in Embed Watch Content (Runner) */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -380,6 +399,7 @@
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
+				B1A100012FFB111100000002 /* Embed Watch Content (Runner) */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				D72D294600F9880D2AE1D21C /* [CP] Embed Pods Frameworks */,
@@ -387,6 +407,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B1A100012FFB111100000004 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -617,6 +638,11 @@
 			target = 97C146ED1CF9000F007C117D /* Runner */;
 			targetProxy = 331C8085294A63A400263BE5 /* PBXContainerItemProxy */;
 		};
+		B1A100012FFB111100000004 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 880190082F7CEBF50047FA8E /* KDHWatchApp Watch App */;
+			targetProxy = B1A100012FFB111100000003 /* PBXContainerItemProxy */;
+		};
 		8801900C2F7CEBF50047FA8E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 880190082F7CEBF50047FA8E /* KDHWatchApp Watch App */;
@@ -714,7 +740,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2, 4";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Profile;
@@ -877,8 +903,10 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "KDHWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = KDHWatchApp;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.example.kdhMobile;
+				INFOPLIST_KEY_WKWatchKitApp = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKWatchOnly = YES;
+				INFOPLIST_KEY_WKWatchOnly = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -887,7 +915,7 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kdh.KDHWatchApp.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.kdhMobile.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -924,8 +952,10 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "KDHWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = KDHWatchApp;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.example.kdhMobile;
+				INFOPLIST_KEY_WKWatchKitApp = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKWatchOnly = YES;
+				INFOPLIST_KEY_WKWatchOnly = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -933,7 +963,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kdh.KDHWatchApp.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.kdhMobile.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -968,8 +998,10 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "KDHWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = KDHWatchApp;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.example.kdhMobile;
+				INFOPLIST_KEY_WKWatchKitApp = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKWatchOnly = YES;
+				INFOPLIST_KEY_WKWatchOnly = NO;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -977,7 +1009,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kdh.KDHWatchApp.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.kdhMobile.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1122,7 +1154,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2, 4";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1145,7 +1177,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2, 4";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

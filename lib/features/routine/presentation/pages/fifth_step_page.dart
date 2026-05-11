@@ -23,6 +23,7 @@ class FifthStepPage extends ConsumerStatefulWidget {
 class _FifthStepPageState extends ConsumerState<FifthStepPage> {
   final Set<int> _selectedPlaces = {};
   final Set<String> _selectedEquipment = {};
+  bool _isNavigatingToResult = false;
 
   static const _places = [
     (label: '야외', svg: 'assets/icons/outdoor.svg'),
@@ -31,10 +32,20 @@ class _FifthStepPageState extends ConsumerState<FifthStepPage> {
   ];
 
   static const _equipment = [
-    '바벨', '덤벨', '케이블', '머신',
-    '벤치', '철봉', '밴드', '랫풀다운',
-    '스미스머신', '레그프레스', '펙덱플라이',
-    '딥스바', '폼롤러', '사이클',
+    '바벨',
+    '덤벨',
+    '케이블',
+    '머신',
+    '벤치',
+    '철봉',
+    '밴드',
+    '랫풀다운',
+    '스미스머신',
+    '레그프레스',
+    '펙덱플라이',
+    '딥스바',
+    '폼롤러',
+    '사이클',
   ];
 
   bool get _canProceed => _selectedPlaces.isNotEmpty;
@@ -159,15 +170,20 @@ class _FifthStepPageState extends ConsumerState<FifthStepPage> {
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: KdhButton(
                 label: '완료',
-                onPressed: _canProceed
+                onPressed: _canProceed && !_isNavigatingToResult
                     ? () {
+                        setState(() => _isNavigatingToResult = true);
                         ref
                             .read(aiRoutineWizardProvider.notifier)
                             .setPlacesAndEquipment(
                               places: Set.from(_selectedPlaces),
                               equipment: Set.from(_selectedEquipment),
                             );
-                        context.push(RouterPath.aiRoutineResult);
+                        context.push(RouterPath.aiRoutineResult).then((_) {
+                          if (mounted) {
+                            setState(() => _isNavigatingToResult = false);
+                          }
+                        });
                       }
                     : null,
               ),

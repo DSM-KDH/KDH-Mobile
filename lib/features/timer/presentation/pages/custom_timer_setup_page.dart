@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
@@ -63,9 +64,7 @@ class _CustomTimerSetupPageState extends State<CustomTimerSetupPage> {
     if (_ignoreCountChange) return;
     final n = int.tryParse(value) ?? 0;
     if (n > 5) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(_buildSnackBar('최대 5개까지만 입력이 가능합니다.'));
+      context.showKdhSnackBar('최대 5개까지만 입력이 가능합니다.');
       _ignoreCountChange = true;
       _countController.text = _count > 0 ? '$_count' : '';
       _countController.selection = TextSelection.fromPosition(
@@ -86,14 +85,6 @@ class _CustomTimerSetupPageState extends State<CustomTimerSetupPage> {
       }
     });
   }
-
-  SnackBar _buildSnackBar(String message) => SnackBar(
-    content: Text(message, style: KdhTextStyle.body7),
-    behavior: SnackBarBehavior.floating,
-    duration: const Duration(milliseconds: 1500),
-    backgroundColor: KdhColor.red50,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-  );
 
   void _showDurationSheet(int index) {
     showModalBottomSheet(

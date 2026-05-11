@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
@@ -53,14 +54,6 @@ class _ThirdStepPageState extends ConsumerState<ThirdStepPage> {
     _hoursFocus.dispose();
     super.dispose();
   }
-
-  SnackBar _buildLimitSnackBar(String message) => SnackBar(
-    content: Text(message, style: KdhTextStyle.body7),
-    behavior: SnackBarBehavior.floating,
-    duration: const Duration(milliseconds: 1000),
-    backgroundColor: KdhColor.red50,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-  );
 
   Widget _buildNumberField({
     required TextEditingController controller,
@@ -214,34 +207,40 @@ class _ThirdStepPageState extends ConsumerState<ThirdStepPage> {
                         );
 
                         if (weeks == null || weeks <= 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            _buildLimitSnackBar('루틴 유지 기간을 올바르게 입력해주세요'),
+                          context.showKdhSnackBar(
+                            '루틴 유지 기간을 올바르게 입력해주세요',
+                            duration: const Duration(milliseconds: 1000),
                           );
                           return;
                         }
                         if (hours == null || hours <= 0) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            _buildLimitSnackBar('운동 시간을 올바르게 입력해주세요'),
+                          context.showKdhSnackBar(
+                            '운동 시간을 올바르게 입력해주세요',
+                            duration: const Duration(milliseconds: 1000),
                           );
                           return;
                         }
                         if (weeks > 24) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            _buildLimitSnackBar('루틴 유지 기간은 최대 24주까지 가능해요'),
+                          context.showKdhSnackBar(
+                            '루틴 유지 기간은 최대 24주까지 가능해요',
+                            duration: const Duration(milliseconds: 1000),
                           );
                           return;
                         }
                         if (hours > 5) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            _buildLimitSnackBar('운동 시간은 최대 5시간까지 가능해요'),
+                          context.showKdhSnackBar(
+                            '운동 시간은 최대 5시간까지 가능해요',
+                            duration: const Duration(milliseconds: 1000),
                           );
                           return;
                         }
-                        ref.read(aiRoutineWizardProvider.notifier).setSchedule(
-                          weeks: weeks,
-                          hours: hours,
-                          selectedDays: Set.from(_selectedDays),
-                        );
+                        ref
+                            .read(aiRoutineWizardProvider.notifier)
+                            .setSchedule(
+                              weeks: weeks,
+                              hours: hours,
+                              selectedDays: Set.from(_selectedDays),
+                            );
                         context.push(RouterPath.aiRoutineStep4);
                       }
                     : null,

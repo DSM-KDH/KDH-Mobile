@@ -6,7 +6,9 @@ import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AiRoutineSuccessView extends StatelessWidget {
-  const AiRoutineSuccessView({super.key});
+  const AiRoutineSuccessView({super.key, this.onGoHome});
+
+  final VoidCallback? onGoHome;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +80,10 @@ class AiRoutineSuccessView extends StatelessWidget {
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: () => context.go(RouterPath.home),
+                          onTap: () {
+                            onGoHome?.call();
+                            context.go(RouterPath.home);
+                          },
                           child: Container(
                             width: double.infinity,
                             height: 80,

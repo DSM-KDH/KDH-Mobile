@@ -15,6 +15,7 @@ class AiRoutineWizardNotifier extends StateNotifier<AiRoutineWizardData> {
     : super(const AiRoutineWizardData());
 
   final AiRoutineRepository _repository;
+  Future<bool>? _pendingSubmit;
 
   AiRoutineSubmitStatus submitStatus = AiRoutineSubmitStatus.idle;
   String? submitError;
@@ -59,6 +60,22 @@ class AiRoutineWizardNotifier extends StateNotifier<AiRoutineWizardData> {
   }
 
   Future<bool> submit({String? fcmToken}) async {
+    final pendingSubmit = _pendingSubmit;
+    if (pendingSubmit != null) {
+      return pendingSubmit;
+    }
+
+    final future = _submitInternal(fcmToken: fcmToken);
+    _pendingSubmit = future;
+    future.whenComplete(() {
+      if (identical(_pendingSubmit, future)) {
+        _pendingSubmit = null;
+      }
+    });
+    return future;
+  }
+
+  Future<bool> _submitInternal({String? fcmToken}) async {
     submitStatus = AiRoutineSubmitStatus.loading;
     submitError = null;
 
@@ -77,6 +94,7 @@ class AiRoutineWizardNotifier extends StateNotifier<AiRoutineWizardData> {
     state = const AiRoutineWizardData();
     submitStatus = AiRoutineSubmitStatus.idle;
     submitError = null;
+    _pendingSubmit = null;
   }
 }
 

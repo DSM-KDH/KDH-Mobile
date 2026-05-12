@@ -21,31 +21,9 @@ struct RoutineService {
     func fetchTodayRoutine(
         accessToken: String
     ) async throws -> RoutineResponse {
-
-        let rawBase = Bundle.main.object(
-            forInfoDictionaryKey: "KDHApiBaseURL"
-        )
-
-        print("[WatchAPI] KDHApiBaseURL raw=\(String(describing: rawBase))")
-
-        guard
-            let base = rawBase as? String,
-            !base.isEmpty,
-            let baseURL = URL(string: base)
-        else {
-            throw NSError(
-                domain: "WatchRoutineService",
-                code: 1,
-                userInfo: [
-                    NSLocalizedDescriptionKey: "KDHApiBaseURL 설정 없음"
-                ]
-            )
-        }
-
         let today = Self.dateFormatter.string(from: Date())
 
         let target = RoutineAPI.routines(
-            baseURL: baseURL,
             date: today,
             accessToken: accessToken
         )
@@ -54,12 +32,9 @@ struct RoutineService {
             continuation in
 
             provider.request(target) { result in
-
                 switch result {
-
                 case let .success(response):
                     continuation.resume(returning: response)
-
                 case let .failure(error):
                     continuation.resume(throwing: error)
                 }
@@ -67,7 +42,6 @@ struct RoutineService {
         }
 
         guard (200...299).contains(response.statusCode) else {
-
             let body = String(
                 data: response.data,
                 encoding: .utf8
@@ -85,14 +59,11 @@ struct RoutineService {
         }
 
         do {
-
             return try JSONDecoder().decode(
                 RoutineResponse.self,
                 from: response.data
             )
-
         } catch {
-
             let raw = String(
                 data: response.data,
                 encoding: .utf8

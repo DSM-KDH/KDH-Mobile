@@ -24,12 +24,11 @@ struct TimerSelectView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                
+            VStack {
                 Text("타이머 선택")
                     .font(.kdf(.body3))
                     .foregroundStyle(.gray800)
-                    .padding(.bottom, 10)
+                    .padding(.top, 5)
                 
                 ScrollView {
                     VStack(spacing: 8) {
@@ -43,6 +42,7 @@ struct TimerSelectView: View {
                             }
                         }
                     }
+                    .padding(.top, 6)
                     .padding(.horizontal, 12)
                 }
             }
@@ -51,7 +51,7 @@ struct TimerSelectView: View {
                 switch dest {
                 case .interval:  IntervalTimerView()
                 case .custom:    CustomTimerView()
-                case .metronome: MetronomeView()
+                case .metronome: MetronomeRunView()
                 }
             }
         }
@@ -65,7 +65,7 @@ struct TimerSelectView: View {
         case .custom:
             CustomTimerView()
         case .metronome:
-            MetronomeView()
+            MetronomeRunView()
         case .none:
             EmptyView()
         }

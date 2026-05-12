@@ -21,8 +21,10 @@
 		88AFBD942FB2C447007EF0BB /* UsersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD932FB2C441007EF0BB /* UsersService.swift */; };
 		88AFBD972FB2D00E007EF0BB /* TimerOptionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */; };
 		88AFBD992FB2D382007EF0BB /* IntervalTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD982FB2D380007EF0BB /* IntervalTimerView.swift */; };
-		88AFBD9B2FB2D39E007EF0BB /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD9A2FB2D39E007EF0BB /* MetronomeView.swift */; };
+		88AFBD9B2FB2D39E007EF0BB /* MetronomeRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */; };
 		88AFBD9D2FB2D3A2007EF0BB /* CustomTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD9C2FB2D3A2007EF0BB /* CustomTimerView.swift */; };
+		88AFBD9F2FB30578007EF0BB /* TimerCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD9E2FB30572007EF0BB /* TimerCircleView.swift */; };
+		88AFBDA32FB305FE007EF0BB /* IntervalTimerRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBDA22FB305FE007EF0BB /* IntervalTimerRunView.swift */; };
 		88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098232F8CB3FE00317162 /* KDHFont.swift */; };
 		88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098262F8CB3FE00317162 /* ContentView.swift */; };
 		88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */; };
@@ -131,8 +133,10 @@
 		88AFBD932FB2C441007EF0BB /* UsersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersService.swift; sourceTree = "<group>"; };
 		88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionButton.swift; sourceTree = "<group>"; };
 		88AFBD982FB2D380007EF0BB /* IntervalTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimerView.swift; sourceTree = "<group>"; };
-		88AFBD9A2FB2D39E007EF0BB /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
+		88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeRunView.swift; sourceTree = "<group>"; };
 		88AFBD9C2FB2D3A2007EF0BB /* CustomTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTimerView.swift; sourceTree = "<group>"; };
+		88AFBD9E2FB30572007EF0BB /* TimerCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCircleView.swift; sourceTree = "<group>"; };
+		88AFBDA22FB305FE007EF0BB /* IntervalTimerRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimerRunView.swift; sourceTree = "<group>"; };
 		88B0981E2F8CB3FE00317162 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.otf"; sourceTree = "<group>"; };
 		88B0981F2F8CB3FE00317162 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		88B098202F8CB3FE00317162 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -244,9 +248,9 @@
 		8898E4B22F9AFD6D00C1A07D /* Timer */ = {
 			isa = PBXGroup;
 			children = (
+				88AFBDA62FB30699007EF0BB /* Interval */,
 				88AFBD9C2FB2D3A2007EF0BB /* CustomTimerView.swift */,
-				88AFBD9A2FB2D39E007EF0BB /* MetronomeView.swift */,
-				88AFBD982FB2D380007EF0BB /* IntervalTimerView.swift */,
+				88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */,
 				88AFBD952FB2CFFE007EF0BB /* Component */,
 				8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */,
 			);
@@ -274,9 +278,19 @@
 		88AFBD952FB2CFFE007EF0BB /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				88AFBD9E2FB30572007EF0BB /* TimerCircleView.swift */,
 				88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */,
 			);
 			path = Component;
+			sourceTree = "<group>";
+		};
+		88AFBDA62FB30699007EF0BB /* Interval */ = {
+			isa = PBXGroup;
+			children = (
+				88AFBD982FB2D380007EF0BB /* IntervalTimerView.swift */,
+				88AFBDA22FB305FE007EF0BB /* IntervalTimerRunView.swift */,
+			);
+			path = Interval;
 			sourceTree = "<group>";
 		};
 		88B098222F8CB3FE00317162 /* Font */ = {
@@ -740,8 +754,10 @@
 				88AFBD942FB2C447007EF0BB /* UsersService.swift in Sources */,
 				88A31B6F2FF9D145004E1A11 /* WatchTabbarView.swift in Sources */,
 				88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */,
+				88AFBD9F2FB30578007EF0BB /* TimerCircleView.swift in Sources */,
+				88AFBDA32FB305FE007EF0BB /* IntervalTimerRunView.swift in Sources */,
 				88AFBD922FB2C398007EF0BB /* UsersResponse.swift in Sources */,
-				88AFBD9B2FB2D39E007EF0BB /* MetronomeView.swift in Sources */,
+				88AFBD9B2FB2D39E007EF0BB /* MetronomeRunView.swift in Sources */,
 				88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */,
 				88AFBD972FB2D00E007EF0BB /* TimerOptionButton.swift in Sources */,
 				88AFBD9D2FB2D3A2007EF0BB /* CustomTimerView.swift in Sources */,

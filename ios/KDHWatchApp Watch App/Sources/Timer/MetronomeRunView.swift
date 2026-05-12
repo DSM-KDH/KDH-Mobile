@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct IntervalTimerView: View {
+struct MetronomeRunView: View {
     var body: some View {
         Text("Hello, World!")
     }

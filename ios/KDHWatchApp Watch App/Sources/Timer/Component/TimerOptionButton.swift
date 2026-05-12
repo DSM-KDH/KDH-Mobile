@@ -17,7 +17,7 @@ struct TimerOptionButton: View {
         Button(action: action) {
             HStack {
                 Text(title)
-                    .font(.kdf(.body5))
+                    .font(.kdf(.caption1))
                     .foregroundStyle(.gray800)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -26,8 +26,8 @@ struct TimerOptionButton: View {
                     .frame(width: 24, height: 24)
                     .foregroundStyle(.gray800)
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 18)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
             .background(backgroundColor)
             .clipShape(Capsule())
         }

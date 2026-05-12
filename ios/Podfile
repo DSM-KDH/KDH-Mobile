@@ -34,6 +34,22 @@ target 'Runner' do
   target 'RunnerTests' do
     inherit! :search_paths
   end
+  watch_support_dir = File.join(__dir__, 'Pods', 'Target Support Files', 'Pods-KDHWatchApp Watch App')
+  Dir.glob(File.join(watch_support_dir, '*.xcconfig')).each do |xcconfig|
+    include_line = '#include? "../../../Secrets.xcconfig"'
+    contents = File.read(xcconfig)
+    next if contents.include?(include_line)
+    File.open(xcconfig, 'a') do |file|
+      file.puts
+      file.puts(include_line)
+    end
+  end
+end
+
+target 'KDHWatchApp Watch App' do
+  platform :watchos, '10.0'
+  use_frameworks!
+  pod 'Moya'
 end
 
 post_install do |installer|
@@ -41,3 +57,4 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
 end
+  

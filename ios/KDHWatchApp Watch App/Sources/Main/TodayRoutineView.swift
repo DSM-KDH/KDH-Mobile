@@ -3,7 +3,9 @@ import SwiftUI
 
 struct TodayRoutineView: View {
     @EnvironmentObject private var connectivityManager: WatchConnectivityManager
-    @State private var routines: [RoutineItem] = []
+
+    @State private var workouts: [Workout] = []
+    @State private var apiState: RoutineAPIState = .idle
 
     var body: some View {
         VStack {
@@ -18,46 +20,7 @@ struct TodayRoutineView: View {
 
             ScrollView {
                 VStack(spacing: 8) {
-                    VStack {
-                        Text(connectivityManager.isReachable ? "iPhone 연결됨" : "iPhone 연결 대기중")
-                            .font(.kdf(.body5))
-                            .foregroundStyle(.gray500)
-                        Spacer()
-                        Text(connectivityManager.hasAccessToken ? "토큰 저장됨" : "토큰 수신 대기")
-                            .font(.kdf(.body5))
-                            .foregroundStyle(connectivityManager.hasAccessToken ? .red400 : .gray500)
-                    }
-                    .padding(.horizontal, 8)
-
-                    if let errorMessage = connectivityManager.lastErrorMessage {
-                        Text(errorMessage)
-                            .font(.kdf(.body5))
-                            .foregroundStyle(.red400)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 8)
-                    }
-
-                    if routines.isEmpty && connectivityManager.isReachable {
-                        Text("표시할 루틴이 없습니다.")
-                            .font(.kdf(.body5))
-                            .foregroundStyle(.gray500)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 8)
-                    } else {
-                        ForEach(routines) { routine in
-                            RoutineListCell(
-                                exerciseName: routine.exerciseName,
-                                countText: routine.countText,
-                                isChecked: routine.isChecked,
-                                checkButtonTap: {
-                                    toggleRoutineCheck(id: routine.id)
-                                },
-                                arrowButtonTap: {
-                                    // TODO: 루틴 상세 화면 이동 또는 액션 연결
-                                }
-                            )
-                        }
-                    }
+                    contentView
                 }
                 .padding(.horizontal, 8)
                 .padding(.top, 6)
@@ -65,20 +28,117 @@ struct TodayRoutineView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.background)
+        .onAppear {
+            Swift.Task {
+                await fetchRoutineIfPossible()
+            }
+        }
+        .onChange(of: connectivityManager.isReachable) { _, _ in
+            Swift.Task {
+                await fetchRoutineIfPossible()
+            }
+        }
+        .onChange(of: connectivityManager.hasAccessToken) { _, _ in
+            Swift.Task {
+                await fetchRoutineIfPossible()
+            }
+        }
     }
 
-    private func toggleRoutineCheck(id: UUID) {
-        guard let index = routines.firstIndex(where: { $0.id == id }) else { return }
-        routines[index].isChecked.toggle()
+    @ViewBuilder
+    private var contentView: some View {
+        if !connectivityManager.isReachable {
+
+            message("iPhone 앱을 실행해주세요")
+
+        } else if connectivityManager.isReachable &&
+                    !connectivityManager.hasAccessToken {
+
+            message("iPhone 앱과 연결을 실패했습니다.")
+
+        } else {
+
+            switch apiState {
+
+            case .idle, .loading:
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+
+            case .failed:
+                message("루틴 호출을 실패했습니다")
+
+            case .loaded:
+                if workouts.isEmpty {
+
+                    message("생성한 루틴이 없습니다")
+
+                } else {
+
+                    ForEach(workouts, id: \.exerciseId) { workout in
+                        RoutineListCell(
+                            exerciseName: workout.exerciseName,
+                            countText: workout.repsTime,
+                            isChecked: workout.completed,
+                            checkButtonTap: {},
+                            arrowButtonTap: {}
+                        )
+                    }
+                }
+            }
+        }
     }
 
+    private func message(_ text: String) -> some View {
+        Text(text)
+            .font(.kdf(.body5))
+            .foregroundStyle(.gray500)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 8)
+    }
+
+    @MainActor
+    private func fetchRoutineIfPossible() async {
+        print("[WatchAPI] fetchRoutineIfPossible called")
+
+        guard connectivityManager.isReachable else {
+            apiState = .idle
+            workouts = []
+            return
+        }
+
+        guard
+            let accessToken = connectivityManager.accessToken(),
+            !accessToken.isEmpty
+        else {
+            apiState = .idle
+            workouts = []
+            return
+        }
+
+        apiState = .loading
+
+        do {
+            let response = try await RoutineService.shared
+                .fetchTodayRoutine(accessToken: accessToken)
+
+            workouts = response.workouts
+            apiState = .loaded
+
+        } catch {
+            print("[WatchAPI] fetchRoutine error: \(error)")
+
+            workouts = []
+            apiState = .failed
+        }
+    }
 }
 
-private struct RoutineItem: Identifiable {
-    let id = UUID()
-    let exerciseName: String
-    let countText: String
-    var isChecked: Bool
+private enum RoutineAPIState {
+    case idle
+    case loading
+    case loaded
+    case failed
 }
 
 #Preview {

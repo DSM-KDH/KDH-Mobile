@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.11.2)
   - audioplayers_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -7,6 +8,10 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
+  - Moya (15.0.0):
+    - Moya/Core (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
   - package_info_plus (0.4.5):
     - Flutter
   - wakelock_plus (0.0.1):
@@ -22,10 +27,16 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - Moya
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
   - watch_connectivity (from `.symlinks/plugins/watch_connectivity/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - Moya
 
 EXTERNAL SOURCES:
   audioplayers_darwin:
@@ -46,15 +57,17 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
+  Alamofire: 400275dd1c6d87d95a041861d2a59da4b520a203
   audioplayers_darwin: 835ced6edd4c9fc8ebb0a7cc9e294a91d99917d5
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_background_service_ios: 00d31bdff7b4bfe06d32375df358abe0329cf87e
   flutter_local_notifications: 395056b3175ba4f08480a7c5de30cd36d69827e4
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
   watch_connectivity: 88e5bea25b473e66ef8d3f960954d154ed0356d6
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
 
-PODFILE CHECKSUM: 251cb053df7158f337c0712f2ab29f4e0fa474ce
+PODFILE CHECKSUM: f7e5b130ea09f5bd576e6666a5e6b85e18c7ad50
 
 COCOAPODS: 1.16.2

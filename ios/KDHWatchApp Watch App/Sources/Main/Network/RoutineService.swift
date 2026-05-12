@@ -9,19 +9,14 @@ import Foundation
 import Moya
 
 struct RoutineService {
+
     static let shared = RoutineService()
 
-    private let provider: MoyaProvider<WatchRoutineTarget>
+    private let provider = MoyaProvider<RoutineAPI>(
+        plugins: [MoyaLogginPlugin()]
+    )
 
-    private init() {
-        let logger = NetworkLoggerPlugin(
-            configuration: .init(logOptions: .verbose)
-        )
-
-        self.provider = MoyaProvider<WatchRoutineTarget>(
-            plugins: [logger]
-        )
-    }
+    private init() {}
 
     func fetchTodayRoutine(
         accessToken: String
@@ -49,7 +44,7 @@ struct RoutineService {
 
         let today = Self.dateFormatter.string(from: Date())
 
-        let target = WatchRoutineTarget.routines(
+        let target = RoutineAPI.routines(
             baseURL: baseURL,
             date: today,
             accessToken: accessToken
@@ -59,6 +54,7 @@ struct RoutineService {
             continuation in
 
             provider.request(target) { result in
+
                 switch result {
 
                 case let .success(response):
@@ -89,6 +85,7 @@ struct RoutineService {
         }
 
         do {
+
             return try JSONDecoder().decode(
                 RoutineResponse.self,
                 from: response.data
@@ -118,6 +115,7 @@ struct RoutineService {
 private extension RoutineService {
 
     static let dateFormatter: DateFormatter = {
+
         let formatter = DateFormatter()
 
         formatter.calendar = Calendar(identifier: .gregorian)

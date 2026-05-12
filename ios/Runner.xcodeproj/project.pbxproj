@@ -15,6 +15,7 @@
 		88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88519F942F8CBE75007A6B51 /* RoutineListCell.swift */; };
 		8898E4B42F9AFD8600C1A07D /* TimerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */; };
 		88A31B6F2FF9D145004E1A11 /* WatchTabbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */; };
+		88AFBD8D2FB2BF66007EF0BB /* MoyaLogginPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD8C2FB2BF66007EF0BB /* MoyaLogginPlugin.swift */; };
 		88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098232F8CB3FE00317162 /* KDHFont.swift */; };
 		88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098262F8CB3FE00317162 /* ContentView.swift */; };
 		88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */; };
@@ -115,10 +116,9 @@
 		880190042F7CEBF50047FA8E /* KDHWatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KDHWatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KDHWatchApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88519F942F8CBE75007A6B51 /* RoutineListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineListCell.swift; sourceTree = "<group>"; };
-		886DC8CD2FB2B4F1003C51D3 /* WatchDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WatchDebug.xcconfig; sourceTree = "<group>"; };
-		886DC8CE2FB2B4FD003C51D3 /* WatchRelease.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WatchRelease.xcconfig; sourceTree = "<group>"; };
 		8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSelectView.swift; sourceTree = "<group>"; };
 		88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTabbarView.swift; sourceTree = "<group>"; };
+		88AFBD8C2FB2BF66007EF0BB /* MoyaLogginPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaLogginPlugin.swift; sourceTree = "<group>"; };
 		88B0981E2F8CB3FE00317162 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.otf"; sourceTree = "<group>"; };
 		88B0981F2F8CB3FE00317162 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		88B098202F8CB3FE00317162 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -235,6 +235,14 @@
 			path = Timer;
 			sourceTree = "<group>";
 		};
+		88AFBD8B2FB2BF5F007EF0BB /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				88AFBD8C2FB2BF66007EF0BB /* MoyaLogginPlugin.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
 		88B098222F8CB3FE00317162 /* Font */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,6 +285,7 @@
 		88B0982B2F8CB3FE00317162 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				88AFBD8B2FB2BF5F007EF0BB /* Logging */,
 				88519F922F8CBABC007A6B51 /* Application */,
 				88E87E2F2F91BE830026CEF1 /* My */,
 				8898E4B22F9AFD6D00C1A07D /* Timer */,
@@ -327,8 +336,6 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				886DC8CD2FB2B4F1003C51D3 /* WatchDebug.xcconfig */,
-				886DC8CE2FB2B4FD003C51D3 /* WatchRelease.xcconfig */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				88B0982C2F8CB3FE00317162 /* KDHWatchApp Watch App */,
@@ -700,6 +707,7 @@
 				88FACEF22FB1AADB00AAE9DC /* RoutineService.swift in Sources */,
 				88FACEF62FB1AB8A00AAE9DC /* RoutineResponse.swift in Sources */,
 				88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */,
+				88AFBD8D2FB2BF66007EF0BB /* MoyaLogginPlugin.swift in Sources */,
 				88B098362F8CB3FE00317162 /* TodayRoutineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -883,7 +891,6 @@
 		};
 		880190142F7CEBF60047FA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 886DC8CD2FB2B4F1003C51D3 /* WatchDebug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -914,7 +921,6 @@
 		};
 		880190152F7CEBF60047FA8E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 886DC8CE2FB2B4FD003C51D3 /* WatchRelease.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -942,7 +948,6 @@
 		};
 		880190162F7CEBF60047FA8E /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 886DC8CD2FB2B4F1003C51D3 /* WatchDebug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

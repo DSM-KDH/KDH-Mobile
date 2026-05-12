@@ -7,11 +7,11 @@
 import Moya
 import Alamofire
 
-enum WatchRoutineTarget {
+enum RoutineAPI {
     case routines(baseURL: URL, date: String, accessToken: String)
 }
 
-extension WatchRoutineTarget: TargetType {
+extension RoutineAPI: TargetType {
     var baseURL: URL {
         switch self {
         case let .routines(baseURL, _, _):

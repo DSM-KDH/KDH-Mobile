@@ -9,7 +9,9 @@
 import SwiftUI
 
 struct MyView: View {
-    @State private var my: My = .init(name: "하원", info: "")
+    @EnvironmentObject private var connectivityManager: WatchConnectivityManager
+    @State private var my: My = .init(name: "", info: "")
+    @State private var isLoading = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -17,27 +19,73 @@ struct MyView: View {
                 Image("profile")
                     .resizable()
                     .frame(width: 40, height: 40)
+
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(my.name)
+                    Text(my.name.isEmpty ? "사용자" : my.name)
                         .foregroundStyle(Color.gray800)
                         .font(.kdf(.caption1))
-                    Text((my.info?.isEmpty ?? true) ? "사용자 정보를 입력해주세요" : my.info!)
-                        .foregroundStyle(Color.gray300)
-                        .font(.kdf(.caption4))
+
+                    Text(
+                        (my.info?.isEmpty ?? true)
+                        ? "사용자 정보를 입력해주세요"
+                        : my.info!
+                    )
+                    .foregroundStyle(Color.gray300)
+                    .font(.kdf(.caption4))
                 }
+
                 Spacer()
             }
             .padding(.leading, 20)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background(Color.background)
+        .task {
+            await fetchProfile()
+        }
+    }
+}
+
+private extension MyView {
+    func fetchProfile() async {
+        guard !isLoading else {
+            return
+        }
+
+        isLoading = true
+
+        defer {
+            isLoading = false
+        }
+        do {
+            guard
+                let accessToken = connectivityManager.accessToken(),
+                !accessToken.isEmpty
+            else {
+                print("[MyView] AccessToken 없음")
+                return
+            }
+
+            let response = try await UsersService.shared.fetchProfile(
+                accessToken: accessToken
+            )
+
+            await MainActor.run {
+                my = .init(
+                    name: response.name,
+                    info: "\(response.heightCm)cm · \(response.weightKg)kg · \(response.gender == "MALE" ? "남" : "여")"
+                )
+            }
+        } catch {
+            print("[MyView] fetchProfile error: \(error)")
+        }
     }
 }
 
 private struct My: Identifiable {
     let id = UUID()
     let name: String
-    let info: String?
+    var info: String?
 }
 
 

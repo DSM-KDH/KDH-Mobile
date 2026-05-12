@@ -31,10 +31,6 @@ struct IntervalTimerRunView: View {
         totalMinutes*60
     }
  
-    private var totalRounds: Int {
-        max(1, totalInputSeconds / cycleDuration)
-    }
- 
     var body: some View {
         VStack(spacing: 14) {
             TimerCircleView(
@@ -43,23 +39,21 @@ struct IntervalTimerRunView: View {
                 totalRemainingSeconds: totalRemainingSeconds,
                 totalInputSeconds: totalInputSeconds,
                 currentRound: currentRound,
-                totalRounds: totalRounds,
                 isReady: isReady
             )
             .frame(width: 160, height: 160)
             .onTapGesture {
                 if isReady { startTimer() }
             }
- 
-            // 리셋 버튼
+
             Button {
                 resetTimer()
             } label: {
                 Image(systemName: "arrow.clockwise")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(isReady ? Color(white: 0.5) : Color(red: 1.0, green: 0.35, blue: 0.35))
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(isReady ? .gray300 : .red400)
                     .padding(10)
-                    .background(isReady ? Color(white: 0.92) : Color(red: 1.0, green: 0.9, blue: 0.9))
+                    .background(isReady ? .gray50 : .red100)
                     .clipShape(Circle())
             }
             .buttonStyle(.plain)

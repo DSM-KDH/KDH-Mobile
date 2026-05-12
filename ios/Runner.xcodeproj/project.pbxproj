@@ -19,6 +19,7 @@
 		88AFBD902FB2C228007EF0BB /* UsersAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD8F2FB2C1FC007EF0BB /* UsersAPI.swift */; };
 		88AFBD922FB2C398007EF0BB /* UsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD912FB2C392007EF0BB /* UsersResponse.swift */; };
 		88AFBD942FB2C447007EF0BB /* UsersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD932FB2C441007EF0BB /* UsersService.swift */; };
+		88AFBD972FB2D00E007EF0BB /* TimerOptionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */; };
 		88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098232F8CB3FE00317162 /* KDHFont.swift */; };
 		88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098262F8CB3FE00317162 /* ContentView.swift */; };
 		88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */; };
@@ -125,6 +126,7 @@
 		88AFBD8F2FB2C1FC007EF0BB /* UsersAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersAPI.swift; sourceTree = "<group>"; };
 		88AFBD912FB2C392007EF0BB /* UsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersResponse.swift; sourceTree = "<group>"; };
 		88AFBD932FB2C441007EF0BB /* UsersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersService.swift; sourceTree = "<group>"; };
+		88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionButton.swift; sourceTree = "<group>"; };
 		88B0981E2F8CB3FE00317162 /* Pretendard-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.otf"; sourceTree = "<group>"; };
 		88B0981F2F8CB3FE00317162 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		88B098202F8CB3FE00317162 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 		8898E4B22F9AFD6D00C1A07D /* Timer */ = {
 			isa = PBXGroup;
 			children = (
+				88AFBD952FB2CFFE007EF0BB /* Component */,
 				8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */,
 			);
 			path = Timer;
@@ -257,6 +260,14 @@
 				88AFBD8F2FB2C1FC007EF0BB /* UsersAPI.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		88AFBD952FB2CFFE007EF0BB /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */,
+			);
+			path = Component;
 			sourceTree = "<group>";
 		};
 		88B098222F8CB3FE00317162 /* Font */ = {
@@ -722,6 +733,7 @@
 				88B0982D2F8CB3FE00317162 /* KDHFont.swift in Sources */,
 				88AFBD922FB2C398007EF0BB /* UsersResponse.swift in Sources */,
 				88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */,
+				88AFBD972FB2D00E007EF0BB /* TimerOptionButton.swift in Sources */,
 				88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */,
 				8898E4B42F9AFD8600C1A07D /* TimerSelectView.swift in Sources */,
 				88FACEF22FB1AADB00AAE9DC /* RoutineService.swift in Sources */,

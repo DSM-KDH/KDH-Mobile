@@ -13,6 +13,7 @@ class MonthlyCalendar extends StatelessWidget {
     required this.displayedMonth,
     required this.selectedDate,
     required this.dateCompletionMap,
+    required this.routineDates,
     required this.onDateSelected,
     required this.onPrevMonth,
     required this.onNextMonth,
@@ -22,6 +23,7 @@ class MonthlyCalendar extends StatelessWidget {
   final DateTime selectedDate;
 
   final Map<String, DayCompletionStatus> dateCompletionMap;
+  final Set<String> routineDates;
   final ValueChanged<DateTime> onDateSelected;
   final VoidCallback onPrevMonth;
   final VoidCallback onNextMonth;
@@ -36,11 +38,15 @@ class MonthlyCalendar extends StatelessWidget {
   String _dateKey(DateTime date) =>
       '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
-  bool _hasRoutine(DateTime date) =>
-      dateCompletionMap.containsKey(_dateKey(date));
+  bool _hasRoutine(DateTime date) => routineDates.contains(_dateKey(date));
+
+  bool _isPast(DateTime date) {
+    final today = DateTime.now();
+    return date.isBefore(DateTime(today.year, today.month, today.day));
+  }
 
   DayCompletionStatus? _getStatus(DateTime date) =>
-      dateCompletionMap[_dateKey(date)];
+      _isPast(date) ? dateCompletionMap[_dateKey(date)] : null;
 
   @override
   Widget build(BuildContext context) {

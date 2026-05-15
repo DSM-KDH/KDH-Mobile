@@ -4,7 +4,9 @@ import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_entry.dart';
 
 class EmptyRoutineView extends StatelessWidget {
-  const EmptyRoutineView({super.key});
+  const EmptyRoutineView({super.key, this.hasAnyRoutine = false});
+
+  final bool hasAnyRoutine;
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +15,13 @@ class EmptyRoutineView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '생성한 루틴이 없어요',
+            hasAnyRoutine ? '오늘은 루틴이 없는 날이에요' : '생성한 루틴이 없어요',
             style: KdhTextStyle.body3.copyWith(color: KdhColor.gray300),
           ),
-          const SizedBox(height: 14),
-          const AiRoutineEntry(),
+          if (!hasAnyRoutine) ...[
+            const SizedBox(height: 14),
+            const AiRoutineEntry(),
+          ],
         ],
       ),
     );

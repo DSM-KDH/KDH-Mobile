@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
+import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/home/data/models/workout_model.dart';
 import 'package:kdh_mobile/features/home/data/repositories/routine_repository.dart';
 import 'package:kdh_mobile/features/home/data/repositories/routine_repository_impl.dart';
@@ -44,25 +45,64 @@ class HomeRoutineState {
 }
 
 class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
-  HomeRoutineNotifier(this._repository) : super(const HomeRoutineState());
+  HomeRoutineNotifier(this._ref, this._repository)
+    : super(const HomeRoutineState()) {
+    _ref.listen<AuthState>(authProvider, (prev, next) {
+      if (!next.isAuthenticated) {
+        state = const HomeRoutineState();
+      }
+    });
+  }
 
+  final Ref _ref;
   final RoutineRepository _repository;
 
   Future<void> loadDates() async {
-    state = state.copyWith(isLoadingDates: true);
+    state = state.copyWith(isLoadingDates: true, error: null);
     try {
       final dates = await _repository.fetchRoutineDates();
       state = state.copyWith(
         routineDates: dates.toSet(),
         isLoadingDates: false,
+        error: null,
       );
+      _preloadPastCompletionStatuses(dates);
     } catch (e) {
       state = state.copyWith(isLoadingDates: false, error: e.toString());
     }
   }
 
+  void _preloadPastCompletionStatuses(List<String> dates) {
+    final today = DateTime.now();
+    final todayMidnight = DateTime(today.year, today.month, today.day);
+    for (final dateKey in dates) {
+      final parts = dateKey.split('-');
+      if (parts.length != 3) continue;
+      final date = DateTime(
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+        int.parse(parts[2]),
+      );
+      if (date.isBefore(todayMidnight)) {
+        _loadCompletionStatus(dateKey);
+      }
+    }
+  }
+
+  Future<void> _loadCompletionStatus(String dateKey) async {
+    try {
+      final response = await _repository.fetchRoutineByDate(dateKey);
+      final status = _computeStatus(response.workouts);
+      if (status != null) {
+        state = state.copyWith(
+          completionMap: {...state.completionMap, dateKey: status},
+        );
+      }
+    } catch (_) {}
+  }
+
   Future<void> loadRoutinesForDate(String dateKey) async {
-    state = state.copyWith(isLoadingRoutines: true);
+    state = state.copyWith(isLoadingRoutines: true, error: null);
     try {
       final response = await _repository.fetchRoutineByDate(dateKey);
       final status = _computeStatus(response.workouts);
@@ -73,6 +113,7 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
           if (status != null) dateKey: status,
         },
         isLoadingRoutines: false,
+        error: null,
       );
     } catch (e) {
       state = state.copyWith(isLoadingRoutines: false, error: e.toString());
@@ -121,5 +162,5 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
 
 final homeRoutineProvider =
     StateNotifierProvider<HomeRoutineNotifier, HomeRoutineState>(
-      (ref) => HomeRoutineNotifier(ref.watch(_routineRepositoryProvider)),
+      (ref) => HomeRoutineNotifier(ref, ref.watch(_routineRepositoryProvider)),
     );

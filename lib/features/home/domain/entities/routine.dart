@@ -8,6 +8,7 @@ class Routine {
     this.status = RoutineStatus.todo,
     this.needsTimer = true,
     this.imagePath,
+    this.timerSeconds,
   });
 
   final String id;
@@ -16,6 +17,7 @@ class Routine {
   final RoutineStatus status;
   final bool needsTimer;
   final String? imagePath;
+  final int? timerSeconds;
 
   Routine copyWith({RoutineStatus? status}) => Routine(
     id: id,
@@ -24,5 +26,6 @@ class Routine {
     status: status ?? this.status,
     needsTimer: needsTimer,
     imagePath: imagePath,
+    timerSeconds: timerSeconds,
   );
 }

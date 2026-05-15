@@ -1,22 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
+import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
 
 const _gap16 = SizedBox(height: 16);
 
-class AiRoutinePromptPage extends StatelessWidget {
+class AiRoutinePromptPage extends ConsumerWidget {
   const AiRoutinePromptPage({super.key});
 
-  // TODO: 실제 사용자 정보 유무는 상태관리 레이어에서 주입
-  static const bool _hasUserInfo = true;
-
-  void _onGenerateTap(BuildContext context) {
-    if (!_hasUserInfo) {
+  void _onGenerateTap(BuildContext context, bool hasUserInfo) {
+    if (!hasUserInfo) {
       showDialog(
         context: context,
         barrierColor: Colors.black.withAlpha(80),
@@ -28,7 +27,9 @@ class AiRoutinePromptPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasUserInfo = ref.watch(userProfileProvider).profile.hasRequiredInfo;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -108,7 +109,7 @@ class AiRoutinePromptPage extends StatelessWidget {
                     child: Column(
                       children: [
                         _GenerateButton(
-                          onPressed: () => _onGenerateTap(context),
+                          onPressed: () => _onGenerateTap(context, hasUserInfo),
                         ),
                         _gap16,
                         GestureDetector(
@@ -163,10 +164,7 @@ class _GenerateButton extends StatelessWidget {
           ],
         ),
         alignment: Alignment.center,
-        child: Text(
-          'AI 루틴 생성하러 가기',
-          style: KdhTextStyle.body3,
-        ),
+        child: Text('AI 루틴 생성하러 가기', style: KdhTextStyle.body3),
       ),
     );
   }

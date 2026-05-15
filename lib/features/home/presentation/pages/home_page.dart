@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/home/presentation/providers/routine_provider.dart';
 import 'package:kdh_mobile/features/home/presentation/widgets/empty_routine_view.dart';
@@ -103,7 +105,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Expanded(
             child: Stack(
               children: [
-                if (routineState.isLoadingRoutines)
+                if (routineState.isLoadingRoutines || routineState.isLoadingDates)
                   const Padding(
                     padding: EdgeInsets.only(top: _toggleHeight + 16),
                     child: Center(child: CircularProgressIndicator()),
@@ -111,7 +113,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                 else if (routines.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: _toggleHeight),
-                    child: const EmptyRoutineView(),
+                    child: EmptyRoutineView(
+                      hasAnyRoutine: routineState.routineDates.isNotEmpty,
+                    ),
                   )
                 else
                   ListView.separated(
@@ -130,7 +134,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                         workouts[i].exerciseId,
                         workouts[i].completed,
                       ),
-                      onActionTap: () {},
+                      onActionTap: () {
+                        final seconds = routines[i].timerSeconds;
+                        if (seconds != null) {
+                          context.push(RouterPath.intervalTimer, extra: seconds);
+                        } else {
+                          context.push(RouterPath.intervalTimerSetup);
+                        }
+                      },
                     ),
                   ),
 
@@ -148,6 +159,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             displayedMonth: _displayedMonth,
                             selectedDate: _selectedDate,
                             dateCompletionMap: routineState.completionMap,
+                            routineDates: routineState.routineDates,
                             onDateSelected: _onDateSelected,
                             onPrevMonth: _onPrevMonth,
                             onNextMonth: _onNextMonth,

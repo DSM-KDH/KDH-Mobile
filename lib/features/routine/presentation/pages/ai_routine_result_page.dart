@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_failure_view.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_loading_view.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_success_view.dart';
@@ -27,25 +28,33 @@ class _AiRoutineResultPageState extends ConsumerState<AiRoutineResultPage> {
   }
 
   Future<void> _startGeneration() async {
-    try {
-      // TODO: 실제 API 호출로 교체
-      await Future.delayed(const Duration(seconds: 2));
-      if (mounted) setState(() => _state = _ResultState.success);
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _failureMessage = _kDefaultFailureMessage;
-          _state = _ResultState.failure;
-        });
-      }
+    final success = await ref.read(aiRoutineWizardProvider.notifier).submit();
+    if (!mounted) {
+      return;
     }
+
+    if (success) {
+      setState(() => _state = _ResultState.success);
+      return;
+    }
+
+    setState(() {
+      _failureMessage =
+          ref.read(aiRoutineWizardProvider.notifier).submitError ??
+          _kDefaultFailureMessage;
+      _state = _ResultState.failure;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return switch (_state) {
       _ResultState.loading => const AiRoutineLoadingView(),
-      _ResultState.success => const AiRoutineSuccessView(),
+      _ResultState.success => AiRoutineSuccessView(
+        onGoHome: () {
+          ref.read(aiRoutineWizardProvider.notifier).reset();
+        },
+      ),
       _ResultState.failure => AiRoutineFailureView(message: _failureMessage),
     };
   }

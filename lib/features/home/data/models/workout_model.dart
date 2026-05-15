@@ -23,7 +23,7 @@ class WorkoutModel {
     exerciseName: json['exerciseName'] as String,
     repsTime: json['repsTime'] as String,
     completed: json['completed'] as bool,
-    canComplete: json['canComplete'] as bool,
+    canComplete: json['canComplete'] as bool? ?? false,
   );
 
   WorkoutModel copyWith({bool? completed}) => WorkoutModel(
@@ -35,12 +35,22 @@ class WorkoutModel {
     canComplete: canComplete,
   );
 
+  int? get timerSeconds {
+    final minuteMatch = RegExp(r'(\d+)분').firstMatch(repsTime);
+    final secondMatch = RegExp(r'(\d+)초').firstMatch(repsTime);
+    if (minuteMatch == null && secondMatch == null) return null;
+    final minutes = minuteMatch != null ? int.parse(minuteMatch.group(1)!) : 0;
+    final seconds = secondMatch != null ? int.parse(secondMatch.group(1)!) : 0;
+    return minutes * 60 + seconds;
+  }
+
   Routine toRoutine() => Routine(
     id: exerciseId.toString(),
     title: exerciseName,
     subtitle: '$sectionName · $repsTime',
     status: completed ? RoutineStatus.done : RoutineStatus.todo,
-    needsTimer: false,
+    needsTimer: timerSeconds != null,
+    timerSeconds: timerSeconds,
   );
 }
 

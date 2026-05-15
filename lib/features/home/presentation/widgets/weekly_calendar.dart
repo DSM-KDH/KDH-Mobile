@@ -20,8 +20,9 @@ class WeeklyCalendar extends StatelessWidget {
 
   bool _isToday(DateTime date) => _isSameDay(date, DateTime.now());
 
-  bool _hasRoutine(DateTime date) =>
-      datesWithRoutines.contains('${date.year}-${date.month}-${date.day}');
+  bool _hasRoutine(DateTime date) => datesWithRoutines.contains(
+    '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+  );
 
   List<DateTime> get _weekDates {
     final weekday = selectedDate.weekday;

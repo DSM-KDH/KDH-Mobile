@@ -15,8 +15,16 @@ class WeightHistoryNotifier extends StateNotifier<List<WeightEntry>> {
     if (TokenStorage.hasToken) loadHistory();
 
     _ref.listen<AuthState>(authProvider, (prev, next) {
-      final justLoggedIn = !(prev?.isAuthenticated ?? false) && next.isAuthenticated;
-      if (justLoggedIn) loadHistory();
+      final justLoggedIn =
+          !(prev?.isAuthenticated ?? false) && next.isAuthenticated;
+      if (justLoggedIn) {
+        loadHistory();
+        return;
+      }
+
+      if (!next.isAuthenticated) {
+        state = [];
+      }
     });
   }
 

@@ -10,7 +10,12 @@ import SwiftUI
 
 struct MyView: View {
     @EnvironmentObject private var connectivityManager: WatchConnectivityManager
-    @State private var my: My = .init(name: "", info: "")
+
+    @State private var my: My = .init(
+        name: "",
+        info: ""
+    )
+
     @State private var isLoading = false
 
     var body: some View {
@@ -38,16 +43,20 @@ struct MyView: View {
             }
             .padding(.leading, 20)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity,
+            alignment: .top
+        )
         .background(Color.background)
         .task {
-            await fetchProfile()
+            await fetchMyInfo()
         }
     }
 }
 
 private extension MyView {
-    func fetchProfile() async {
+    func fetchMyInfo() async {
         guard !isLoading else {
             return
         }
@@ -57,25 +66,48 @@ private extension MyView {
         defer {
             isLoading = false
         }
-        do {
-            guard
-                let accessToken = connectivityManager.accessToken(),
-                !accessToken.isEmpty
-            else {
-                print("[MyView] AccessToken 없음")
-                return
-            }
 
-            let response = try await UsersService.shared.fetchProfile(
+        guard
+            let accessToken = connectivityManager.accessToken(),
+            !accessToken.isEmpty
+        else {
+            print("[MyView] AccessToken 없음")
+            return
+        }
+
+        do {
+            let user = try await UsersService.shared.fetchMe(
                 accessToken: accessToken
             )
 
             await MainActor.run {
                 my = .init(
-                    name: response.name,
-                    info: "\(response.heightCm)cm · \(response.weightKg)kg · \(response.gender == "MALE" ? "남" : "여")"
+                    name: user.name,
+                    info: my.info
                 )
             }
+
+        } catch {
+            print("[MyView] fetchMe error: \(error)")
+        }
+
+        do {
+            let profile = try await UsersService.shared.fetchProfile(
+                accessToken: accessToken
+            )
+
+            let profileText =
+                "\(Int(profile.heightCm))cm · " +
+                "\(Int(profile.weightKg))kg · " +
+                "\(profile.gender == "MALE" ? "남" : "여")"
+
+            await MainActor.run {
+                my = .init(
+                    name: my.name,
+                    info: profileText
+                )
+            }
+
         } catch {
             print("[MyView] fetchProfile error: \(error)")
         }
@@ -87,7 +119,6 @@ private struct My: Identifiable {
     let name: String
     var info: String?
 }
-
 
 #Preview {
     MyView()

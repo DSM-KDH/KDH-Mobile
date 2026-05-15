@@ -6,11 +6,14 @@
 //
 struct ProfileResponse: Decodable {
     let id: Int
-    let name: String
-    let profileImage: String
     let heightCm: Double
     let weightKg: Double
     let gender: String
     let recordedAt: String
     let nextReminderAt: String
+}
+
+struct UserResponse: Decodable {
+    let name: String
+    let profileImage: String
 }

@@ -42,11 +42,7 @@ struct UsersService {
             encoding: .utf8
         ) ?? ""
 
-        print("[UsersAPI] request target=\(target)")
-        print("[UsersAPI] response headers=\(response.response?.allHeaderFields ?? [:])")
-
         print("[UsersAPI] statusCode=\(response.statusCode)")
-        print("[UsersAPI] RAW RESPONSE=\(raw)")
 
         guard (200...299).contains(response.statusCode) else {
             throw NSError(
@@ -119,11 +115,7 @@ struct UsersService {
             encoding: .utf8
         ) ?? ""
 
-        print("[UsersAPI] request target=\(target)")
-        print("[UsersAPI] response headers=\(response.response?.allHeaderFields ?? [:])")
-
         print("[UsersAPI] statusCode=\(response.statusCode)")
-        print("[UsersAPI] RAW RESPONSE=\(raw)")
 
         guard (200...299).contains(response.statusCode) else {
             throw NSError(

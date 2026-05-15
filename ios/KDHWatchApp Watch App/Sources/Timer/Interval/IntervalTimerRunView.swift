@@ -77,15 +77,15 @@ struct IntervalTimerRunView: View {
         totalRemainingSeconds = totalInputSeconds
  
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            guard totalRemainingSeconds > 0 else {
+            totalRemainingSeconds -= 1
+            phaseRemainingSeconds -= 1
+
+            if totalRemainingSeconds <= 0 {
                 timer?.invalidate()
                 playFinishedSound()
                 isReady = true
                 return
             }
-
-            totalRemainingSeconds -= 1
-            phaseRemainingSeconds -= 1
 
             if phaseRemainingSeconds <= 0 {
                 playPhaseChangeSound()

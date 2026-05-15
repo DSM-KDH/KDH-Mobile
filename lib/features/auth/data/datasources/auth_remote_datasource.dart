@@ -54,10 +54,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> withdrawal() async {
     try {
-      await _dio.post(
-        ApiEndpoint.oauth2Withdrawal,
-        data: const <String, dynamic>{},
-      );
+      await _dio.delete(ApiEndpoint.userMe);
     } on DioException catch (e) {
       throw extractAppException(e);
     }

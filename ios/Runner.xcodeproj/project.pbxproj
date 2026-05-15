@@ -34,6 +34,10 @@
 		88B098342F8CB3FE00317162 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 88B098212F8CB3FE00317162 /* Pretendard-SemiBold.otf */; };
 		88B098352F8CB3FE00317162 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 88B098252F8CB3FE00317162 /* Assets.xcassets */; };
 		88B098362F8CB3FE00317162 /* TodayRoutineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B098292F8CB3FE00317162 /* TodayRoutineView.swift */; };
+		88D593452FB69F0000D4A719 /* interval_alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 88D593442FB69F0000D4A719 /* interval_alarm.mp3 */; };
+		88D593462FB69F0000D4A719 /* interval_alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 88D593442FB69F0000D4A719 /* interval_alarm.mp3 */; };
+		88D593482FB6A25600D4A719 /* finished.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 88D593472FB6A25600D4A719 /* finished.mp3 */; };
+		88D593492FB6A25600D4A719 /* finished.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 88D593472FB6A25600D4A719 /* finished.mp3 */; };
 		88E87E312F91BEAD0026CEF1 /* MyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E87E302F91BEA90026CEF1 /* MyView.swift */; };
 		88FACEF22FB1AADB00AAE9DC /* RoutineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FACEF12FB1AAD400AAE9DC /* RoutineService.swift */; };
 		88FACEF42FB1AAF800AAE9DC /* RoutineAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FACEF32FB1AAF400AAE9DC /* RoutineAPI.swift */; };
@@ -146,6 +150,8 @@
 		88B098262F8CB3FE00317162 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		88B098272F8CB3FE00317162 /* KDHWatchAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KDHWatchAppApp.swift; sourceTree = "<group>"; };
 		88B098292F8CB3FE00317162 /* TodayRoutineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayRoutineView.swift; sourceTree = "<group>"; };
+		88D593442FB69F0000D4A719 /* interval_alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = interval_alarm.mp3; sourceTree = "<group>"; };
+		88D593472FB6A25600D4A719 /* finished.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = finished.mp3; sourceTree = "<group>"; };
 		88E87E302F91BEA90026CEF1 /* MyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView.swift; sourceTree = "<group>"; };
 		88FACEF12FB1AAD400AAE9DC /* RoutineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineService.swift; sourceTree = "<group>"; };
 		88FACEF32FB1AAF400AAE9DC /* RoutineAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineAPI.swift; sourceTree = "<group>"; };
@@ -315,6 +321,8 @@
 		88B098282F8CB3FE00317162 /* Resoures */ = {
 			isa = PBXGroup;
 			children = (
+				88D593472FB6A25600D4A719 /* finished.mp3 */,
+				88D593442FB69F0000D4A719 /* interval_alarm.mp3 */,
 				88B098222F8CB3FE00317162 /* Font */,
 				88B098242F8CB3FE00317162 /* Typography */,
 				88B098252F8CB3FE00317162 /* Assets.xcassets */,
@@ -565,6 +573,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88D593482FB6A25600D4A719 /* finished.mp3 in Resources */,
+				88D593462FB69F0000D4A719 /* interval_alarm.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,8 +583,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				88B098312F8CB3FE00317162 /* Pretendard-Light.otf in Resources */,
+				88D593492FB6A25600D4A719 /* finished.mp3 in Resources */,
 				88B098322F8CB3FE00317162 /* Pretendard-Medium.otf in Resources */,
 				88B098332F8CB3FE00317162 /* Pretendard-Regular.otf in Resources */,
+				88D593452FB69F0000D4A719 /* interval_alarm.mp3 in Resources */,
 				88B098342F8CB3FE00317162 /* Pretendard-SemiBold.otf in Resources */,
 				88B098352F8CB3FE00317162 /* Assets.xcassets in Resources */,
 			);

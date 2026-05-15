@@ -49,8 +49,7 @@ class AiRoutineRepositoryImpl implements AiRoutineRepository {
   }) async {
     try {
       final goal = data.goal!;
-      final body = {
-        'fcmToken': fcmToken ?? '',
+      final body = <String, dynamic>{
         'goal': {
           'goalType': _goalTypes[goal],
           'targetWeight': goal == 0 ? data.targetWeight : null,
@@ -62,18 +61,27 @@ class AiRoutineRepositoryImpl implements AiRoutineRepository {
         'schedule': {
           'totalWeeks': data.weeks,
           'hoursPerDay': data.hours?.toInt() ?? 1,
-          'activeDays': data.selectedDays.map((i) => _dayNames[i]).toList(),
+          'activeDays': (data.selectedDays.toList()..sort())
+              .map((i) => _dayNames[i])
+              .toList(),
         },
-        'preferredExerciseTypes': data.exerciseTypes
+        'preferredExerciseTypes': (data.exerciseTypes.toList()..sort())
             .map((i) => _exerciseTypes[i])
             .toList(),
         'environment': {
-          'locations': data.places.map((i) => _locations[i]).toList(),
+          'locations': (data.places.toList()..sort())
+              .map((i) => _locations[i])
+              .toList(),
           'equipments': data.equipment
               .map((k) => _equipmentMap[k] ?? k)
               .toList(),
         },
       };
+
+      final trimmedFcmToken = fcmToken?.trim();
+      if (trimmedFcmToken != null && trimmedFcmToken.isNotEmpty) {
+        body['fcmToken'] = trimmedFcmToken;
+      }
 
       await _dio.post(ApiEndpoint.routines, data: body);
     } on DioException catch (e) {

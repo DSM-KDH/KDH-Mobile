@@ -9,6 +9,8 @@ class UserProfile {
   final Gender? gender;
 
   bool get hasInfo => height != null || weight != null || gender != null;
+  bool get hasRequiredInfo =>
+      height != null && weight != null && gender != null;
 
   String get subtitle {
     if (!hasInfo) return '사용자 정보를 입력해주세요';

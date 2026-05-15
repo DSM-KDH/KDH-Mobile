@@ -53,7 +53,12 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._repository)
-    : super(AuthState(isAuthenticated: TokenStorage.hasToken)) {
+    : super(
+        AuthState(
+          isAuthenticated: TokenStorage.hasToken,
+          userEmail: _extractEmailFromJwt(TokenStorage.accessToken ?? ''),
+        ),
+      ) {
     final existingToken = TokenStorage.accessToken;
     if (existingToken != null && existingToken.isNotEmpty) {
       unawaited(WatchTokenSyncService.syncAccessToken(existingToken));
@@ -79,8 +84,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     WatchService.sendAccessToken(accessToken);
   }
 
-  Future<void> logout() async {
-    state = state.copyWith(isLoading: true);
+  Future<bool> logout() async {
+    state = state.copyWith(isLoading: true, error: null);
 
     try {
       await _repository.logout();
@@ -88,20 +93,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = const AuthState(isAuthenticated: false);
 
       WatchService.clearToken();
+      return true;
     } catch (e) {
+      if (!TokenStorage.hasToken) {
+        state = const AuthState(isAuthenticated: false);
+        WatchService.clearToken();
+        return true;
+      }
       state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 
-  Future<void> withdrawal() async {
-    state = state.copyWith(isLoading: true);
+  Future<bool> withdrawal() async {
+    state = state.copyWith(isLoading: true, error: null);
 
     try {
       await _repository.withdrawal();
 
       state = const AuthState(isAuthenticated: false);
+      WatchService.clearToken();
+      return true;
     } catch (e) {
+      if (!TokenStorage.hasToken) {
+        state = const AuthState(isAuthenticated: false);
+        WatchService.clearToken();
+        return true;
+      }
       state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 

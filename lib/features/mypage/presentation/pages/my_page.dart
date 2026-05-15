@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
@@ -13,16 +14,64 @@ import 'package:material_symbols_icons/symbols.dart';
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
 
+  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
+    final confirmed = await context.showKdhConfirmDialog(
+      title: '로그아웃할까요?',
+      message: '현재 기기에서 로그아웃합니다.',
+      confirmLabel: '로그아웃',
+    );
+    if (!confirmed || !context.mounted) {
+      return;
+    }
+
+    final success = await ref.read(authProvider.notifier).logout();
+    if (!context.mounted) {
+      return;
+    }
+
+    if (success) {
+      context.go(RouterPath.onboarding);
+      return;
+    }
+
+    final message = ref.read(authProvider).error ?? '로그아웃에 실패했습니다.';
+    context.showKdhSnackBar(message);
+  }
+
+  Future<void> _handleWithdrawal(BuildContext context, WidgetRef ref) async {
+    final confirmed = await context.showKdhConfirmDialog(
+      title: '회원탈퇴할까요?',
+      message: '회원 정보 및 모든 정보가 삭제됩니다.\n탈퇴 후에는 되돌릴 수 없어요.',
+      confirmLabel: '네, 탈퇴할게요',
+    );
+    if (!confirmed || !context.mounted) {
+      return;
+    }
+
+    final success = await ref.read(authProvider.notifier).withdrawal();
+    if (!context.mounted) {
+      return;
+    }
+
+    if (success) {
+      context.go(RouterPath.onboarding);
+      return;
+    }
+
+    final message = ref.read(authProvider).error ?? '회원탈퇴에 실패했습니다.';
+    context.showKdhSnackBar(message);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authDisplayName = ref.watch(authProvider).displayName;
-    final userEmail = ref.watch(authProvider).userEmail;
+    final authState = ref.watch(authProvider);
+    final authDisplayName = authState.displayName;
+    final userEmail = authState.userEmail;
     final profileState = ref.watch(userProfileProvider);
     final profile = profileState.profile;
-    final displayName =
-        (profile.name != null && profile.name!.isNotEmpty)
-            ? profile.name!
-            : authDisplayName;
+    final displayName = (profile.name != null && profile.name!.isNotEmpty)
+        ? profile.name!
+        : authDisplayName;
     final weightHistory = ref.watch(weightHistoryProvider);
 
     final distinctMonths = weightHistory
@@ -42,7 +91,22 @@ class MyPage extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('마이페이지', style: KdhTextStyle.body3),
-                Icon(Symbols.logout, size: 20, color: KdhColor.gray800,),
+                IconButton(
+                  onPressed: authState.isLoading
+                      ? null
+                      : () => _handleLogout(context, ref),
+                  icon: authState.isLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(
+                          Symbols.logout,
+                          size: 20,
+                          color: KdhColor.gray800,
+                        ),
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -137,11 +201,19 @@ class MyPage extends ConsumerWidget {
 
             Align(
               alignment: Alignment.center,
-              child: Text('회원탈퇴', style: KdhTextStyle.body6.copyWith(
-                  color: KdhColor.gray300,
-                  fontSize: 15,
-                  decoration: TextDecoration.underline,
-                  decorationColor: KdhColor.gray300),
+              child: GestureDetector(
+                onTap: authState.isLoading
+                    ? null
+                    : () => _handleWithdrawal(context, ref),
+                child: Text(
+                  '회원탈퇴',
+                  style: KdhTextStyle.body6.copyWith(
+                    color: KdhColor.gray300,
+                    fontSize: 15,
+                    decoration: TextDecoration.underline,
+                    decorationColor: KdhColor.gray300,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 35),

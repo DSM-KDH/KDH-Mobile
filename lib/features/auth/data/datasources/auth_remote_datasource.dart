@@ -42,7 +42,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> logout() async {
     try {
-      await _dio.post(ApiEndpoint.oauth2Logout);
+      await _dio.post(
+        ApiEndpoint.oauth2Logout,
+        data: const <String, dynamic>{},
+      );
     } on DioException catch (e) {
       throw extractAppException(e);
     }
@@ -51,7 +54,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> withdrawal() async {
     try {
-      await _dio.post(ApiEndpoint.oauth2Withdrawal);
+      await _dio.post(
+        ApiEndpoint.oauth2Withdrawal,
+        data: const <String, dynamic>{},
+      );
     } on DioException catch (e) {
       throw extractAppException(e);
     }

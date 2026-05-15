@@ -38,8 +38,16 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
     if (TokenStorage.hasToken) loadProfile();
 
     _ref.listen<AuthState>(authProvider, (prev, next) {
-      final justLoggedIn = !(prev?.isAuthenticated ?? false) && next.isAuthenticated;
-      if (justLoggedIn) loadProfile();
+      final justLoggedIn =
+          !(prev?.isAuthenticated ?? false) && next.isAuthenticated;
+      if (justLoggedIn) {
+        loadProfile();
+        return;
+      }
+
+      if (!next.isAuthenticated) {
+        state = const UserProfileState();
+      }
     });
   }
 
@@ -47,10 +55,14 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
   final UserProfileRepository _repository;
 
   Future<void> loadProfile() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, error: null);
     try {
       final model = await _repository.fetchProfile();
-      state = state.copyWith(profile: model.toDomain(), isLoading: false);
+      state = state.copyWith(
+        profile: model.toDomain(),
+        isLoading: false,
+        error: null,
+      );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
@@ -61,14 +73,18 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
     required double weight,
     required Gender gender,
   }) async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, error: null);
     try {
       final model = await _repository.saveProfile(
         heightCm: height,
         weightKg: weight,
         gender: gender == Gender.male ? 'MALE' : 'FEMALE',
       );
-      state = state.copyWith(profile: model.toDomain(), isLoading: false);
+      state = state.copyWith(
+        profile: model.toDomain(),
+        isLoading: false,
+        error: null,
+      );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
@@ -77,5 +93,6 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
 
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, UserProfileState>(
-      (ref) => UserProfileNotifier(ref, ref.watch(_userProfileRepositoryProvider)),
+      (ref) =>
+          UserProfileNotifier(ref, ref.watch(_userProfileRepositoryProvider)),
     );

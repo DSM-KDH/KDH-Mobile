@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
 
@@ -16,11 +17,7 @@ class AiRoutinePromptPage extends ConsumerWidget {
 
   void _onGenerateTap(BuildContext context, bool hasUserInfo) {
     if (!hasUserInfo) {
-      showDialog(
-        context: context,
-        barrierColor: Colors.black.withAlpha(80),
-        builder: (_) => const _NoUserInfoDialog(),
-      );
+      context.showKdhSnackBar('사용자 정보 설정 후 루틴 생성이 가능합니다');
       return;
     }
     context.push(RouterPath.aiRoutineStep1);
@@ -170,51 +167,3 @@ class _GenerateButton extends StatelessWidget {
   }
 }
 
-class _NoUserInfoDialog extends StatelessWidget {
-  const _NoUserInfoDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: KdhColor.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '사용자 정보를 입력해주세요!',
-              style: KdhTextStyle.body3,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '사용자 정보를 입력한 후에\nAI 루틴 생성 기능을 이용할 수 있어요!',
-              style: KdhTextStyle.caption2.copyWith(color: KdhColor.gray400),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-                context.go(RouterPath.profile);
-              },
-              child: Container(
-                width: double.infinity,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: KdhColor.red100,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                alignment: Alignment.center,
-                child: Text('사용자 정보 입력하러 가기', style: KdhTextStyle.caption3),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

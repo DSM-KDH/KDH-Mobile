@@ -71,7 +71,7 @@ struct TodayRoutineView: View {
             case .loaded:
                 if workouts.isEmpty {
 
-                    message("생성한 루틴이 없습니다")
+                    message("오늘은 루틴이 없습니다")
 
                 } else {
 

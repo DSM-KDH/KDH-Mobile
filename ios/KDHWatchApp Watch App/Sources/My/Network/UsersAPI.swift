@@ -10,6 +10,7 @@ import Alamofire
 
 enum UsersAPI {
     case profile(accessToken: String)
+    case me(accessToken: String)
 }
 
 extension UsersAPI: TargetType {
@@ -31,12 +32,16 @@ extension UsersAPI: TargetType {
         switch self {
         case .profile:
             return "/me/profile"
+        case .me:
+            return "/me"
         }
     }
 
     var method: Moya.Method {
         switch self {
         case .profile:
+            return .get
+        case .me:
             return .get
         }
     }
@@ -45,12 +50,19 @@ extension UsersAPI: TargetType {
         switch self {
         case .profile:
             return .requestPlain
+        case .me:
+            return .requestPlain
         }
     }
 
     var headers: [String : String]? {
         switch self {
         case let .profile(accessToken):
+            return [
+                "Accept": "application/json",
+                "Authorization": "Bearer \(accessToken)"
+            ]
+        case let .me(accessToken):
             return [
                 "Accept": "application/json",
                 "Authorization": "Bearer \(accessToken)"

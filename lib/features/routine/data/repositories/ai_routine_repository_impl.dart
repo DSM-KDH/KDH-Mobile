@@ -17,7 +17,7 @@ class AiRoutineRepositoryImpl implements AiRoutineRepository {
   static const _equipmentMap = {
     '바벨': 'BARBELL',
     '덤벨': 'DUMBBELL',
-    '케이블': 'CABLE_MACHINE',
+    '케이블': 'CABLE',
     '머신': 'MACHINE',
     '벤치': 'BENCH',
     '철봉': 'PULL_UP_BAR',
@@ -25,10 +25,10 @@ class AiRoutineRepositoryImpl implements AiRoutineRepository {
     '랫풀다운': 'LAT_PULL_DOWN',
     '스미스머신': 'SMITH_MACHINE',
     '레그프레스': 'LEG_PRESS',
-    '펙덱플라이': 'PEC_DECK',
-    '딥스바': 'DIP_BAR',
+    '펙덱플라이': 'PEC_DECK_FLY',
+    '딥스바': 'DIP_STATION',
     '폼롤러': 'FOAM_ROLLER',
-    '사이클': 'BIKE',
+    '사이클': 'CYCLE',
   };
 
   static const _muscleMap = {

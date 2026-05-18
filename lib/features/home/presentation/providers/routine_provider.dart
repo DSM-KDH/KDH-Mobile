@@ -10,10 +10,18 @@ final _routineRepositoryProvider = Provider<RoutineRepository>(
   (ref) => RoutineRepositoryImpl(ref.watch(dioProvider)),
 );
 
+class DayExerciseCount {
+  const DayExerciseCount({required this.done, required this.total});
+
+  final int done;
+  final int total;
+}
+
 class HomeRoutineState {
   const HomeRoutineState({
     this.routineDates = const {},
     this.completionMap = const {},
+    this.exerciseCountMap = const {},
     this.currentWorkouts = const [],
     this.isLoadingDates = false,
     this.isLoadingRoutines = false,
@@ -22,6 +30,7 @@ class HomeRoutineState {
 
   final Set<String> routineDates;
   final Map<String, DayCompletionStatus> completionMap;
+  final Map<String, DayExerciseCount> exerciseCountMap;
   final List<WorkoutModel> currentWorkouts;
   final bool isLoadingDates;
   final bool isLoadingRoutines;
@@ -30,6 +39,7 @@ class HomeRoutineState {
   HomeRoutineState copyWith({
     Set<String>? routineDates,
     Map<String, DayCompletionStatus>? completionMap,
+    Map<String, DayExerciseCount>? exerciseCountMap,
     List<WorkoutModel>? currentWorkouts,
     bool? isLoadingDates,
     bool? isLoadingRoutines,
@@ -37,6 +47,7 @@ class HomeRoutineState {
   }) => HomeRoutineState(
     routineDates: routineDates ?? this.routineDates,
     completionMap: completionMap ?? this.completionMap,
+    exerciseCountMap: exerciseCountMap ?? this.exerciseCountMap,
     currentWorkouts: currentWorkouts ?? this.currentWorkouts,
     isLoadingDates: isLoadingDates ?? this.isLoadingDates,
     isLoadingRoutines: isLoadingRoutines ?? this.isLoadingRoutines,
@@ -66,13 +77,13 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
         isLoadingDates: false,
         error: null,
       );
-      _preloadPastCompletionStatuses(dates);
+      _preloadCompletionStatuses(dates);
     } catch (e) {
       state = state.copyWith(isLoadingDates: false, error: e.toString());
     }
   }
 
-  void _preloadPastCompletionStatuses(List<String> dates) {
+  void _preloadCompletionStatuses(List<String> dates) {
     final today = DateTime.now();
     final todayMidnight = DateTime(today.year, today.month, today.day);
     for (final dateKey in dates) {
@@ -83,21 +94,29 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
         int.parse(parts[1]),
         int.parse(parts[2]),
       );
-      if (date.isBefore(todayMidnight)) {
-        _loadCompletionStatus(dateKey);
+      if (!date.isAfter(todayMidnight)) {
+        loadCompletionStatus(dateKey);
       }
     }
   }
 
-  Future<void> _loadCompletionStatus(String dateKey) async {
+  Future<void> loadCompletionStatus(String dateKey) async {
     try {
       final response = await _repository.fetchRoutineByDate(dateKey);
-      final status = _computeStatus(response.workouts);
-      if (status != null) {
-        state = state.copyWith(
-          completionMap: {...state.completionMap, dateKey: status},
-        );
-      }
+      final workouts = response.workouts;
+      final status = _computeStatus(workouts);
+      final count = _computeCount(workouts);
+
+      state = state.copyWith(
+        completionMap: {
+          ...state.completionMap,
+          if (status != null) dateKey: status,
+        },
+        exerciseCountMap: {
+          ...state.exerciseCountMap,
+          if (count != null) dateKey: count,
+        },
+      );
     } catch (_) {}
   }
 
@@ -105,12 +124,19 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
     state = state.copyWith(isLoadingRoutines: true, error: null);
     try {
       final response = await _repository.fetchRoutineByDate(dateKey);
-      final status = _computeStatus(response.workouts);
+      final workouts = response.workouts;
+      final status = _computeStatus(workouts);
+      final count = _computeCount(workouts);
+
       state = state.copyWith(
-        currentWorkouts: response.workouts,
+        currentWorkouts: workouts,
         completionMap: {
           ...state.completionMap,
           if (status != null) dateKey: status,
+        },
+        exerciseCountMap: {
+          ...state.exerciseCountMap,
+          if (count != null) dateKey: count,
         },
         isLoadingRoutines: false,
         error: null,
@@ -133,11 +159,16 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
         .toList();
 
     final status = _computeStatus(updated);
+    final count = _computeCount(updated);
     state = state.copyWith(
       currentWorkouts: updated,
       completionMap: {
         ...state.completionMap,
         if (status != null) dateKey: status,
+      },
+      exerciseCountMap: {
+        ...state.exerciseCountMap,
+        if (count != null) dateKey: count,
       },
     );
 
@@ -157,6 +188,14 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
     if (doneCount == workouts.length) return DayCompletionStatus.allDone;
     if (doneCount == 0) return DayCompletionStatus.noneDone;
     return DayCompletionStatus.partial;
+  }
+
+  DayExerciseCount? _computeCount(List<WorkoutModel> workouts) {
+    if (workouts.isEmpty) return null;
+    return DayExerciseCount(
+      done: workouts.where((w) => w.completed).length,
+      total: workouts.length,
+    );
   }
 }
 

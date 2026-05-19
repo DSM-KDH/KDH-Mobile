@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/services/routine_live_activity_service.dart';
 import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_failure_view.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_loading_view.dart';
@@ -21,6 +22,8 @@ class _AiRoutineResultPageState extends ConsumerState<AiRoutineResultPage> {
   _ResultState _state = _ResultState.loading;
   String _failureMessage = _kDefaultFailureMessage;
 
+  final _liveActivity = RoutineLiveActivityService();
+
   @override
   void initState() {
     super.initState();
@@ -28,16 +31,20 @@ class _AiRoutineResultPageState extends ConsumerState<AiRoutineResultPage> {
   }
 
   Future<void> _startGeneration() async {
+    // Live Activity / Android 알림 시작
+    await _liveActivity.init();
+    await _liveActivity.startCreation();
+
     final success = await ref.read(aiRoutineWizardProvider.notifier).submit();
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
 
     if (success) {
+      await _liveActivity.notifySuccess();
       setState(() => _state = _ResultState.success);
       return;
     }
 
+    await _liveActivity.notifyFailure();
     setState(() {
       _failureMessage =
           ref.read(aiRoutineWizardProvider.notifier).submitError ??

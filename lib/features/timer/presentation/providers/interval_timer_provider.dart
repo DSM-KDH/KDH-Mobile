@@ -106,14 +106,12 @@ class IntervalTimerNotifier extends StateNotifier<IntervalTimerState> {
       _handleFinished();
     });
 
-    // 앱 재시작 후 서비스가 이미 돌고 있으면 현재 상태 요청
     if (await svc.isRunning()) {
       svc.invoke(kCmdGetState, {});
     }
   }
 
   void _applyTick(Map<String, dynamic> data) {
-    // 네비게이션 후 새 인스턴스가 생겼는데 서비스는 아직 running 중인 경우
     if (state.status != TimerStatus.running) {
       _keepAlive ??= _ref.keepAlive();
       state = state.copyWith(status: TimerStatus.running);
@@ -155,7 +153,14 @@ class IntervalTimerNotifier extends StateNotifier<IntervalTimerState> {
     WakelockPlus.enable();
 
     final svc = FlutterBackgroundService();
+    final alreadyRunning = await svc.isRunning();
     await svc.startService();
+    if (!alreadyRunning) {
+      await svc.on('ready').first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => {},
+      );
+    }
     svc.invoke(kCmdStart, {
       'type': kTypeInterval,
       'totalSeconds': state.totalSeconds,

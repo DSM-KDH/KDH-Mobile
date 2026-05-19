@@ -89,8 +89,6 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
   KeepAliveLink? _keepAlive;
   StreamSubscription? _tickSub;
   StreamSubscription? _finishedSub;
-  // beat 이벤트: 백그라운드 서비스 isolate에서 박자 타이밍을 계산해 보내면
-  // 앱이 포그라운드일 때 UI isolate에서 소리를 재생한다.
   StreamSubscription? _beatSub;
 
   Future<void> _subscribeToService() async {
@@ -107,7 +105,6 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
     });
 
     _beatSub = svc.on(kEvtBeat).listen((_) {
-      // 포그라운드에 있을 때만 실질적으로 오디오 재생됨
       TimerSoundService.playMetronomeTick();
     });
 
@@ -146,7 +143,14 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
     WakelockPlus.enable();
 
     final svc = FlutterBackgroundService();
+    final alreadyRunning = await svc.isRunning();
     await svc.startService();
+    if (!alreadyRunning) {
+      await svc.on('ready').first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => {},
+      );
+    }
     svc.invoke(kCmdStart, {
       'type': kTypeMetronome,
       'totalSeconds': _config.totalSeconds,

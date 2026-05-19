@@ -126,6 +126,8 @@ void _onStart(ServiceInstance service) {
     updateNotif('남은 시간  ${fmt(remaining)}');
   }
 
+  service.invoke('ready', {});
+
   service.on(kCmdStart).listen((data) {
     if (data == null) return;
     mainTimer?.cancel();

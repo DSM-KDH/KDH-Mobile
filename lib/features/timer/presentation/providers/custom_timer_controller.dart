@@ -150,17 +150,21 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
     }
 
     final prevIdx = state.currentIntervalIndex;
+    final prevSet = state.currentSet;
     final newIdx = (data['intervalIndex'] as num?)?.toInt() ?? prevIdx;
+    final newSet = (data['currentSet'] as num?)?.toInt() ?? prevSet;
 
     state = state.copyWith(
       totalRemainingSeconds: (data['remaining'] as num).toInt(),
       currentIntervalIndex: newIdx,
       intervalElapsedSeconds:
           (data['intervalElapsed'] as num?)?.toInt() ?? state.intervalElapsedSeconds,
-      currentSet: (data['currentSet'] as num?)?.toInt() ?? state.currentSet,
+      currentSet: newSet,
     );
 
-    if (newIdx != prevIdx) TimerSoundService.playIntervalStart();
+    if (newIdx != prevIdx || newSet != prevSet) {
+      TimerSoundService.playIntervalStart();
+    }
   }
 
   void _handleFinished() {
@@ -185,7 +189,14 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
     WakelockPlus.enable();
 
     final svc = FlutterBackgroundService();
+    final alreadyRunning = await svc.isRunning();
     await svc.startService();
+    if (!alreadyRunning) {
+      await svc.on('ready').first.timeout(
+        const Duration(seconds: 3),
+        onTimeout: () => {},
+      );
+    }
     svc.invoke(kCmdStart, {
       'type': kTypeCustom,
       'totalSeconds': state.totalSeconds,

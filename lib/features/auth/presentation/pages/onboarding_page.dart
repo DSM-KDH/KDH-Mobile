@@ -35,7 +35,12 @@ class OnboardingPage extends ConsumerWidget {
                   context.push(RouterPath.oauthWebView, extra: authUrl);
                 },
               ),
-              const SizedBox(height: 40),
+              SizedBox(
+                height: 24 +
+                    (MediaQuery.viewPaddingOf(context).bottom < 24
+                        ? 24
+                        : MediaQuery.viewPaddingOf(context).bottom),
+              ),
             ],
           ),
         ),

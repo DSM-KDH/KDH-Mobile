@@ -20,8 +20,11 @@ class KdhBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomPad  = bottomInset < 40 ? 40.0 : bottomInset;
+
     return SafeArea(
-      minimum: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+      minimum: EdgeInsets.fromLTRB(24, 0, 24, bottomPad),
       child: Container(
         height: 64,
         decoration: BoxDecoration(

@@ -205,10 +205,17 @@
 			);
 			target = 320594D32FBBFF1500AA19DF /* RoutineWidgetExtension */;
 		};
+		32B3B5A62FBC55AA00A5566E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RoutineCreationAttributes.swift,
+			);
+			target = 97C146ED1CF9000F007C117D /* Runner */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		320594D92FBBFF1700AA19DF /* RoutineWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (320594EC2FBBFF1B00AA19DF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = RoutineWidget; sourceTree = "<group>"; };
+		320594D92FBBFF1700AA19DF /* RoutineWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (32B3B5A62FBC55AA00A5566E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 320594EC2FBBFF1B00AA19DF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = RoutineWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */

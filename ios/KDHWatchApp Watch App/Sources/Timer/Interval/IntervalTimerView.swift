@@ -42,18 +42,10 @@ struct IntervalTimerView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 4)
  
-                Button {
-                    navigateToTimer = true
-                } label: {
-                    Text("시작하기")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.background)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(.red200)
-                        .clipShape(Capsule())
-                }
-                .buttonStyle(.plain)
+                TimerStartButton(
+                    isEnabled: true,
+                    action: { navigateToTimer = true }
+                )
                 .padding(.horizontal, 8)
                 .padding(.top, 8)
                 .padding(.bottom, 8)

@@ -50,7 +50,7 @@ struct TimerSelectView: View {
             .navigationDestination(item: $destination) { dest in
                 switch dest {
                 case .interval:  IntervalTimerView()
-                case .custom:    CustomTimerView()
+                case .custom:    UserSettingTimerView()
                 case .metronome: MetronomeRunView()
                 }
             }
@@ -63,7 +63,7 @@ struct TimerSelectView: View {
         case .interval:
             IntervalTimerView()
         case .custom:
-            CustomTimerView()
+            UserSettingTimerView()
         case .metronome:
             MetronomeRunView()
         case .none:

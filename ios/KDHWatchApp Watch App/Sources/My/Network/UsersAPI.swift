@@ -11,6 +11,7 @@ import Alamofire
 enum UsersAPI {
     case profile(accessToken: String)
     case me(accessToken: String)
+    case profileHistory(accessToken: String)
 }
 
 extension UsersAPI: TargetType {
@@ -34,6 +35,8 @@ extension UsersAPI: TargetType {
             return "/me/profile"
         case .me:
             return "/me"
+        case .profileHistory:
+            return "/me/profile/history"
         }
     }
 
@@ -43,6 +46,8 @@ extension UsersAPI: TargetType {
             return .get
         case .me:
             return .get
+        case .profileHistory:
+            return .get
         }
     }
 
@@ -51,6 +56,8 @@ extension UsersAPI: TargetType {
         case .profile:
             return .requestPlain
         case .me:
+            return .requestPlain
+        case .profileHistory:
             return .requestPlain
         }
     }
@@ -63,6 +70,11 @@ extension UsersAPI: TargetType {
                 "Authorization": "Bearer \(accessToken)"
             ]
         case let .me(accessToken):
+            return [
+                "Accept": "application/json",
+                "Authorization": "Bearer \(accessToken)"
+            ]
+        case let .profileHistory(accessToken):
             return [
                 "Accept": "application/json",
                 "Authorization": "Bearer \(accessToken)"

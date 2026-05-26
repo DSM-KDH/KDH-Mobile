@@ -17,3 +17,12 @@ struct UserResponse: Decodable {
     let name: String
     let profileImage: String
 }
+
+struct ProfileHistoryResponse: Decodable {
+    let id: Int
+    let heightCm: Double
+    let weightKg: Double
+    let gender: String
+    let recordedAt: String
+    let nextReminderAt: String?
+}

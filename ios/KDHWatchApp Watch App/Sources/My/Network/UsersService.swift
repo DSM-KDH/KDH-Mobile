@@ -162,6 +162,71 @@ struct UsersService {
             )
         }
     }
+
+    func fetchProfileHistory(
+        accessToken: String
+    ) async throws -> [ProfileHistoryResponse] {
+        let target = UsersAPI.profileHistory(
+            accessToken: accessToken
+        )
+        let response = try await withCheckedThrowingContinuation {
+            continuation in
+            provider.request(target) { result in
+                switch result {
+                case let .success(response):
+                    continuation.resume(returning: response)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+
+        let raw = String(
+            data: response.data,
+            encoding: .utf8
+        ) ?? ""
+
+        print("[UsersAPI] history statusCode=\(response.statusCode)")
+
+        guard (200...299).contains(response.statusCode) else {
+            throw NSError(
+                domain: "UsersService",
+                code: response.statusCode,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "신체 정보 히스토리 조회 실패"
+                ]
+            )
+        }
+
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix("[") else {
+            print("[UsersAPI] HISTORY HTML RESPONSE DETECTED")
+            throw NSError(
+                domain: "UsersService",
+                code: 2,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "서버가 JSON 배열 대신 HTML 응답 반환"
+                ]
+            )
+        }
+
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(
+                [ProfileHistoryResponse].self,
+                from: response.data
+            )
+        } catch {
+            print("[UsersAPI] HISTORY DECODE ERROR \(error)")
+            throw NSError(
+                domain: "UsersService",
+                code: 3,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "히스토리 응답 파싱 실패"
+                ]
+            )
+        }
+    }
 }
 
 #endif

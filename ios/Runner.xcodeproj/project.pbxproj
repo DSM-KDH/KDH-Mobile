@@ -23,6 +23,9 @@
 		8801900A2F7CEBF50047FA8E /* KDHWatchApp Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		88265F982FC5497300138AB0 /* UserSettingTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88265F972FC5496A00138AB0 /* UserSettingTimerView.swift */; };
 		88265F9A2FC5498300138AB0 /* UserSettingTimerRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88265F992FC5497600138AB0 /* UserSettingTimerRunView.swift */; };
+		88265FD42FC5636A00138AB0 /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88265FD32FC5636200138AB0 /* MetronomeView.swift */; };
+		88265FD92FC5696B00138AB0 /* metronome.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 88265FD82FC5696B00138AB0 /* metronome.mp3 */; };
+		88265FDA2FC5696B00138AB0 /* metronome.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 88265FD82FC5696B00138AB0 /* metronome.mp3 */; };
 		88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88519F942F8CBE75007A6B51 /* RoutineListCell.swift */; };
 		8898E4B42F9AFD8600C1A07D /* TimerSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */; };
 		88A31B6F2FF9D145004E1A11 /* WatchTabbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */; };
@@ -31,7 +34,6 @@
 		88AFBD922FB2C398007EF0BB /* UsersResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD912FB2C392007EF0BB /* UsersResponse.swift */; };
 		88AFBD942FB2C447007EF0BB /* UsersService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD932FB2C441007EF0BB /* UsersService.swift */; };
 		88AFBD972FB2D00E007EF0BB /* TimerOptionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */; };
-		B1A100032FFC333300000001 /* TimerStartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A100032FFC333300000002 /* TimerStartButton.swift */; };
 		88AFBD992FB2D382007EF0BB /* IntervalTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD982FB2D380007EF0BB /* IntervalTimerView.swift */; };
 		88AFBD9B2FB2D39E007EF0BB /* MetronomeRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */; };
 		88AFBD9F2FB30578007EF0BB /* TimerCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AFBD9E2FB30572007EF0BB /* TimerCircleView.swift */; };
@@ -54,6 +56,7 @@
 		88FACEF42FB1AAF800AAE9DC /* RoutineAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FACEF32FB1AAF400AAE9DC /* RoutineAPI.swift */; };
 		88FACEF62FB1AB8A00AAE9DC /* RoutineResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FACEF52FB1AB8500AAE9DC /* RoutineResponse.swift */; };
 		B1A100022FFB222200000001 /* WeightHistoryGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A100022FFB222200000002 /* WeightHistoryGraphView.swift */; };
+		B1A100032FFC333300000001 /* TimerStartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A100032FFC333300000002 /* TimerStartButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +141,8 @@
 		880190092F7CEBF50047FA8E /* KDHWatchApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "KDHWatchApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		88265F972FC5496A00138AB0 /* UserSettingTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingTimerView.swift; sourceTree = "<group>"; };
 		88265F992FC5497600138AB0 /* UserSettingTimerRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingTimerRunView.swift; sourceTree = "<group>"; };
+		88265FD32FC5636200138AB0 /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
+		88265FD82FC5696B00138AB0 /* metronome.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = metronome.mp3; sourceTree = "<group>"; };
 		88519F942F8CBE75007A6B51 /* RoutineListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutineListCell.swift; sourceTree = "<group>"; };
 		8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerSelectView.swift; sourceTree = "<group>"; };
 		88A31B6E2FF9D145004E1A11 /* WatchTabbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTabbarView.swift; sourceTree = "<group>"; };
@@ -146,7 +151,6 @@
 		88AFBD912FB2C392007EF0BB /* UsersResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersResponse.swift; sourceTree = "<group>"; };
 		88AFBD932FB2C441007EF0BB /* UsersService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersService.swift; sourceTree = "<group>"; };
 		88AFBD962FB2D004007EF0BB /* TimerOptionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerOptionButton.swift; sourceTree = "<group>"; };
-		B1A100032FFC333300000002 /* TimerStartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStartButton.swift; sourceTree = "<group>"; };
 		88AFBD982FB2D380007EF0BB /* IntervalTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalTimerView.swift; sourceTree = "<group>"; };
 		88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeRunView.swift; sourceTree = "<group>"; };
 		88AFBD9E2FB30572007EF0BB /* TimerCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerCircleView.swift; sourceTree = "<group>"; };
@@ -174,6 +178,7 @@
 		9FB5251F4FEF2DE04D17CA0A /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE3C8E1D35360C0083082EAA /* Profile.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Profile.xcconfig; path = Flutter/Profile.xcconfig; sourceTree = "<group>"; };
 		B1A100022FFB222200000002 /* WeightHistoryGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightHistoryGraphView.swift; sourceTree = "<group>"; };
+		B1A100032FFC333300000002 /* TimerStartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStartButton.swift; sourceTree = "<group>"; };
 		CDC2CAB42F1176A8364375D3 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		E064EE11C44193C304029F2F /* Pods-KDHWatchApp Watch App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KDHWatchApp Watch App.release.xcconfig"; path = "Target Support Files/Pods-KDHWatchApp Watch App/Pods-KDHWatchApp Watch App.release.xcconfig"; sourceTree = "<group>"; };
 		E94B3B268559B6309F9F3780 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -283,6 +288,15 @@
 			path = UserSetting;
 			sourceTree = "<group>";
 		};
+		88265FD22FC5635300138AB0 /* Metronome */ = {
+			isa = PBXGroup;
+			children = (
+				88265FD32FC5636200138AB0 /* MetronomeView.swift */,
+				88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */,
+			);
+			path = Metronome;
+			sourceTree = "<group>";
+		};
 		88519F922F8CBABC007A6B51 /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -304,9 +318,9 @@
 		8898E4B22F9AFD6D00C1A07D /* Timer */ = {
 			isa = PBXGroup;
 			children = (
+				88265FD22FC5635300138AB0 /* Metronome */,
 				88265F962FC5495F00138AB0 /* UserSetting */,
 				88AFBDA62FB30699007EF0BB /* Interval */,
-				88AFBD9A2FB2D39E007EF0BB /* MetronomeRunView.swift */,
 				88AFBD952FB2CFFE007EF0BB /* Component */,
 				8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */,
 			);
@@ -372,6 +386,7 @@
 		88B098282F8CB3FE00317162 /* Resoures */ = {
 			isa = PBXGroup;
 			children = (
+				88265FD82FC5696B00138AB0 /* metronome.mp3 */,
 				88D593472FB6A25600D4A719 /* finished.mp3 */,
 				88D593442FB69F0000D4A719 /* interval_alarm.mp3 */,
 				88B098222F8CB3FE00317162 /* Font */,
@@ -649,6 +664,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				88D593482FB6A25600D4A719 /* finished.mp3 in Resources */,
+				88265FD92FC5696B00138AB0 /* metronome.mp3 in Resources */,
 				88D593462FB69F0000D4A719 /* interval_alarm.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -659,6 +675,7 @@
 			files = (
 				88B098312F8CB3FE00317162 /* Pretendard-Light.otf in Resources */,
 				88D593492FB6A25600D4A719 /* finished.mp3 in Resources */,
+				88265FDA2FC5696B00138AB0 /* metronome.mp3 in Resources */,
 				88B098322F8CB3FE00317162 /* Pretendard-Medium.otf in Resources */,
 				88B098332F8CB3FE00317162 /* Pretendard-Regular.otf in Resources */,
 				88D593452FB69F0000D4A719 /* interval_alarm.mp3 in Resources */,
@@ -862,6 +879,7 @@
 				88FACEF62FB1AB8A00AAE9DC /* RoutineResponse.swift in Sources */,
 				88B0982F2F8CB3FE00317162 /* KDHWatchAppApp.swift in Sources */,
 				88AFBD8D2FB2BF66007EF0BB /* MoyaLogginPlugin.swift in Sources */,
+				88265FD42FC5636A00138AB0 /* MetronomeView.swift in Sources */,
 				88265F982FC5497300138AB0 /* UserSettingTimerView.swift in Sources */,
 				88265F9A2FC5498300138AB0 /* UserSettingTimerRunView.swift in Sources */,
 				88B098362F8CB3FE00317162 /* TodayRoutineView.swift in Sources */,

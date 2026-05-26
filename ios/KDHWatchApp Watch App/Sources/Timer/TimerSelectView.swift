@@ -51,7 +51,7 @@ struct TimerSelectView: View {
                 switch dest {
                 case .interval:  IntervalTimerView()
                 case .custom:    UserSettingTimerView()
-                case .metronome: MetronomeRunView()
+                case .metronome: MetronomeView()
                 }
             }
         }
@@ -65,7 +65,7 @@ struct TimerSelectView: View {
         case .custom:
             UserSettingTimerView()
         case .metronome:
-            MetronomeRunView()
+            MetronomeView()
         case .none:
             EmptyView()
         }

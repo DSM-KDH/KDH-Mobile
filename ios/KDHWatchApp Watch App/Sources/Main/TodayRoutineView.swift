@@ -7,6 +7,7 @@ struct TodayRoutineView: View {
     @State private var workouts: [Workout] = []
     @State private var apiState: RoutineAPIState = .idle
     @State private var completionUpdatingIds: Set<Int> = []
+    @State private var showTimerSelect = false
 
     var body: some View {
         VStack {
@@ -29,6 +30,9 @@ struct TodayRoutineView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.background)
+        .sheet(isPresented: $showTimerSelect) {
+            TimerSelectView()
+        }
         .onAppear {
             Swift.Task {
                 await fetchRoutineIfPossible()
@@ -67,7 +71,7 @@ struct TodayRoutineView: View {
                     .padding(.vertical, 8)
 
             case .failed:
-                message("루틴 호출을 실패했습니다")
+                message("iPhone 앱을 실행해주세요")
 
             case .loaded:
                 if workouts.isEmpty {
@@ -86,7 +90,9 @@ struct TodayRoutineView: View {
                                     await toggleCompletion(workout)
                                 }
                             },
-                            arrowButtonTap: {}
+                            arrowButtonTap: {
+                                showTimerSelect = true
+                            }
                         )
                     }
                 }

@@ -9,6 +9,7 @@ import Alamofire
 
 enum RoutineAPI {
     case routines(date: String, accessToken: String)
+    case updateCompletion(exerciseId: Int, completed: Bool, accessToken: String)
 }
 
 extension RoutineAPI: TargetType {
@@ -29,6 +30,8 @@ extension RoutineAPI: TargetType {
         switch self {
         case .routines:
             return "/routines"
+        case let .updateCompletion(exerciseId, _, _):
+            return "/routines/exercises/\(exerciseId)/completion"
         }
     }
 
@@ -36,6 +39,8 @@ extension RoutineAPI: TargetType {
         switch self {
         case .routines:
             return .get
+        case .updateCompletion:
+            return .patch
         }
     }
 
@@ -43,12 +48,22 @@ extension RoutineAPI: TargetType {
         switch self {
         case let .routines(date, _):
             return .requestParameters(parameters: ["date": date], encoding: URLEncoding.queryString)
+        case let .updateCompletion(_, completed, _):
+            return .requestParameters(
+                parameters: ["completed": completed],
+                encoding: URLEncoding.queryString
+            )
         }
     }
 
     var headers: [String : String]? {
         switch self {
         case let .routines(_, accessToken):
+            return [
+                "Accept": "application/json",
+                "Authorization": "Bearer \(accessToken)"
+            ]
+        case let .updateCompletion(_, _, accessToken):
             return [
                 "Accept": "application/json",
                 "Authorization": "Bearer \(accessToken)"

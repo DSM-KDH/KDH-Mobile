@@ -112,14 +112,13 @@ struct IntervalTimerRunView: View {
         totalRemainingSeconds = totalInputSeconds
         currentRound = 1
     }
-    // interval_alarm.mp3 파일을 프로젝트에 추가해야 함
-    // interval_finished.mp3 파일을 프로젝트에 추가해야 함
+
     private func playFinishedSound() {
         guard let url = Bundle.main.url(
             forResource: "finished",
             withExtension: "mp3"
         ) else {
-            print("[Sound] interval_finished.mp3 파일 없음")
+            print("[Sound] finished.mp3 파일 없음")
             return
         }
 

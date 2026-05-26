@@ -6,6 +6,7 @@ struct TodayRoutineView: View {
 
     @State private var workouts: [Workout] = []
     @State private var apiState: RoutineAPIState = .idle
+    @State private var completionUpdatingIds: Set<Int> = []
 
     var body: some View {
         VStack {
@@ -80,7 +81,11 @@ struct TodayRoutineView: View {
                             exerciseName: workout.exerciseName,
                             countText: workout.repsTime,
                             isChecked: workout.completed,
-                            checkButtonTap: {},
+                            checkButtonTap: {
+                                Swift.Task {
+                                    await toggleCompletion(workout)
+                                }
+                            },
                             arrowButtonTap: {}
                         )
                     }
@@ -130,6 +135,62 @@ struct TodayRoutineView: View {
 
             workouts = []
             apiState = .failed
+        }
+    }
+
+    @MainActor
+    private func toggleCompletion(_ workout: Workout) async {
+        guard !completionUpdatingIds.contains(workout.exerciseId) else {
+            return
+        }
+
+        guard
+            let accessToken = connectivityManager.accessToken(),
+            !accessToken.isEmpty
+        else {
+            return
+        }
+
+        let newCompleted = !workout.completed
+
+        completionUpdatingIds.insert(workout.exerciseId)
+        updateLocalWorkoutCompletion(
+            exerciseId: workout.exerciseId,
+            completed: newCompleted
+        )
+
+        do {
+            try await RoutineService.shared.updateExerciseCompletion(
+                exerciseId: workout.exerciseId,
+                completed: newCompleted,
+                accessToken: accessToken
+            )
+        } catch {
+            print("[WatchAPI] updateCompletion error: \(error)")
+            updateLocalWorkoutCompletion(
+                exerciseId: workout.exerciseId,
+                completed: workout.completed
+            )
+        }
+
+        completionUpdatingIds.remove(workout.exerciseId)
+    }
+
+    @MainActor
+    private func updateLocalWorkoutCompletion(
+        exerciseId: Int,
+        completed: Bool
+    ) {
+        workouts = workouts.map { item in
+            guard item.exerciseId == exerciseId else { return item }
+
+            return Workout(
+                exerciseId: item.exerciseId,
+                sectionName: item.sectionName,
+                exerciseName: item.exerciseName,
+                repsTime: item.repsTime,
+                completed: completed
+            )
         }
     }
 }

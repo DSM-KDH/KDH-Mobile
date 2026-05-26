@@ -81,6 +81,48 @@ struct RoutineService {
             )
         }
     }
+
+    func updateExerciseCompletion(
+        exerciseId: Int,
+        completed: Bool,
+        accessToken: String
+    ) async throws {
+        let target = RoutineAPI.updateCompletion(
+            exerciseId: exerciseId,
+            completed: completed,
+            accessToken: accessToken
+        )
+
+        let response = try await withCheckedThrowingContinuation {
+            continuation in
+
+            provider.request(target) { result in
+                switch result {
+                case let .success(response):
+                    continuation.resume(returning: response)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+
+        guard (200...299).contains(response.statusCode) else {
+            let body = String(
+                data: response.data,
+                encoding: .utf8
+            ) ?? ""
+
+            print("[WatchAPI] completion non-2xx body=\(body)")
+
+            throw NSError(
+                domain: "WatchRoutineService",
+                code: response.statusCode,
+                userInfo: [
+                    NSLocalizedDescriptionKey: "운동 완료 상태 변경 실패"
+                ]
+            )
+        }
+    }
 }
 
 private extension RoutineService {

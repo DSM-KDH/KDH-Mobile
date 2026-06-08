@@ -78,6 +78,32 @@ class _HomePageState extends ConsumerState<HomePage> {
         _selectedDate.day == now.day;
   }
 
+  EmptyRoutineReason _emptyReason(Set<String> routineDates) {
+    if (routineDates.isEmpty) return EmptyRoutineReason.never;
+
+    DateTime? lastDate;
+    for (final key in routineDates) {
+      final parts = key.split('-');
+      if (parts.length != 3) continue;
+      final date = DateTime(
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+        int.parse(parts[2]),
+      );
+      if (lastDate == null || date.isAfter(lastDate)) lastDate = date;
+    }
+
+    final selected = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+    );
+    if (lastDate != null && selected.isAfter(lastDate)) {
+      return EmptyRoutineReason.afterPeriod;
+    }
+    return EmptyRoutineReason.noRoutineThatDay;
+  }
+
   @override
   Widget build(BuildContext context) {
     final displayName = ref.watch(authProvider).displayName;
@@ -114,7 +140,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(top: _toggleHeight),
                     child: EmptyRoutineView(
-                      hasAnyRoutine: routineState.routineDates.isNotEmpty,
+                      reason: _emptyReason(routineState.routineDates),
                     ),
                   )
                 else

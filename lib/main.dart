@@ -12,8 +12,9 @@ import 'package:kdh_mobile/core/services/timer_notification_service.dart';
 import 'package:kdh_mobile/core/watch/watch_token_sync_service.dart';
 import 'package:kdh_mobile/firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await TokenStorage.restore();
   runApp(const ProviderScope(child: MyApp()));
   unawaited(_initializeAppServices());
 }
@@ -24,7 +25,6 @@ Future<void> _initializeAppServices() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await FcmService.initialize();
-    await TokenStorage.restore();
     await TimerNotificationService.initialize();
     await TimerNotificationService.requestPermissions();
     await initBackgroundTimerService();

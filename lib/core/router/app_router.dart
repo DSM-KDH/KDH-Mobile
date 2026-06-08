@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
+import 'package:kdh_mobile/core/network/token_storage.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_bottom_nav_bar.dart';
 import 'package:kdh_mobile/features/auth/presentation/pages/oauth_webview_page.dart';
@@ -25,8 +26,27 @@ import 'package:kdh_mobile/features/timer/presentation/pages/timer_page.dart';
 import 'package:kdh_mobile/features/timer/presentation/providers/custom_timer_controller.dart';
 import 'package:kdh_mobile/features/timer/presentation/providers/metronome_controller.dart';
 
+const _publicPaths = <String>{
+  RouterPath.onboarding,
+  RouterPath.oauthWebView,
+};
+
 final appRouter = GoRouter(
-  initialLocation: RouterPath.onboarding,
+  initialLocation:
+      TokenStorage.hasToken ? RouterPath.home : RouterPath.onboarding,
+  redirect: (context, state) {
+    final loggedIn = TokenStorage.hasToken;
+    final location = state.matchedLocation;
+    final isPublic = _publicPaths.contains(location);
+
+    if (loggedIn && location == RouterPath.onboarding) {
+      return RouterPath.home;
+    }
+    if (!loggedIn && !isPublic) {
+      return RouterPath.onboarding;
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: RouterPath.onboarding,

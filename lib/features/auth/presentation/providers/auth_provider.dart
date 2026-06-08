@@ -71,7 +71,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void handleLoginSuccess(String accessToken, String refreshToken) {
     _repository.handleLoginSuccess(accessToken, refreshToken);
-    unawaited(WatchTokenSyncService.syncAccessToken(accessToken));
 
     final email = _extractEmailFromJwt(accessToken);
 
@@ -81,7 +80,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       userEmail: email,
     );
 
-    WatchService.sendAccessToken(accessToken);
+    unawaited(WatchTokenSyncService.syncAccessToken(accessToken));
   }
 
   Future<bool> logout() async {

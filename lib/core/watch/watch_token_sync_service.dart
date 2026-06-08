@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 class WatchTokenSyncService {
@@ -5,36 +7,86 @@ class WatchTokenSyncService {
 
   static final WatchConnectivity _watch = WatchConnectivity();
 
-  static Future<void> syncAccessToken(String accessToken) async {
+  static const int _maxAttempts = 8;
+  static const Duration _retryDelay = Duration(milliseconds: 600);
+
+  static Completer<void>? _inFlight;
+
+  static Future<void> syncAccessToken(String accessToken) =>
+      _sendWithRetry(accessToken);
+
+  static Future<void> clearToken() => _sendWithRetry('');
+
+  static Future<void> _sendWithRetry(String accessToken) async {
+    final previous = _inFlight;
+    if (previous != null) {
+      try {
+        await previous.future;
+      } catch (_) {}
+    }
+    final completer = Completer<void>();
+    _inFlight = completer;
+
+    try {
+      try {
+        if (!await _watch.isSupported) {
+          _log('not supported on this device');
+          return;
+        }
+      } catch (e) {
+        _log('isSupported check failed: $e');
+        return;
+      }
+
+      for (var attempt = 1; attempt <= _maxAttempts; attempt++) {
+        if (await _trySend(accessToken, attempt)) return;
+        await Future<void>.delayed(_retryDelay);
+      }
+      _log('gave up after $_maxAttempts attempts');
+    } finally {
+      if (identical(_inFlight, completer)) _inFlight = null;
+      completer.complete();
+    }
+  }
+
+  static Future<bool> _trySend(String accessToken, int attempt) async {
     final payload = <String, dynamic>{
       'action': 'setWatchAccessToken',
       'accessToken': accessToken,
-      // Force context change so watchOS receives every sync attempt.
-      'syncedAt': DateTime.now().millisecondsSinceEpoch,
+      'syncedAt': DateTime.now().microsecondsSinceEpoch,
     };
 
     try {
-      final isSupported = await _watch.isSupported;
-      final isPaired = await _watch.isPaired;
-      final isReachable = await _watch.isReachable;
-      // ignore: avoid_print
-      print(
-        '[WatchConnectivity][iPhone] supported=$isSupported paired=$isPaired reachable=$isReachable',
-      );
-      if (!isSupported || !isPaired) return;
+      final paired = await _watch.isPaired;
+      if (!paired) {
+        _log('attempt $attempt: not paired/activated yet — retrying');
+        return false;
+      }
 
-      if (isReachable) {
-        await _watch.sendMessage(payload);
-        // ignore: avoid_print
-        print('[WatchConnectivity][iPhone] sendMessage sent');
+      var reachable = false;
+      try {
+        reachable = await _watch.isReachable;
+      } catch (_) {}
+      if (reachable) {
+        try {
+          await _watch.sendMessage(payload);
+          _log('attempt $attempt: sendMessage ok');
+        } catch (e) {
+          _log('attempt $attempt: sendMessage failed: $e');
+        }
       }
 
       await _watch.updateApplicationContext(payload);
-      // ignore: avoid_print
-      print('[WatchConnectivity][iPhone] updateApplicationContext updated');
+      _log('attempt $attempt: updateApplicationContext ok (reachable=$reachable)');
+      return true;
     } catch (e) {
-      // ignore: avoid_print
-      print('[WatchConnectivity][iPhone] token sync failed: $e');
+      _log('attempt $attempt: failed ($e) — retrying');
+      return false;
     }
+  }
+
+  static void _log(String message) {
+    // ignore: avoid_print
+    print('[WatchConnectivity][iPhone] $message');
   }
 }

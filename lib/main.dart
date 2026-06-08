@@ -25,6 +25,11 @@ Future<void> _initializeAppServices() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await FcmService.initialize();
+    await TokenStorage.restore();
+    final token = TokenStorage.accessToken;
+    if (token != null && token.isNotEmpty) {
+      unawaited(WatchTokenSyncService.syncAccessToken(token));
+    }
     await TimerNotificationService.initialize();
     await TimerNotificationService.requestPermissions();
     await initBackgroundTimerService();

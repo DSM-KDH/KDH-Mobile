@@ -5,9 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
 import 'package:kdh_mobile/core/widgets/kdh_select_card.dart';
+import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
+import 'package:kdh_mobile/features/routine/domain/routine_goal_validator.dart';
 import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/body_diagram.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
@@ -70,6 +73,33 @@ class _FirstStepPageState extends ConsumerState<FirstStepPage> {
       if (index != 0) _weightController.clear();
       if (index != 2) _selectedMuscles.clear();
     });
+  }
+
+  void _onNext() {
+    final targetWeight = _selectedGoal == 0
+        ? double.tryParse(_weightController.text.trim())
+        : null;
+
+    if (_selectedGoal == 0 && targetWeight != null) {
+      final profile = ref.read(userProfileProvider).profile;
+      final result = RoutineGoalValidator.validateTargetWeight(
+        target: targetWeight,
+        currentWeight: profile.weight,
+        heightCm: profile.height,
+      );
+      if (!result.isValid) {
+        context.showKdhSnackBar(result.message!);
+        return;
+      }
+    }
+
+    ref.read(aiRoutineWizardProvider.notifier).setGoal(
+          goal: _selectedGoal!,
+          targetWeight: targetWeight,
+          selectedMuscles:
+              _selectedGoal == 2 ? Set.from(_selectedMuscles) : const {},
+        );
+    context.push(RouterPath.aiRoutineStep2);
   }
 
   Widget _buildMuscleChip(String label) {
@@ -309,20 +339,7 @@ class _FirstStepPageState extends ConsumerState<FirstStepPage> {
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: KdhButton(
                 label: '다음',
-                onPressed: _canProceed
-                    ? () {
-                        ref.read(aiRoutineWizardProvider.notifier).setGoal(
-                          goal: _selectedGoal!,
-                          targetWeight: _selectedGoal == 0
-                              ? double.tryParse(_weightController.text.trim())
-                              : null,
-                          selectedMuscles: _selectedGoal == 2
-                              ? Set.from(_selectedMuscles)
-                              : const {},
-                        );
-                        context.push(RouterPath.aiRoutineStep2);
-                      }
-                    : null,
+                onPressed: _canProceed ? _onNext : null,
               ),
             ),
           ],

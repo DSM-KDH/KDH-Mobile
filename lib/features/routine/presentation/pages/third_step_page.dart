@@ -6,6 +6,8 @@ import 'package:kdh_mobile/constants/text_style.dart';
 import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/core/widgets/kdh_button.dart';
+import 'package:kdh_mobile/features/mypage/presentation/providers/user_profile_provider.dart';
+import 'package:kdh_mobile/features/routine/domain/routine_goal_validator.dart';
 import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/step_progress_header.dart';
 
@@ -234,6 +236,25 @@ class _ThirdStepPageState extends ConsumerState<ThirdStepPage> {
                           );
                           return;
                         }
+
+                        final wizard = ref.read(aiRoutineWizardProvider);
+                        if (wizard.goal == 0 && wizard.targetWeight != null) {
+                          final profile =
+                              ref.read(userProfileProvider).profile;
+                          final rate = RoutineGoalValidator.validateLossRate(
+                            currentWeight: profile.weight,
+                            targetWeight: wizard.targetWeight,
+                            weeks: weeks,
+                          );
+                          if (!rate.isValid) {
+                            context.showKdhSnackBar(
+                              rate.message!,
+                              duration: const Duration(milliseconds: 1800),
+                            );
+                            return;
+                          }
+                        }
+
                         ref
                             .read(aiRoutineWizardProvider.notifier)
                             .setSchedule(

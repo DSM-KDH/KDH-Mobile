@@ -3,6 +3,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/services/background_timer_service.dart';
 import 'package:kdh_mobile/core/services/timer_notification_service.dart';
+import 'package:kdh_mobile/features/timer/presentation/services/active_timer_registry.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/timer_sound_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -173,6 +174,7 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
     _keepAlive = null;
     WakelockPlus.disable();
     TimerNotificationService.cancelAll();
+    ActiveTimerRegistry.clear();
     state = state.copyWith(
       totalRemainingSeconds: 0,
       status: CustomTimerStatus.finished,
@@ -183,6 +185,9 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
   Future<void> start() async {
     if (state.status == CustomTimerStatus.running) return;
 
+    ActiveTimerRegistry.setActive(
+      ActiveTimerRegistry.customKey(_config.totalSeconds, _config.intervals),
+    );
     _keepAlive ??= _ref.keepAlive();
     state = state.copyWith(status: CustomTimerStatus.running);
     TimerSoundService.playIntervalStart();
@@ -212,6 +217,7 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
     _keepAlive = null;
     WakelockPlus.disable();
     TimerNotificationService.cancelAll();
+    ActiveTimerRegistry.clear();
     state = CustomTimerState(
       status: CustomTimerStatus.ready,
       totalRemainingSeconds: _config.totalSeconds,

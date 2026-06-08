@@ -3,6 +3,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/services/background_timer_service.dart';
 import 'package:kdh_mobile/core/services/timer_notification_service.dart';
+import 'package:kdh_mobile/features/timer/presentation/services/active_timer_registry.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/timer_sound_service.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -127,6 +128,7 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
     _keepAlive = null;
     WakelockPlus.disable();
     TimerNotificationService.cancelAll();
+    ActiveTimerRegistry.clear();
     state = state.copyWith(
       elapsedSeconds: state.totalSeconds,
       status: MetronomeStatus.finished,
@@ -137,6 +139,9 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
   Future<void> start() async {
     if (state.status == MetronomeStatus.running) return;
 
+    ActiveTimerRegistry.setActive(
+      ActiveTimerRegistry.metronomeKey(_config.totalSeconds, _config.bpm),
+    );
     _keepAlive ??= _ref.keepAlive();
     state = state.copyWith(status: MetronomeStatus.running);
     TimerSoundService.playIntervalStart();
@@ -171,6 +176,7 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
     _keepAlive = null;
     WakelockPlus.disable();
     TimerNotificationService.cancelAll();
+    ActiveTimerRegistry.clear();
     state = MetronomeState(
       status: MetronomeStatus.ready,
       totalSeconds: _config.totalSeconds,

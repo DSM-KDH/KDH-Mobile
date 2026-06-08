@@ -5,10 +5,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 const String kCmdStart = 'startTimer';
 const String kCmdReset = 'resetTimer';
 const String kCmdGetState = 'getState';
+const String kCmdGetActiveTimer = 'getActiveTimer';
 
 const String kEvtTick = 'timerTick';
 const String kEvtFinished = 'timerFinished';
 const String kEvtBeat = 'beat';
+const String kEvtActiveTimer = 'activeTimer';
 
 const String kTypeInterval = 'interval';
 const String kTypeCustom = 'custom';
@@ -153,6 +155,20 @@ void _onStart(ServiceInstance service) {
   });
 
   service.on(kCmdGetState).listen((_) => tick());
+
+  service.on(kCmdGetActiveTimer).listen((_) {
+    if (virtualStart == null) {
+      service.invoke(kEvtActiveTimer, {'running': false});
+      return;
+    }
+    service.invoke(kEvtActiveTimer, {
+      'running': true,
+      'type': timerType,
+      'totalSeconds': totalSeconds,
+      'intervals': intervals,
+      'bpm': bpm,
+    });
+  });
 
   service.on(kCmdReset).listen((_) {
     mainTimer?.cancel();

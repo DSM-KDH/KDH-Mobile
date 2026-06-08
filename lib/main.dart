@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/core/network/token_storage.dart';
 import 'package:kdh_mobile/core/router/app_router.dart';
 import 'package:kdh_mobile/core/services/background_timer_service.dart';
+import 'package:kdh_mobile/core/services/fcm_service.dart';
 import 'package:kdh_mobile/core/services/timer_notification_service.dart';
+import 'package:kdh_mobile/core/watch/watch_token_sync_service.dart';
+import 'package:kdh_mobile/firebase_options.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +20,10 @@ void main() {
 
 Future<void> _initializeAppServices() async {
   try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await FcmService.initialize();
     await TokenStorage.restore();
     await TimerNotificationService.initialize();
     await TimerNotificationService.requestPermissions();
@@ -31,8 +39,35 @@ Future<void> _initializeAppServices() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final token = TokenStorage.accessToken;
+      if (token != null && token.isNotEmpty) {
+        unawaited(WatchTokenSyncService.syncAccessToken(token));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

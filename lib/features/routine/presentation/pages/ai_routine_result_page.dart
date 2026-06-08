@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/services/fcm_service.dart';
 import 'package:kdh_mobile/core/services/routine_live_activity_service.dart';
 import 'package:kdh_mobile/features/routine/presentation/providers/ai_routine_wizard_provider.dart';
 import 'package:kdh_mobile/features/routine/presentation/widgets/ai_routine_failure_view.dart';
@@ -35,7 +36,11 @@ class _AiRoutineResultPageState extends ConsumerState<AiRoutineResultPage> {
     await _liveActivity.init();
     await _liveActivity.startCreation();
 
-    final success = await ref.read(aiRoutineWizardProvider.notifier).submit();
+    // 생성 완료 푸시 알림을 받기 위해 FCM 토큰을 함께 전송
+    final fcmToken = await FcmService.ensureToken();
+    final success = await ref
+        .read(aiRoutineWizardProvider.notifier)
+        .submit(fcmToken: fcmToken);
     if (!mounted) return;
 
     if (success) {

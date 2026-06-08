@@ -101,7 +101,6 @@ class _MyPageState extends ConsumerState<MyPage> {
         ? profile.name!
         : authDisplayName;
     final weightHistory = ref.watch(weightHistoryProvider);
-    final routineState = ref.watch(homeRoutineProvider);
 
     final distinctMonths = weightHistory
         .map((e) => '${e.date.year}-${e.date.month}')
@@ -114,7 +113,6 @@ class _MyPageState extends ConsumerState<MyPage> {
       child: Stack(
         children: [
           SingleChildScrollView(
-            // 하단 고정 회원탈퇴 버튼과 겹치지 않도록 여백
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 80),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,16 +238,30 @@ class _MyPageState extends ConsumerState<MyPage> {
 
                 Text('이번주 루틴 달성률', style: KdhTextStyle.body5),
                 const SizedBox(height: 16),
-                routineState.isLoadingDates
-                    ? const SizedBox(
+                ref
+                    .watch(achievementProvider)
+                    .when(
+                      data: (data) => WeeklyRoutineCard(
+                        data: data,
+                        routineDates:
+                            ref.watch(homeRoutineProvider).routineDates,
+                      ),
+                      loading: () => const SizedBox(
                         height: 80,
                         child: Center(child: CircularProgressIndicator()),
-                      )
-                    : WeeklyRoutineCard(
-                        routineDates: routineState.routineDates,
-                        completionMap: routineState.completionMap,
-                        exerciseCountMap: routineState.exerciseCountMap,
                       ),
+                      error: (_, __) => SizedBox(
+                        height: 80,
+                        child: Center(
+                          child: Text(
+                            '달성률을 불러오지 못했어요',
+                            style: KdhTextStyle.body6.copyWith(
+                              color: KdhColor.gray400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                 const SizedBox(height: 32),
               ],
             ),

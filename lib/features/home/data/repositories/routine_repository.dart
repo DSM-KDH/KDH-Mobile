@@ -1,3 +1,4 @@
+import 'package:kdh_mobile/features/home/data/models/achievement_model.dart';
 import 'package:kdh_mobile/features/home/data/models/workout_model.dart';
 
 abstract interface class RoutineRepository {
@@ -9,4 +10,8 @@ abstract interface class RoutineRepository {
     required int exerciseId,
     required bool completed,
   });
+
+  Future<LastWeekAchievement?> fetchLastWeekAchievement();
+
+  Future<List<WeekAchievement>> fetchWeeklyAchievements();
 }

@@ -2,27 +2,41 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
-import 'package:kdh_mobile/features/home/domain/entities/day_completion_status.dart';
-import 'package:kdh_mobile/features/home/presentation/providers/routine_provider.dart';
+import 'package:kdh_mobile/features/home/data/models/achievement_model.dart';
 
 class WeeklyRoutineCard extends StatelessWidget {
   const WeeklyRoutineCard({
     super.key,
-    required this.routineDates,
-    required this.completionMap,
-    required this.exerciseCountMap,
+    required this.data,
+    this.routineDates = const {},
   });
 
-  final Set<String> routineDates;
-  final Map<String, DayCompletionStatus> completionMap;
-  final Map<String, DayExerciseCount> exerciseCountMap;
+  final AchievementData data;
 
-  DateTime _weekStart(DateTime date) =>
-      date.subtract(Duration(days: date.weekday - 1));
+  final Set<String> routineDates;
+
+  int? _daysUntilNextRoutine() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    DateTime? next;
+    for (final key in routineDates) {
+      final parts = key.split('-');
+      if (parts.length != 3) continue;
+      final date = DateTime(
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+        int.parse(parts[2]),
+      );
+      if (date.isAfter(today) && (next == null || date.isBefore(next))) {
+        next = date;
+      }
+    }
+    return next?.difference(today).inDays;
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (routineDates.isEmpty) {
+    if (data.isEmpty) {
       return SizedBox(
         height: 80,
         child: Center(
@@ -34,52 +48,12 @@ class WeeklyRoutineCard extends StatelessWidget {
       );
     }
 
-    final today = DateTime.now();
-    final todayMidnight = DateTime(today.year, today.month, today.day);
-    final weekStart = _weekStart(todayMidnight);
-    final weekEnd = weekStart.add(const Duration(days: 6));
-
-    final thisWeekDates = routineDates.where((dateStr) {
-      final parts = dateStr.split('-');
-      if (parts.length != 3) return false;
-      final date = DateTime(
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-        int.parse(parts[2]),
-      );
-      return !date.isBefore(weekStart) && !date.isAfter(weekEnd);
-    }).toList();
-
-    int weeklyDone = 0;
-    int weeklyTotal = 0;
-    for (final d in thisWeekDates) {
-      final count = exerciseCountMap[d];
-      if (count != null) {
-        weeklyDone += count.done;
-        weeklyTotal += count.total;
-      }
-    }
-
-    final progress = weeklyTotal > 0 ? weeklyDone / weeklyTotal : 0.0;
-    final progressPct = (progress * 100).round();
-
-    DateTime? nextDate;
-    for (final dateStr in routineDates) {
-      final parts = dateStr.split('-');
-      if (parts.length != 3) continue;
-      final date = DateTime(
-        int.parse(parts[0]),
-        int.parse(parts[1]),
-        int.parse(parts[2]),
-      );
-      if (date.isAfter(todayMidnight)) {
-        if (nextDate == null || date.isBefore(nextDate)) {
-          nextDate = date;
-        }
-      }
-    }
-
-    final daysUntilNext = nextDate?.difference(todayMidnight).inDays;
+    final current = data.currentWeek;
+    final rate = current?.achievementRate ?? data.lastWeek?.achievementRate ?? 0;
+    final progress = (rate / 100).clamp(0.0, 1.0);
+    final progressPct = rate.round();
+    final daysUntilNext = _daysUntilNextRoutine();
+    final lastWeekRate = data.lastWeek?.achievementRate;
 
     return IntrinsicHeight(
       child: Row(
@@ -147,6 +121,15 @@ class WeeklyRoutineCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                        if (lastWeekRate != null) ...[
+                          const SizedBox(height: 10),
+                          Text(
+                            '지난주 ${lastWeekRate.round()}%',
+                            style: KdhTextStyle.caption5.copyWith(
+                              color: KdhColor.gray300,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -167,14 +150,14 @@ class WeeklyRoutineCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '다음주\n루틴까지',
+                  '다음\n루틴까지',
                   style: KdhTextStyle.caption1.copyWith(
                     color: KdhColor.background,
                     height: 1.4,
                   ),
                 ),
                 Center(
-                  child: daysUntilNext != null
+                  child: (daysUntilNext != null && daysUntilNext > 0)
                       ? Text(
                           '$daysUntilNext일',
                           style: KdhTextStyle.heading2.copyWith(

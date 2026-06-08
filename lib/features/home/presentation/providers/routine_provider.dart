@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
 import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
+import 'package:kdh_mobile/features/home/data/models/achievement_model.dart';
 import 'package:kdh_mobile/features/home/data/models/workout_model.dart';
 import 'package:kdh_mobile/features/home/data/repositories/routine_repository.dart';
 import 'package:kdh_mobile/features/home/data/repositories/routine_repository_impl.dart';
@@ -9,6 +10,20 @@ import 'package:kdh_mobile/features/home/domain/entities/day_completion_status.d
 final _routineRepositoryProvider = Provider<RoutineRepository>(
   (ref) => RoutineRepositoryImpl(ref.watch(dioProvider)),
 );
+
+final achievementProvider = FutureProvider.autoDispose<AchievementData>((
+  ref,
+) async {
+  final repo = ref.watch(_routineRepositoryProvider);
+  final results = await Future.wait([
+    repo.fetchLastWeekAchievement(),
+    repo.fetchWeeklyAchievements(),
+  ]);
+  return AchievementData(
+    lastWeek: results[0] as LastWeekAchievement?,
+    weeks: results[1] as List<WeekAchievement>,
+  );
+});
 
 class DayExerciseCount {
   const DayExerciseCount({required this.done, required this.total});
@@ -180,6 +195,13 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
     } catch (e) {
       await loadRoutinesForDate(dateKey);
     }
+  }
+
+  void removeWorkoutLocally(int exerciseId) {
+    final updated = state.currentWorkouts
+        .where((w) => w.exerciseId != exerciseId)
+        .toList();
+    state = state.copyWith(currentWorkouts: updated);
   }
 
   DayCompletionStatus? _computeStatus(List<WorkoutModel> workouts) {

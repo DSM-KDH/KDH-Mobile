@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kdh_mobile/constants/color.dart';
 import 'package:kdh_mobile/constants/text_style.dart';
+import 'package:kdh_mobile/core/extensions/build_context_feedback_extension.dart';
 import 'package:kdh_mobile/core/router/router_path.dart';
 import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/home/presentation/providers/routine_provider.dart';
@@ -10,6 +11,7 @@ import 'package:kdh_mobile/features/home/presentation/widgets/empty_routine_view
 import 'package:kdh_mobile/features/home/presentation/widgets/monthly_calendar.dart';
 import 'package:kdh_mobile/features/home/presentation/widgets/routine_check_item.dart';
 import 'package:kdh_mobile/features/home/presentation/widgets/weekly_calendar.dart';
+import 'package:kdh_mobile/features/timer/presentation/services/active_timer_registry.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -153,22 +155,55 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                     itemCount: routines.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) => RoutineCheckItem(
-                      routine: routines[i],
-                      isToday: _isSelectedDateToday,
-                      onToggle: () => _onRoutineToggle(
-                        workouts[i].exerciseId,
-                        workouts[i].completed,
-                      ),
-                      onActionTap: () {
-                        final seconds = routines[i].timerSeconds;
-                        if (seconds != null) {
-                          context.push(RouterPath.intervalTimer, extra: seconds);
-                        } else {
-                          context.push(RouterPath.intervalTimerSetup);
-                        }
-                      },
-                    ),
+                    itemBuilder: (_, i) {
+                      final exerciseId = workouts[i].exerciseId;
+                      return Dismissible(
+                        key: ValueKey('routine_$exerciseId'),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 28),
+                          decoration: BoxDecoration(
+                            color: KdhColor.red200,
+                            borderRadius: BorderRadius.circular(26),
+                          ),
+                          child: const Icon(
+                            Symbols.delete_rounded,
+                            color: KdhColor.background,
+                          ),
+                        ),
+                        onDismissed: (_) {
+                          ref
+                              .read(homeRoutineProvider.notifier)
+                              .removeWorkoutLocally(exerciseId);
+                        },
+                        child: RoutineCheckItem(
+                          routine: routines[i],
+                          isToday: _isSelectedDateToday,
+                          onToggle: () => _onRoutineToggle(
+                            exerciseId,
+                            workouts[i].completed,
+                          ),
+                          onActionTap: () {
+                            final seconds = routines[i].timerSeconds;
+                            if (seconds == null) {
+                              context.push(RouterPath.intervalTimerSetup);
+                              return;
+                            }
+                            final key =
+                                ActiveTimerRegistry.intervalKey(seconds);
+                            if (ActiveTimerRegistry.isBlockedFor(key)) {
+                              context.showKdhSnackBar('이미 진행중인 타이머가 있습니다');
+                              return;
+                            }
+                            context.push(
+                              RouterPath.intervalTimer,
+                              extra: seconds,
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
 
                 Positioned(

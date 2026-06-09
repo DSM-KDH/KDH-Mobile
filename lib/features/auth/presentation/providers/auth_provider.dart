@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/error/app_exception.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
 import 'package:kdh_mobile/core/network/token_storage.dart';
 import 'package:kdh_mobile/core/services/watch_service.dart';
@@ -114,14 +115,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
       WatchService.clearToken();
       return true;
     } catch (e) {
-      if (!TokenStorage.hasToken) {
-        state = const AuthState(isAuthenticated: false);
-        WatchService.clearToken();
-        return true;
-      }
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: _readableError(e));
       return false;
     }
+  }
+
+  String _readableError(Object e) {
+    if (e is AppException) return e.message;
+    return '회원탈퇴에 실패했습니다. 잠시 후 다시 시도해주세요.';
   }
 
   static String? _extractEmailFromJwt(String token) {

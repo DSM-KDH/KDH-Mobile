@@ -9,7 +9,11 @@
 import Foundation
 import Moya
 
-#if DEBUG
+#if os(watchOS)
+public final class MoyaLogginPlugin: PluginType {
+    public init() {}
+}
+#elseif DEBUG
 // swiftlint: disable line_length
 public final class MoyaLogginPlugin: PluginType {
     public init() {}

@@ -1,6 +1,5 @@
 #if os(watchOS)
 import SwiftUI
-import AVFoundation
 
 struct UserSettingTimerRunView: View {
     let intervals: [Int]
@@ -12,7 +11,9 @@ struct UserSettingTimerRunView: View {
     @State private var currentPhaseIndex: Int = 0
     @State private var currentRound: Int = 1
     @State private var timer: Timer? = nil
-    @State private var audioPlayer: AVAudioPlayer?
+    @StateObject private var soundPlayer = WatchTimerSoundPlayer(
+        soundNames: ["interval_alarm", "finished"]
+    )
 
     private var safeIntervals: [Int] {
         intervals.filter { $0 > 0 }
@@ -52,7 +53,10 @@ struct UserSettingTimerRunView: View {
             totalRemainingSeconds = totalSeconds
             phaseRemainingSeconds = safeIntervals.first ?? 0
         }
-        .onDisappear { timer?.invalidate() }
+        .onDisappear {
+            stopTimer()
+            soundPlayer.stopAll()
+        }
     }
 
     private var phaseLabel: String {
@@ -64,6 +68,8 @@ struct UserSettingTimerRunView: View {
 
     private func startTimer() {
         guard !safeIntervals.isEmpty else { return }
+        stopTimer()
+
         isReady = false
         totalRemainingSeconds = totalSeconds
         currentPhaseIndex = 0
@@ -75,14 +81,14 @@ struct UserSettingTimerRunView: View {
             phaseRemainingSeconds -= 1
 
             if totalRemainingSeconds <= 0 {
-                timer?.invalidate()
-                playFinishedSound()
+                stopTimer()
+                soundPlayer.play("finished")
                 isReady = true
                 return
             }
 
             if phaseRemainingSeconds <= 0 {
-                playPhaseChangeSound()
+                soundPlayer.play("interval_alarm")
                 if currentPhaseIndex == safeIntervals.count - 1 {
                     currentPhaseIndex = 0
                     currentRound += 1
@@ -92,10 +98,12 @@ struct UserSettingTimerRunView: View {
                 phaseRemainingSeconds = safeIntervals[currentPhaseIndex]
             }
         }
+        timer?.tolerance = 0.1
     }
 
     private func resetTimer() {
-        timer?.invalidate()
+        stopTimer()
+        soundPlayer.stopAll()
         isReady = true
         currentPhaseIndex = 0
         phaseRemainingSeconds = safeIntervals.first ?? 0
@@ -103,22 +111,9 @@ struct UserSettingTimerRunView: View {
         currentRound = 1
     }
 
-    private func playFinishedSound() {
-        guard let url = Bundle.main.url(forResource: "finished", withExtension: "mp3") else { return }
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {}
-    }
-
-    private func playPhaseChangeSound() {
-        guard let url = Bundle.main.url(forResource: "interval_alarm", withExtension: "mp3") else { return }
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {}
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }
 

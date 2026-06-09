@@ -1,6 +1,5 @@
 #if os(watchOS)
 import SwiftUI
-import AVFoundation
 
 struct MetronomeRunView: View {
     let bpm: Int
@@ -10,7 +9,9 @@ struct MetronomeRunView: View {
     @State private var totalRemainingSeconds = 0
     @State private var secondTimer: Timer?
     @State private var beatTimer: Timer?
-    @State private var audioPlayer: AVAudioPlayer?
+    @StateObject private var soundPlayer = WatchTimerSoundPlayer(
+        soundNames: ["metronome", "finished"]
+    )
 
     var body: some View {
         VStack(spacing: 14) {
@@ -44,57 +45,49 @@ struct MetronomeRunView: View {
             totalRemainingSeconds = totalSeconds
         }
         .onDisappear {
-            secondTimer?.invalidate()
-            beatTimer?.invalidate()
+            stopTimers()
+            soundPlayer.stopAll()
         }
     }
 
     private func startTimer() {
         guard bpm > 0, totalSeconds > 0 else { return }
+        stopTimers()
+
         isReady = false
         totalRemainingSeconds = totalSeconds
 
         let beatInterval = 60.0 / Double(bpm)
         beatTimer = Timer.scheduledTimer(withTimeInterval: beatInterval, repeats: true) { _ in
-            playBeatSound()
+            soundPlayer.play("metronome")
         }
-        playBeatSound()
+        beatTimer?.tolerance = min(beatInterval * 0.1, 0.05)
+        soundPlayer.play("metronome")
 
         secondTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             totalRemainingSeconds -= 1
 
             if totalRemainingSeconds <= 0 {
-                secondTimer?.invalidate()
-                beatTimer?.invalidate()
-                playFinishedSound()
+                stopTimers()
+                soundPlayer.play("finished")
                 isReady = true
             }
         }
+        secondTimer?.tolerance = 0.1
     }
 
     private func resetTimer() {
-        secondTimer?.invalidate()
-        beatTimer?.invalidate()
+        stopTimers()
+        soundPlayer.stopAll()
         isReady = true
         totalRemainingSeconds = totalSeconds
     }
 
-    private func playBeatSound() {
-        guard let url = Bundle.main.url(forResource: "metronome", withExtension: "mp3") else { return }
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {}
-    }
-
-    private func playFinishedSound() {
-        guard let url = Bundle.main.url(forResource: "finished", withExtension: "mp3") else { return }
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {}
+    private func stopTimers() {
+        secondTimer?.invalidate()
+        beatTimer?.invalidate()
+        secondTimer = nil
+        beatTimer = nil
     }
 }
 

@@ -59,6 +59,7 @@
 		88FACEF62FB1AB8A00AAE9DC /* RoutineResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88FACEF52FB1AB8500AAE9DC /* RoutineResponse.swift */; };
 		B1A100022FFB222200000001 /* WeightHistoryGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A100022FFB222200000002 /* WeightHistoryGraphView.swift */; };
 		B1A100032FFC333300000001 /* TimerStartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A100032FFC333300000002 /* TimerStartButton.swift */; };
+		B1A100042FFD444400000001 /* WatchTimerSoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A100042FFD444400000002 /* WatchTimerSoundPlayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -193,6 +194,7 @@
 		AE3C8E1D35360C0083082EAA /* Profile.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Profile.xcconfig; path = Flutter/Profile.xcconfig; sourceTree = "<group>"; };
 		B1A100022FFB222200000002 /* WeightHistoryGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightHistoryGraphView.swift; sourceTree = "<group>"; };
 		B1A100032FFC333300000002 /* TimerStartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerStartButton.swift; sourceTree = "<group>"; };
+		B1A100042FFD444400000002 /* WatchTimerSoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTimerSoundPlayer.swift; sourceTree = "<group>"; };
 		CDC2CAB42F1176A8364375D3 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		E064EE11C44193C304029F2F /* Pods-KDHWatchApp Watch App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KDHWatchApp Watch App.release.xcconfig"; path = "Target Support Files/Pods-KDHWatchApp Watch App/Pods-KDHWatchApp Watch App.release.xcconfig"; sourceTree = "<group>"; };
 		E94B3B268559B6309F9F3780 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 				88AFBDA62FB30699007EF0BB /* Interval */,
 				88AFBD952FB2CFFE007EF0BB /* Component */,
 				8898E4B32F9AFD7F00C1A07D /* TimerSelectView.swift */,
+				B1A100042FFD444400000002 /* WatchTimerSoundPlayer.swift */,
 			);
 			path = Timer;
 			sourceTree = "<group>";
@@ -916,6 +919,7 @@
 				88AFBD922FB2C398007EF0BB /* UsersResponse.swift in Sources */,
 				88AFBD9B2FB2D39E007EF0BB /* MetronomeRunView.swift in Sources */,
 				88519F952F8CBE84007A6B51 /* RoutineListCell.swift in Sources */,
+				B1A100042FFD444400000001 /* WatchTimerSoundPlayer.swift in Sources */,
 				88AFBD972FB2D00E007EF0BB /* TimerOptionButton.swift in Sources */,
 				B1A100032FFC333300000001 /* TimerStartButton.swift in Sources */,
 				88B0982E2F8CB3FE00317162 /* ContentView.swift in Sources */,

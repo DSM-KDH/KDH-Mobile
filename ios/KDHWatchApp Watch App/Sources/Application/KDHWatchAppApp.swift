@@ -29,6 +29,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDeleg
     @Published var isReachable: Bool = false
     @Published var lastErrorMessage: String?
     @Published var hasAccessToken: Bool = false
+    @Published private var cachedAccessToken: String?
     private let tokenStore = WatchTokenStore()
 
     func activate() {
@@ -36,11 +37,12 @@ final class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDeleg
         let session = WCSession.default
         session.delegate = self
         session.activate()
+        refreshAccessTokenFromStore()
         print("[WatchConnectivity] activate() called")
     }
 
     func accessToken() -> String? {
-        tokenStore.readAccessToken()
+        cachedAccessToken
     }
 
     func session(
@@ -57,7 +59,6 @@ final class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDeleg
         DispatchQueue.main.async {
             self.isReachable = session.isReachable
             self.lastErrorMessage = error?.localizedDescription
-            self.hasAccessToken = self.tokenStore.readAccessToken() != nil
         }
     }
 
@@ -104,12 +105,24 @@ final class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDeleg
             try tokenStore.saveAccessToken(accessToken)
             print("[WatchConnectivity] access token saved. prefix=\(accessToken.prefix(12))...")
             DispatchQueue.main.async {
+                self.cachedAccessToken = accessToken
                 self.lastErrorMessage = nil
                 self.hasAccessToken = true
             }
         } catch {
             DispatchQueue.main.async {
                 self.lastErrorMessage = "토큰 저장 실패: \(error.localizedDescription)"
+            }
+        }
+    }
+
+    private func refreshAccessTokenFromStore() {
+        DispatchQueue.global(qos: .utility).async {
+            let accessToken = self.tokenStore.readAccessToken()
+
+            DispatchQueue.main.async {
+                self.cachedAccessToken = accessToken
+                self.hasAccessToken = accessToken != nil
             }
         }
     }

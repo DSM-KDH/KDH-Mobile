@@ -5,7 +5,6 @@
 //  Created by hawon on 5/12/26.
 //
 import SwiftUI
-import AVFoundation
 
 struct IntervalTimerRunView: View {
     let totalMinutes: Int
@@ -22,9 +21,11 @@ struct IntervalTimerRunView: View {
  
     // 현재 회차 (1회 = 3분-1분-2분 = 6분 사이클)
     @State private var currentRound: Int = 1
- 
+
     @State private var timer: Timer? = nil
-    @State private var audioPlayer: AVAudioPlayer?
+    @StateObject private var soundPlayer = WatchTimerSoundPlayer(
+        soundNames: ["interval_alarm", "finished"]
+    )
  
     // 1사이클 = 6분 = 360초
     private let cycleDuration = 360
@@ -66,11 +67,16 @@ struct IntervalTimerRunView: View {
             totalRemainingSeconds = totalInputSeconds
             phaseRemainingSeconds = IntervalPhase.three.durationSeconds
         }
-        .onDisappear { timer?.invalidate() }
+        .onDisappear {
+            stopTimer()
+            soundPlayer.stopAll()
+        }
     }
  
     // MARK: - Timer Logic
     private func startTimer() {
+        stopTimer()
+
         isReady = false
         currentPhase = .three
         phaseRemainingSeconds = currentPhase.durationSeconds
@@ -81,14 +87,14 @@ struct IntervalTimerRunView: View {
             phaseRemainingSeconds -= 1
 
             if totalRemainingSeconds <= 0 {
-                timer?.invalidate()
-                playFinishedSound()
+                stopTimer()
+                soundPlayer.play("finished")
                 isReady = true
                 return
             }
 
             if phaseRemainingSeconds <= 0 {
-                playPhaseChangeSound()
+                soundPlayer.play("interval_alarm")
 
                 // 다음 페이즈로
                 let nextPhase = currentPhase.next
@@ -102,10 +108,12 @@ struct IntervalTimerRunView: View {
                 phaseRemainingSeconds = nextPhase.durationSeconds
             }
         }
+        timer?.tolerance = 0.1
     }
  
     private func resetTimer() {
-        timer?.invalidate()
+        stopTimer()
+        soundPlayer.stopAll()
         isReady = true
         currentPhase = .three
         phaseRemainingSeconds = IntervalPhase.three.durationSeconds
@@ -113,38 +121,8 @@ struct IntervalTimerRunView: View {
         currentRound = 1
     }
 
-    private func playFinishedSound() {
-        guard let url = Bundle.main.url(
-            forResource: "finished",
-            withExtension: "mp3"
-        ) else {
-            print("[Sound] finished.mp3 파일 없음")
-            return
-        }
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {
-            print("[Sound] 완료 사운드 재생 실패: \(error)")
-        }
-    }
-    private func playPhaseChangeSound() {
-        guard let url = Bundle.main.url(
-            forResource: "interval_alarm",
-            withExtension: "mp3"
-        ) else {
-            print("[Sound] interval_alarm.mp3 파일 없음")
-            return
-        }
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-        } catch {
-            print("[Sound] 재생 실패: \(error)")
-        }
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }

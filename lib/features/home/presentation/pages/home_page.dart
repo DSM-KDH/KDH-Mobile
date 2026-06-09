@@ -172,6 +172,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                             color: KdhColor.background,
                           ),
                         ),
+                        confirmDismiss: (_) async {
+                          final error = await ref
+                              .read(homeRoutineProvider.notifier)
+                              .deleteExercise(exerciseId);
+                          if (error != null) {
+                            if (context.mounted) {
+                              context.showKdhSnackBar(error);
+                            }
+                            return false;
+                          }
+                          return true;
+                        },
                         onDismissed: (_) {
                           ref
                               .read(homeRoutineProvider.notifier)

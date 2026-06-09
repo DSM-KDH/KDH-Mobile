@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kdh_mobile/core/error/app_exception.dart';
 import 'package:kdh_mobile/core/network/dio_client.dart';
 import 'package:kdh_mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:kdh_mobile/features/home/data/models/achievement_model.dart';
@@ -194,6 +195,17 @@ class HomeRoutineNotifier extends StateNotifier<HomeRoutineState> {
       );
     } catch (e) {
       await loadRoutinesForDate(dateKey);
+    }
+  }
+
+  Future<String?> deleteExercise(int exerciseId) async {
+    try {
+      await _repository.deleteExercise(exerciseId);
+      return null;
+    } on AppException catch (e) {
+      return e.message;
+    } catch (_) {
+      return '오늘 또는 예정된 운동만 삭제할 수 있어요';
     }
   }
 

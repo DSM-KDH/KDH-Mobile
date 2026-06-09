@@ -49,6 +49,15 @@ class RoutineRepositoryImpl implements RoutineRepository {
   }
 
   @override
+  Future<void> deleteExercise(int exerciseId) async {
+    try {
+      await _dio.delete(ApiEndpoint.routineExercise(exerciseId));
+    } on DioException catch (e) {
+      throw extractAppException(e);
+    }
+  }
+
+  @override
   Future<LastWeekAchievement?> fetchLastWeekAchievement() async {
     try {
       final response = await _dio.get(ApiEndpoint.routinesAchievementLastWeek);

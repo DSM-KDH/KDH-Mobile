@@ -47,7 +47,11 @@ class _AuthInterceptor extends Interceptor {
     } else if (statusCode != null && statusCode >= 500) {
       mapped = const ServerException();
     } else {
-      final msg = err.response?.data?['message'] as String?;
+      final data = err.response?.data;
+      String? msg;
+      if (data is Map) {
+        msg = (data['description'] ?? data['message']) as String?;
+      }
       mapped = AppException(msg ?? err.message ?? '알 수 없는 오류가 발생했습니다.');
     }
 

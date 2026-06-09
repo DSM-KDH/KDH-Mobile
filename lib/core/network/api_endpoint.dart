@@ -20,6 +20,8 @@ class ApiEndpoint{
   static const String routinesAchievementWeeks =
       '/routines/achievement-rate/weeks';
   static String routineExerciseCompletion(int exerciseId) => '/routines/exercises/$exerciseId/completion';
+  static String routineExercise(int exerciseId) =>
+      '/routines/exercises/$exerciseId';
 
   /// user
   static const String userMe = '/users/me';

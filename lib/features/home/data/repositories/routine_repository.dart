@@ -11,6 +11,8 @@ abstract interface class RoutineRepository {
     required bool completed,
   });
 
+  Future<void> deleteExercise(int exerciseId);
+
   Future<LastWeekAchievement?> fetchLastWeekAchievement();
 
   Future<List<WeekAchievement>> fetchWeeklyAchievements();

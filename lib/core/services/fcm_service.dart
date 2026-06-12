@@ -18,6 +18,9 @@ class FcmService {
 
   static String? get token => _cachedToken;
 
+  static Stream<RemoteMessage> get onForegroundMessage =>
+      FirebaseMessaging.onMessage;
+
   static Future<void> initialize() async {
     try {
       FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);

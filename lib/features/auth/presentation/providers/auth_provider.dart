@@ -115,6 +115,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
       WatchService.clearToken();
       return true;
     } catch (e) {
+      if (!TokenStorage.hasToken) {
+        state = const AuthState(isAuthenticated: false);
+        WatchService.clearToken();
+        return true;
+      }
       state = state.copyWith(isLoading: false, error: _readableError(e));
       return false;
     }

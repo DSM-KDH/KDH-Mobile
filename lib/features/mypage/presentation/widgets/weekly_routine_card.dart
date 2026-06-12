@@ -36,18 +36,6 @@ class WeeklyRoutineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (data.isEmpty) {
-      return SizedBox(
-        height: 80,
-        child: Center(
-          child: Text(
-            '생성된 루틴이 없어요',
-            style: KdhTextStyle.body6.copyWith(color: KdhColor.gray400),
-          ),
-        ),
-      );
-    }
-
     final current = data.currentWeek;
     final rate = current?.achievementRate ?? data.lastWeek?.achievementRate ?? 0;
     final progress = (rate / 100).clamp(0.0, 1.0);

@@ -16,14 +16,13 @@ final achievementProvider = FutureProvider.autoDispose<AchievementData>((
   ref,
 ) async {
   final repo = ref.watch(_routineRepositoryProvider);
-  final results = await Future.wait([
-    repo.fetchLastWeekAchievement(),
-    repo.fetchWeeklyAchievements(),
-  ]);
-  return AchievementData(
-    lastWeek: results[0] as LastWeekAchievement?,
-    weeks: results[1] as List<WeekAchievement>,
+  final lastWeek = await repo.fetchLastWeekAchievement().catchError(
+    (_) => null,
   );
+  final weeks = await repo.fetchWeeklyAchievements().catchError(
+    (_) => <WeekAchievement>[],
+  );
+  return AchievementData(lastWeek: lastWeek, weeks: weeks);
 });
 
 class DayExerciseCount {

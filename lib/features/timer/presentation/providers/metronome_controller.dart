@@ -91,25 +91,34 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
   StreamSubscription? _tickSub;
   StreamSubscription? _finishedSub;
   StreamSubscription? _beatSub;
+  bool _acceptServiceEvents = false;
 
   Future<void> _subscribeToService() async {
     final svc = FlutterBackgroundService();
 
     _tickSub = svc.on(kEvtTick).listen((data) {
-      if (data == null || data['type'] != kTypeMetronome) return;
+      if (!_acceptServiceEvents || data == null || data['type'] != kTypeMetronome) {
+        return;
+      }
       _applyTick(data);
     });
 
     _finishedSub = svc.on(kEvtFinished).listen((data) {
-      if (data == null || data['type'] != kTypeMetronome) return;
+      if (!_acceptServiceEvents || data == null || data['type'] != kTypeMetronome) {
+        return;
+      }
       _handleFinished();
     });
 
     _beatSub = svc.on(kEvtBeat).listen((_) {
+      if (!_acceptServiceEvents || state.status != MetronomeStatus.running) return;
       TimerSoundService.playMetronomeTick();
     });
 
-    if (await svc.isRunning()) svc.invoke(kCmdGetState, {});
+    if (await svc.isRunning()) {
+      _acceptServiceEvents = true;
+      svc.invoke(kCmdGetState, {});
+    }
   }
 
   void _applyTick(Map<String, dynamic> data) {
@@ -124,6 +133,7 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
 
   void _handleFinished() {
     if (state.status != MetronomeStatus.running) return;
+    _acceptServiceEvents = false;
     _keepAlive?.close();
     _keepAlive = null;
     WakelockPlus.disable();
@@ -143,6 +153,7 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
       ActiveTimerRegistry.metronomeKey(_config.totalSeconds, _config.bpm),
     );
     _keepAlive ??= _ref.keepAlive();
+    _acceptServiceEvents = true;
     state = state.copyWith(status: MetronomeStatus.running);
     TimerSoundService.playIntervalStart();
     WakelockPlus.enable();
@@ -171,7 +182,9 @@ class MetronomeNotifier extends StateNotifier<MetronomeState> {
   }
 
   void reset() {
+    _acceptServiceEvents = false;
     FlutterBackgroundService().invoke(kCmdReset, {});
+    unawaited(TimerSoundService.stopAll());
     _keepAlive?.close();
     _keepAlive = null;
     WakelockPlus.disable();

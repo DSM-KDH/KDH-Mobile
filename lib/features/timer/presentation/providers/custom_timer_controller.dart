@@ -127,21 +127,29 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
   KeepAliveLink? _keepAlive;
   StreamSubscription? _tickSub;
   StreamSubscription? _finishedSub;
+  bool _acceptServiceEvents = false;
 
   Future<void> _subscribeToService() async {
     final svc = FlutterBackgroundService();
 
     _tickSub = svc.on(kEvtTick).listen((data) {
-      if (data == null || data['type'] != kTypeCustom) return;
+      if (!_acceptServiceEvents || data == null || data['type'] != kTypeCustom) {
+        return;
+      }
       _applyTick(data);
     });
 
     _finishedSub = svc.on(kEvtFinished).listen((data) {
-      if (data == null || data['type'] != kTypeCustom) return;
+      if (!_acceptServiceEvents || data == null || data['type'] != kTypeCustom) {
+        return;
+      }
       _handleFinished();
     });
 
-    if (await svc.isRunning()) svc.invoke(kCmdGetState, {});
+    if (await svc.isRunning()) {
+      _acceptServiceEvents = true;
+      svc.invoke(kCmdGetState, {});
+    }
   }
 
   void _applyTick(Map<String, dynamic> data) {
@@ -170,6 +178,7 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
 
   void _handleFinished() {
     if (state.status != CustomTimerStatus.running) return;
+    _acceptServiceEvents = false;
     _keepAlive?.close();
     _keepAlive = null;
     WakelockPlus.disable();
@@ -189,6 +198,7 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
       ActiveTimerRegistry.customKey(_config.totalSeconds, _config.intervals),
     );
     _keepAlive ??= _ref.keepAlive();
+    _acceptServiceEvents = true;
     state = state.copyWith(status: CustomTimerStatus.running);
     TimerSoundService.playIntervalStart();
     WakelockPlus.enable();
@@ -212,7 +222,9 @@ class CustomTimerNotifier extends StateNotifier<CustomTimerState> {
   }
 
   void reset() {
+    _acceptServiceEvents = false;
     FlutterBackgroundService().invoke(kCmdReset, {});
+    unawaited(TimerSoundService.stopAll());
     _keepAlive?.close();
     _keepAlive = null;
     WakelockPlus.disable();

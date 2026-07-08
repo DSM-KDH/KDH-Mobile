@@ -15,6 +15,7 @@ import 'package:kdh_mobile/features/timer/presentation/providers/custom_timer_co
 import 'package:kdh_mobile/features/timer/presentation/providers/metronome_controller.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/active_timer_registry.dart';
 import 'package:kdh_mobile/features/timer/presentation/services/timer_resume_service.dart';
+import 'package:kdh_mobile/features/timer/presentation/services/timer_sound_service.dart';
 import 'package:kdh_mobile/firebase_options.dart';
 
 void main() async {
@@ -38,6 +39,7 @@ Future<void> _initializeAppServices() async {
     await TimerNotificationService.initialize();
     await TimerNotificationService.requestPermissions();
     await initBackgroundTimerService();
+    await TimerSoundService.ensureInitialized();
 
     await _resumeActiveTimerIfAny();
   } catch (error, stackTrace) {
